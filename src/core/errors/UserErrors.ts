@@ -12,4 +12,11 @@ export namespace UserErrors {
             super("USER_ALREADY_EXIST")
         }
     }
+
+    export class  SchoolIdDoesntExist extends DomainErrors {
+        constructor() {
+            super("SCHOOL_NOT_FOUND")
+        }
+    }
+
 }

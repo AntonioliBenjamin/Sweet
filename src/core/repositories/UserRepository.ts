@@ -7,6 +7,8 @@ export interface UserRepository {
 
     getById(userId: string): Promise<User>;
 
+    getAllUsersBySchool(schoolId: string): Promise<User[]>
+
     update (input: User) : Promise<User>;
 
     delete(userId:string): Promise<void>;

@@ -5,6 +5,7 @@ import { UserRepository } from "../../repositories/UserRepository";
 import { IdGateway } from "../../gateways/IdGateway";
 import { PasswordGateway } from "../../gateways/PasswordGateway";
 import { UserErrors } from "../../errors/UserErrors";
+import {SchoolRepository} from "../../repositories/SchoolRepository";
 
 export type UserInput = {
   userName: string;
@@ -13,7 +14,8 @@ export type UserInput = {
   email: string;
   password: string;
   age: number;
-  schoolId: string;
+  nameOfSchool : string;
+  zipCodeOfSchool : string;
   section: string;
   gender: Gender;
 };
@@ -21,6 +23,7 @@ export type UserInput = {
 export class SignUp implements UseCase<UserInput, User> {
   constructor(
     private readonly userRepository: UserRepository,
+    private readonly schoolRepository: SchoolRepository,
     private readonly idGateway: IdGateway,
     private readonly passwordGateway: PasswordGateway
   ) {}
@@ -33,6 +36,11 @@ export class SignUp implements UseCase<UserInput, User> {
       throw new UserErrors.Exists();
     }
 
+    const schoolId = await this.schoolRepository.getSchoolId(input.nameOfSchool.toLowerCase().trim(),input.zipCodeOfSchool.trim());
+    if (!schoolId) {
+      throw new UserErrors.SchoolIdDoesntExist();
+    }
+
     const id = this.idGateway.generate();
     const hash = this.passwordGateway.encrypt(input.password);
     const user = User.create({
@@ -43,7 +51,7 @@ export class SignUp implements UseCase<UserInput, User> {
       age: input.age,
       firstName: input.firstName,
       lastName: input.lastName,
-      schoolId: input.schoolId,
+      schoolId: schoolId,
       section: input.section,
       gender: input.gender,
     });
