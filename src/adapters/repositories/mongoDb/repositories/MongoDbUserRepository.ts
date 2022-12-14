@@ -5,6 +5,7 @@ import { UserModel } from "../models/user";
 const mongoDbUserMapper = new MongoDbUserMapper();
 
 export class MongoDbUserRepository implements UserRepository {
+
   async create(user: User): Promise<User> {
     const toUserModel = mongoDbUserMapper.fromDomain(user)
     const userModel = new UserModel(toUserModel);
@@ -18,6 +19,11 @@ export class MongoDbUserRepository implements UserRepository {
       return null;
     }
     return mongoDbUserMapper.toDomain(user);
+  }
+
+  async getAllUsersBySchool(schoolId: string): Promise<User[]> {
+    const users = await UserModel.find({ schoolId : schoolId})
+    return users.map(elm =>  mongoDbUserMapper.toDomain(elm))
   }
 
   async getById(id: string): Promise<User> {

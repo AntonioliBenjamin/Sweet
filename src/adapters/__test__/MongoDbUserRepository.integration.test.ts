@@ -97,4 +97,23 @@ describe("Integration - MongoDbUserRepository", () => {
       );
       expect(result).toBeFalsy();
     });
+
+    it("should get all users by school", async () => {
+      const user2 = User.create({
+        email: "user@example.com",
+        id: "9999",
+        password: "password",
+        userName: "user Name",
+        age: 15,
+        firstName: "mich",
+        gender: Gender.BOY,
+        lastName: "polllich",
+        schoolId: "456",
+        section: "cp",
+      });
+      await mongoDbUserRepository.create(user2)
+      const result = await mongoDbUserRepository.getAllUsersBySchool("456")
+      console.log(result)
+      expect(result).toHaveLength(2)
+    })
   });

@@ -19,9 +19,10 @@ describe("Unit - GetAllUsersBySchool", () => {
       age: 13,
       gender: Gender.BOY,
       email: "jojo@gmail.com",
-      password: "1234",
+      password: "12345",
       id: "9999",
     });
+
     const user2 = User.create({
       userName: "JOJO",
       firstName: "gerard",
@@ -39,6 +40,7 @@ describe("Unit - GetAllUsersBySchool", () => {
     db.set(user2.props.id, user2);
 
     const result = await getAllUsersBySchool.execute("012345");
+    console.log(result)
     expect(result).toHaveLength(2);
   });
 });
