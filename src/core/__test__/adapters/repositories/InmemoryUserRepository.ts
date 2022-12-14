@@ -19,8 +19,7 @@ export class InMemoryUserRepository implements UserRepository {
 
     async getAllUsersBySchool(schoolId: string): Promise<User[]> {
         const values = Array.from(this.db.values());
-        const users = values.filter(eml => eml.props.schoolId === schoolId)
-        return users
+        return values.filter(eml => eml.props.schoolId === schoolId)
     }
 
     getById(id: string): Promise<User> {
