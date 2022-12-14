@@ -17,6 +17,12 @@ export class InMemoryUserRepository implements UserRepository {
         return Promise.resolve(user);
     }
 
+    async getAllUsersBySchool(schoolId: string): Promise<User[]> {
+        const values = Array.from(this.db.values());
+        const users = values.filter(eml => eml.props.schoolId === schoolId)
+        return users
+    }
+
     getById(id: string): Promise<User> {
         const user = this.db.get(id);
         return Promise.resolve(user);
@@ -32,4 +38,3 @@ export class InMemoryUserRepository implements UserRepository {
         return
     };
 }
-
