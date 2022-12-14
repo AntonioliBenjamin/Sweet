@@ -1,0 +1,150 @@
+import supertest  from 'supertest';
+import  mongoose  from 'mongoose';
+import "dotenv/config";
+import {sign} from "jsonwebtoken";
+import express from "express";
+import {v4} from "uuid";
+import {userRouter} from "../routes/user";
+import {MongoDbUserRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
+import {Gender, User} from "../../core/Entities/User";
+import {UserModel} from "../../adapters/repositories/mongoDb/models/user";
+import {UserRepository} from "../../core/repositories/UserRepository";
+import {BcryptGateway} from "../../adapters/gateways/BcryptGateway";
+
+const app = express();
+
+describe("E2E - User Router", () => {
+    let accessKey;
+    let userRepository: UserRepository;
+    let user: User;
+
+    beforeAll(async () => {
+        app.use(express.json());
+        app.use("/user", userRouter);
+
+        const databaseId = v4();
+        mongoose.set('strictQuery', false)
+        mongoose.connect(`mongodb://127.0.0.1:27017/${databaseId}`, (err) => {
+            if (err) {
+                throw err;
+            }
+            console.info("Connected to mongodb");
+        });
+        const bcryptGateway = new BcryptGateway();
+        userRepository = new MongoDbUserRepository();
+        user = User.create({
+            userName: "jojolapin",
+            email: "jojolapin@gmail.com",
+            password: bcryptGateway.encrypt("1234"),
+            id: "12345",
+            age: 15,
+            firstName: "mich",
+            gender: Gender.BOY,
+            lastName: "popo",
+            schoolId: "1234",
+            section: "dfsdfs"
+        });
+    });
+
+    afterEach(async () => {
+        await UserModel.collection.drop();
+    });
+
+    afterAll(async () => {
+        await mongoose.connection.dropDatabase();
+        await mongoose.connection.close();
+    });
+
+    it("Should post/user/signUp", async () => {
+        await supertest(app)
+            .post("/user/signUp")
+            .send({
+                userName: "michel",
+                email: "mich@michel.fr",
+                password: "12345",
+                age: 15,
+                firstName: "varuk",
+                lastName: "michel",
+                schoolId: "8748",
+                section: "cm2",
+                gender: "boy",
+            })
+
+            .expect((response) => {
+                const responseBody = response.body;
+                expect(responseBody.userName).toEqual("michel");
+            })
+            .expect(201);
+    });
+
+    it("Should post/user/sigIn", async () => {
+        await userRepository.create(user);
+
+        await supertest(app)
+            .post("/user/signIn")
+            .send({
+                email: "jojolapin@gmail.com",
+                password: "1234",
+            })
+            .expect((response) => {
+                const responseBody = response.body;
+                expect(responseBody.email).toEqual("jojolapin@gmail.com");
+            })
+            .expect(200);
+    });
+
+    it("Should patch/user", async () => {
+        await userRepository.create(user);
+
+        accessKey = sign(
+            {
+                id: user.props.id,
+                schoolId: user.props.schoolId
+            },
+            "maytheforcebewithyou"
+        );
+
+        await supertest(app)
+            .patch("/user")
+            .set("access_key", accessKey)
+            .send({
+                userName: "JOJO",
+                age: 13,
+                firstName: "gdfgdfg",
+                lastName: "dfgdrfg",
+                section: "dfgdfg",
+                id: user.props.id
+            })
+            .expect((response) => {
+                const responseBody = response.body;
+                expect(responseBody.updatedAt).toBeTruthy();
+            })
+            .expect(200);
+    });
+
+    it("Should delete/user", async () => {
+        await userRepository.create(user);
+
+        accessKey = sign(
+            {
+                id: user.props.id,
+                userName: user.props.userName,
+                email: user.props.email,
+            },
+            "maytheforcebewithyou"
+        );
+
+        await supertest(app)
+            .delete("/user/:id")
+            .set("access_key", accessKey)
+            .send({
+                id: user.props.id,
+            })
+            .expect((response) => {
+                const responseBody = response.body;
+                expect(responseBody.userName).toBeFalsy();
+            })
+            .expect(200);
+    });
+
+});
