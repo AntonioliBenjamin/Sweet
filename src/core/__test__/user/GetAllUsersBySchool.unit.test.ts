@@ -1,10 +1,12 @@
 import { GetAllUsersBySchool } from "./../../usecases/user/GetAllUsersBySchool";
-import { InMemoryUserRepository } from "./../adapters/repositories/InmemoryUserRepository";
+import { InMemoryUserRepository } from "../adapters/repositories/InMemoryUserRepository";
 import { User, Gender } from "./../../Entities/User";
+
+const db = new Map<string, User>();
 
 describe("Unit - GetAllUsersBySchool", () => {
   it("should Get All Users By School", async () => {
-    const db = new Map<string, User>();
+
     const inMemoryUserRepository = new InMemoryUserRepository(db);
     const getAllUsersBySchool = new GetAllUsersBySchool(inMemoryUserRepository);
 

@@ -8,7 +8,6 @@ export class GetAllUsersBySchool implements UseCase<string, User[]> {
     ) {}
 
     async execute(schoolId: string): Promise<User[]> {
-        const users = await this.userRepository.getAllUsersBySchool(schoolId)
-        return users
+        return await this.userRepository.getAllUsersBySchool(schoolId)
     }
 }
