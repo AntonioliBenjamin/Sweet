@@ -13,11 +13,11 @@ import {DeleteUser} from "../../core/Usecases/user/DeleteUser";
 import {MongoDbUserRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
 const userRouter = express.Router();
 const secretKey = process.env.SECRET_KEY;
-const schoolDlReposotry = new SchoolDbRepository()
+const schoolDdRepository = new SchoolDbRepository()
 const mongoDbUserRepository = new MongoDbUserRepository();
 const bcryptGateway = new BcryptGateway();
 const v4IdGateway = new V4IdGateway();
-const signUp = new SignUp(mongoDbUserRepository, schoolDlReposotry, v4IdGateway, bcryptGateway, );
+const signUp = new SignUp(mongoDbUserRepository,schoolDdRepository , v4IdGateway, bcryptGateway, );
 const signIn = new SignIn(mongoDbUserRepository, bcryptGateway);
 const updateUser = new UpdateUser(mongoDbUserRepository);
 const deleteUser = new DeleteUser(mongoDbUserRepository)

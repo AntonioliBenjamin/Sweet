@@ -11,8 +11,8 @@ export class SchoolDbRepository implements SchoolRepository {
         return await db.map(elem => dbSchoolMapper.toDomain(elem));
     }
 
-    async getBySchoolId(schoolId: string): Promise<School> {
-        const schoolModel = await db.find(elem => elem.recordid === schoolId);
+    getBySchoolId(schoolId: string): School {
+        const schoolModel = db.find(elem => elem.recordid === schoolId);
         return dbSchoolMapper.toDomain(schoolModel)
     }
 }
