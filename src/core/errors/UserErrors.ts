@@ -7,12 +7,12 @@ export namespace UserErrors {
         }
     }
 
-    export class Exists extends DomainErrors {
+    export class AlreadyExist extends DomainErrors {
         constructor() {
             super("USER_ALREADY_EXIST")
         }
     }
-    export class DoesntExist extends DomainErrors {
+    export class NotFound extends DomainErrors {
         constructor() {
             super("USER_DOESNT_EXIST")
         }

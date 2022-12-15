@@ -21,10 +21,13 @@ const userSchema = new Schema({
     id: {
         type: String,
         required: true,
+        unique : true,
+        index : true
     },
     userName: {
         type: String,
         required: true,
+        index : true
     },
     firstName: {
         type: String,
@@ -37,6 +40,8 @@ const userSchema = new Schema({
     email: {
         type: String,
         required: true,
+        unique : true,
+        index : true
     },
     password: {
         type: String,
@@ -57,7 +62,7 @@ const userSchema = new Schema({
     gender: {
         type: String,
         enum: Object.values(Gender),
-        default: null,
+        default: Gender.BOY,
         required: true
     },
     createdAt: {

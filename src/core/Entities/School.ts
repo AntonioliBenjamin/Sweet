@@ -1,5 +1,3 @@
-import {UserProperties} from "./User";
-
 export type SchoolProperties = {
     id: string;
     name: string;

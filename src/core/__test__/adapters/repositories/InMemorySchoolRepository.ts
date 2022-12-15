@@ -11,7 +11,7 @@ export class InMemorySchoolRepository implements SchoolRepository {
         return Promise.resolve(Array.from(this.db.values()));
     }
 
-    getBySchoolId(schoolId: string): Promise<School> {
-        return Promise.resolve(this.db.get(schoolId));
+    getBySchoolId(schoolId: string): School {
+        return this.db.get(schoolId);
     }
 }
