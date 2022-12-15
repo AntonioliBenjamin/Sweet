@@ -5,22 +5,34 @@ import { InMemoryUserRepository } from "../adapters/repositories/InMemoryUserRep
 import { UuidGateway } from "../adapters/gateways/UuidGateway";
 import { BcryptGateway } from "../adapters/gateways/BcryptGateway";
 import { UpdateUser } from "../../Usecases/user/UpdateUser";
+import {School} from "../../Entities/School";
+import {InMemorySchoolRepository} from "../adapters/repositories/InMemorySchoolRepository";
 
 const db = new Map<string, User>();
-
+const dbSchool = new Map<string, School>();
 
 describe('Unit - UpdateUser', () => {
     let signUp: SignUp;
     let updateUser: UpdateUser;
     let bcryptGateway: BcryptGateway;
+    let school : School;
 
     beforeAll(() => {
         const inMemoryUserRepository = new InMemoryUserRepository(db);
+        const inMemorySchoolRepository = new InMemorySchoolRepository(dbSchool);
         const uuidGateway = new UuidGateway();
         bcryptGateway = new BcryptGateway();
         updateUser = new UpdateUser(inMemoryUserRepository)
+        school = new School({
+            id: "6789",
+            city: "Paris",
+            name: "ENA",
+            district: "idf",
+        })
+        dbSchool.set("6789", school);
+
         signUp = new SignUp(
-            inMemoryUserRepository, uuidGateway, bcryptGateway
+            inMemoryUserRepository, inMemorySchoolRepository,uuidGateway, bcryptGateway
         )
     });
 
@@ -33,7 +45,7 @@ describe('Unit - UpdateUser', () => {
             firstName: "gdfgdfg",
             gender: Gender.BOY,
             lastName: "dfgdrfg",
-            schoolId: "1234",
+            schoolId: "6789",
             section: "dfgdfg"
           });
 

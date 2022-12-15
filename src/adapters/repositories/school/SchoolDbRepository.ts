@@ -1,23 +1,22 @@
 import {SchoolRepository} from "../../../core/repositories/SchoolRepository";
+import {School} from "../../../core/Entities/School";
+import {DbSchoolMapper} from "./mappers/DbSchoolMapper";
 
-export type dbProperties = {
-    fields: {
-        nom_etablissement: string,
-        code_commune: String,
-    }
-    recordid: string
-}
-
+const db = require('./schoolsDb.json')
+const dbSchoolMapper = new DbSchoolMapper()
 
 export class SchoolDbRepository implements SchoolRepository {
 
-    constructor(private readonly db: dbProperties[]) {
+    async getAllSchools(): Promise<School[]> {
+        return await db.map(elem => dbSchoolMapper.toDomain(elem));
     }
 
-    getSchoolId(nameOfSchool: string, zipCodeOfSchool: string): Promise<string> {
-        const school = this.db.find(elm => elm.fields.nom_etablissement.toLowerCase().trim() === nameOfSchool.toLowerCase().trim() &&
-            elm.fields.code_commune.trim() === zipCodeOfSchool.trim()).recordid
-        return Promise.resolve(school);
+    async getBySchoolId(schoolId: string): Promise<School> {
+        const schoolModel = await db.find(elem => elem.recordid === schoolId);
+        return dbSchoolMapper.toDomain(schoolModel)
     }
 }
+
+
+
 

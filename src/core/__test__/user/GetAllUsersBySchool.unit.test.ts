@@ -40,7 +40,6 @@ describe("Unit - GetAllUsersBySchool", () => {
     db.set(user2.props.id, user2);
 
     const result = await getAllUsersBySchool.execute("012345");
-    console.log(result)
     expect(result).toHaveLength(2);
   });
 });
