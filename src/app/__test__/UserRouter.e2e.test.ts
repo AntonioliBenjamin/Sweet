@@ -65,7 +65,7 @@ describe("E2E - User Router", () => {
                 age: 15,
                 firstName: "varuk",
                 lastName: "michel",
-                schoolId: "8748",
+                schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
                 section: "cm2",
                 gender: "boy",
             })
