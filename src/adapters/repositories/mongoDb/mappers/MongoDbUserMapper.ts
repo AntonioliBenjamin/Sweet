@@ -17,7 +17,8 @@ export class MongoDbUserMapper implements Mapper<userModel, User> {
             gender,
             lastName,
             schoolId,
-            section
+            section,
+            recoveryCode
 
         } = data.props;
         return {
@@ -32,7 +33,8 @@ export class MongoDbUserMapper implements Mapper<userModel, User> {
             gender,
             lastName,
             schoolId,
-            section
+            section,
+            recoveryCode
         }
     }
 
@@ -49,7 +51,8 @@ export class MongoDbUserMapper implements Mapper<userModel, User> {
             gender,
             lastName,
             schoolId,
-            section
+            section,
+            recoveryCode
         } = raw;
         return new User({
             id,
@@ -63,7 +66,8 @@ export class MongoDbUserMapper implements Mapper<userModel, User> {
             gender,
             lastName,
             schoolId,
-            section
+            section,
+            recoveryCode
         });
     }
 }
