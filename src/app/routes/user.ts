@@ -1,4 +1,5 @@
-
+import { UserApiUserMapper } from './../dtos/UserApiUserMapper';
+import { SchoolDbRepository } from '../../adapters/repositories/school/SchoolDbRepository';
 import express from "express";
 import {BcryptGateway} from "../../adapters/gateways/BcryptGateway";
 import {V4IdGateway} from "../../adapters/gateways/V4IdGateway";
@@ -12,13 +13,15 @@ import {DeleteUser} from "../../core/Usecases/user/DeleteUser";
 import {MongoDbUserRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
 const userRouter = express.Router();
 const secretKey = process.env.SECRET_KEY;
+const schoolDlReposotry = new SchoolDbRepository()
 const mongoDbUserRepository = new MongoDbUserRepository();
 const bcryptGateway = new BcryptGateway();
 const v4IdGateway = new V4IdGateway();
-const signUp = new SignUp(mongoDbUserRepository, v4IdGateway, bcryptGateway);
+const signUp = new SignUp(mongoDbUserRepository, schoolDlReposotry, v4IdGateway, bcryptGateway, );
 const signIn = new SignIn(mongoDbUserRepository, bcryptGateway);
 const updateUser = new UpdateUser(mongoDbUserRepository);
 const deleteUser = new DeleteUser(mongoDbUserRepository)
+const userApiUserMapper = new UserApiUserMapper()
 
 userRouter.post("/signUp", async (req, res) => {
     try {
@@ -36,15 +39,23 @@ userRouter.post("/signUp", async (req, res) => {
 
         const user = await signUp.execute(body);
 
+        const accessKey = jwt.sign(
+            {
+                id: user.props.id,
+                schoolId: user.props.schoolId,
+                email: user.props.email
+            },
+            secretKey
+        );
+
         return res.status(201).send({
-            id: user.props.id,
-            userName: user.props.userName,
-            email: user.props.email,
-            created: user.props.createdAt,
+            ...userApiUserMapper.fromDomain(user),
+            accessKey
         });
     } catch (err) {
+        console.error(err)
         return res.status(400).send({
-            message: err.message,
+            message: "An error occured",
         });
     }
 });
@@ -60,18 +71,15 @@ userRouter.post("/signIn", async (req, res) => {
         const accessKey = jwt.sign(
             {
                 id: user.props.id,
-                schoolId: user.props.schoolId
+                schoolId: user.props.schoolId,
+                email: user.props.email
             },
             secretKey
         );
 
         return res.status(200).send({
-            id: user.props.id,
-            userName: user.props.userName,
-            email: user.props.email,
-            createdAt: user.props.createdAt,
-            updatedAt: user.props.updatedAt,
-            accesskey: accessKey,
+            ...userApiUserMapper.fromDomain(user),
+            accessKey
         });
     } catch (err) {
         return res.status(400).send({
@@ -99,8 +107,8 @@ userRouter.patch("/", async (req: AuthentifiedRequest, res) => {
             lastName: body.lastName,
             section: body.section,
             id: req.user.id
-
         });
+
         return res.status(200).send({
             id: updatedUser.props.id,
             userName: updatedUser.props.userName,

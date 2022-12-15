@@ -57,6 +57,6 @@ export class SignUp implements UseCase<UserInput, User> {
     });
 
     const result = await this.userRepository.create(user);
-    return Promise.resolve(result);
+    return result;
   }
 }
