@@ -13,7 +13,7 @@ describe('Unit - deleteUser', () => {
     const id = uuidGateway.generate()
 
     it('should delete user', async () => {
-        const user = await User.create({
+        const user =  User.create({
             userName: "JOJO",
             email: "jojo@gmail.com",
             password: "1234",

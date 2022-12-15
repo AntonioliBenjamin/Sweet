@@ -1,78 +1,91 @@
-import { UserErrors } from "../errors/UserErrors";
+import {UserErrors} from "../errors/UserErrors";
 
 export enum Gender {
-  BOY = "boy",
-  GIRL = "girl",
+    BOY = "boy",
+    GIRL = "girl",
 }
 
 export type UserProperties = {
-  id: string;
-  userName: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  age: number;
-  schoolId: string;
-  section: string;
-  gender: Gender;
-  createdAt: Date;
-  updatedAt: Date;
-};
-
-export class User {
-  props: UserProperties;
-
-  constructor(props: UserProperties) {
-    this.props = props;
-  }
-
-  static create(props: {
     id: string;
     userName: string;
-    email: string;
     firstName: string;
     lastName: string;
+    email: string;
+    password: string;
     age: number;
     schoolId: string;
     section: string;
     gender: Gender;
-    password: string;
-  }) {
-    if (props.age < 13) {
-      throw new UserErrors.TooYoung();
-    }
-    return new User({
-      id: props.id,
-      userName: props.userName.toLowerCase().trim(),
-      firstName: props.firstName,
-      lastName: props.lastName,
-      schoolId: props.schoolId,
-      section: props.section,
-      age: props.age,
-      gender: props.gender,
-      email: props.email.toLowerCase().trim(),
-      password: props.password,
-      createdAt: new Date(),
-      updatedAt: null,
-    });
-  }
+    createdAt: Date;
+    updatedAt: Date;
+    recoveryCode?: string
+};
 
-  update(props: {
-    userName: string;
-    firstName: string;
-    lastName: string;
-    age: number;
-    section: string;
-  }) {
-    if (props.age < 13) {
-        throw new UserErrors.TooYoung();
-      }
-    this.props.userName = props.userName.toLowerCase().trim();
-    this.props.firstName = props.firstName;
-    this.props.lastName = props.lastName;
-    this.props.age = props.age;
-    this.props.section = props.section;
-    this.props.updatedAt = new Date();
-  }
+export class User {
+    props: UserProperties;
+
+    constructor(props: UserProperties) {
+        this.props = props;
+    }
+
+    static create(props: {
+        id: string;
+        userName: string;
+        email: string;
+        firstName: string;
+        lastName: string;
+        age: number;
+        schoolId: string;
+        section: string;
+        gender: Gender;
+        password: string;
+    }) {
+        if (props.age < 13) {
+            throw new UserErrors.TooYoung();
+        }
+        return new User({
+            id: props.id,
+            userName: props.userName.toLowerCase().trim(),
+            firstName: props.firstName,
+            lastName: props.lastName,
+            schoolId: props.schoolId,
+            section: props.section,
+            age: props.age,
+            gender: props.gender,
+            email: props.email.toLowerCase().trim(),
+            password: props.password,
+            createdAt: new Date(),
+            updatedAt: null,
+        });
+    }
+
+    update(props: {
+        userName: string;
+        firstName: string;
+        lastName: string;
+        age: number;
+        section: string;
+    }) {
+        if (props.age < 13) {
+            throw new UserErrors.TooYoung();
+        }
+        this.props.userName = props.userName.toLowerCase().trim();
+        this.props.firstName = props.firstName;
+        this.props.lastName = props.lastName;
+        this.props.age = props.age;
+        this.props.section = props.section;
+        this.props.updatedAt = new Date();
+    }
+
+    generateRecoveryCode(code: string) {
+        this.props.recoveryCode = code;
+    }
+
+    resetPassword(payload: {code: string; password: string}) {
+        if (this.props.recoveryCode !== payload.code) {
+            throw new UserErrors.InvalidRecoveryCode();
+        }
+        this.props.password = payload.password;
+        this.props.updatedAt = new Date()
+    }
 }

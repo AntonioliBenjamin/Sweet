@@ -33,7 +33,7 @@ export class SignUp implements UseCase<UserInput, User> {
       input.email.toLowerCase().trim()
     );
     if (userExists) {
-      throw new UserErrors.Exists();
+      throw new UserErrors.AlreadyExist();
     }
 
     const school = await this.schoolRepository.getBySchoolId(input.schoolId);
