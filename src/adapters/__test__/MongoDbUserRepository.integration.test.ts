@@ -113,7 +113,6 @@ describe("Integration - MongoDbUserRepository", () => {
       });
       await mongoDbUserRepository.create(user2)
       const result = await mongoDbUserRepository.getAllUsersBySchool("456")
-      console.log(result)
       expect(result).toHaveLength(2)
     })
   });
