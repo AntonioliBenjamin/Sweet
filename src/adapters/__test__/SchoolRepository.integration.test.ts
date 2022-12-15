@@ -1,4 +1,4 @@
-import {SchoolDbRepository} from "../repositories/mongoDb/school/SchoolDbRepository";
+import {SchoolDbRepository} from "../repositories/school/SchoolDbRepository";
 
 describe ('Integration - SchoolRepository', () => {
     const schoolDb = require('../repositories/mongoDb/school/schoolsDb.json');

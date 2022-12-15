@@ -14,8 +14,8 @@ export type UserInput = {
   email: string;
   password: string;
   age: number;
-  nameOfSchool : string;
-  zipCodeOfSchool : string;
+  nameOfSchool: string;
+  zipCodeOfSchool: string;
   section: string;
   gender: Gender;
 };
@@ -57,6 +57,6 @@ export class SignUp implements UseCase<UserInput, User> {
     });
 
     const result = await this.userRepository.create(user);
-    return Promise.resolve(result);
+    return result;
   }
 }
