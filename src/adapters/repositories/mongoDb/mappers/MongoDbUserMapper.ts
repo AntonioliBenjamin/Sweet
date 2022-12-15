@@ -18,7 +18,7 @@ export class MongoDbUserMapper implements Mapper<userModel, User> {
             lastName,
             schoolId,
             section
-            
+
         } = data.props;
         return {
             id,
@@ -38,7 +38,7 @@ export class MongoDbUserMapper implements Mapper<userModel, User> {
 
     toDomain(raw: userModel): User {
         const {
-           id,
+            id,
             createdAt,
             email,
             password,
@@ -52,11 +52,11 @@ export class MongoDbUserMapper implements Mapper<userModel, User> {
             section
         } = raw;
         return new User({
-             id,
-            createdAt : new Date(createdAt),
+            id,
+            createdAt: new Date(createdAt),
             email,
             password,
-            updatedAt : new Date(updatedAt),
+            updatedAt: new Date(updatedAt),
             userName,
             age,
             firstName,

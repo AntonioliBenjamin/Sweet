@@ -1,11 +1,17 @@
-
-
 import {SchoolRepository} from "../../../repositories/SchoolRepository";
+import {School} from "../../../Entities/School";
 
 export class InMemorySchoolRepository implements SchoolRepository {
 
-    getSchoolId(nameOfSchool: string, zipCodeOfSchool: string): Promise<string> {
+    constructor(private readonly db: Map<string, School>) {
 
-        return Promise.resolve(nameOfSchool + zipCodeOfSchool);
+    }
+
+    getAllSchools(): Promise<School[]> {
+        return Promise.resolve(Array.from(this.db.values()));
+    }
+
+    getBySchoolId(schoolId: string): Promise<School> {
+        return Promise.resolve(this.db.get(schoolId));
     }
 }

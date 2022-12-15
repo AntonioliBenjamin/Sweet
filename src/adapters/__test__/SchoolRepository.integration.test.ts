@@ -1,12 +1,15 @@
-import {SchoolDbRepository} from "../repositories/mongoDb/school/SchoolDbRepository";
+import {SchoolDbRepository} from "../repositories/school/SchoolDbRepository";
 
-describe ('Integration - SchoolRepository', () => {
-    const schoolDb = require('../repositories/mongoDb/school/schoolsDb.json');
-const schoolDbRepository= new SchoolDbRepository(schoolDb);
+describe('Integration - SchoolRepository', () => {
+    const schoolDbRepository = new SchoolDbRepository();
 
-    it("should find school Id ", async() => {
-        console.log(schoolDb)
-        const schoolId = await schoolDbRepository.getSchoolId("  lycée polyValent Application de l'Enna - Lycée des métiers des structures métalliques","93066");
-        expect(schoolId).toBeTruthy();
+    it("should get school by Id ", async () => {
+        const school = await schoolDbRepository.getBySchoolId("0f87dd7e1c1d7fef5269f007c7b112a22f610cf7");
+        expect(school.props.district).toEqual('Ile-de-France')
+    })
+
+    it("should get all schools", async () => {
+        const schools = await schoolDbRepository.getAllSchools();
+        expect(schools[0].props.district).toEqual('Ile-de-France')
     })
 })
