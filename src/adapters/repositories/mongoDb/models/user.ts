@@ -53,7 +53,8 @@ const userSchema = new Schema({
     },
     schoolId: {
         type: String,
-        required: true
+        required: true,
+        index : true
     },
     section: {
         type: String,
