@@ -147,4 +147,24 @@ describe("E2E - User Router", () => {
             .expect(200);
     });
 
+    it("Should get/users/:schoolId", async () => {
+        const result = await userRepository.create(user);
+        accessKey = sign(
+            {
+                id: user.props.id,
+                userName: user.props.userName,
+                email: user.props.email,
+            },
+            "maytheforcebewithyou"
+        );
+
+        await supertest(app)
+            .get(`/user/all/${result.props.schoolId}`)
+            .set("access_key", accessKey)
+            .expect((response) => {
+                const responseBody = response.body;
+                expect(responseBody).toHaveLength(1);
+            })
+            .expect(200);
+    });
 });
