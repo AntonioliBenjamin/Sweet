@@ -21,7 +21,7 @@ export class GenerateRecoveryCode implements UseCase<GenerateRecoveryCodeInput, 
         }
         const code = this.idGateway.generate();
         user.generateRecoveryCode(code);
-        await this.userRepository.update(user);
+        await this.userRepository.update(user)
         return user;
     }
 }
