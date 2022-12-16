@@ -1,25 +1,25 @@
-import "dotenv/config";
-import { EmailGateway } from './../../core/gateways/EmailGateway';
-import sgMail from "@sendgrid/mail";
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-const recoveryEmailSender = process.env.RECOVERY_EMAIL_SENDER
+import { EmailGateway } from "./../../core/gateways/EmailGateway";
+import { MailService } from "@sendgrid/mail";
 
 export class SendGridGateway implements EmailGateway {
-  async sendRecoveryCode(email: string, code: string) {
-    const msg = {
-      to: email, // Change to your recipient
-      from: recoveryEmailSender, // Change to your verified sender
-      subject: "Reset your Sweet Password",
-      text: ` this is your code: ${code}`,
-      html: "<strong>Reset your password</strong>",
-    };
-    sgMail
-      .send(msg)
-      .then(() => {
-        console.log("Email sent");
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  constructor(
+    private readonly mailService: MailService,
+    private readonly emailSender: string
+  ) {}
+
+  async sendRecoveryCode(payload: {
+    email: string;
+    resetLink: string;
+    userName: string;
+  }) {
+    await this.mailService.send({
+      templateId: "d-84cfb4f9b5c24788b11df0f56a9acdba",
+      from: { email: this.emailSender, name: "Sweet Dev" },
+      to: payload.email,
+      dynamicTemplateData: {
+        reset_password_link: payload.resetLink,
+        name: payload.userName,
+      },
+    });
   }
-} 
+}

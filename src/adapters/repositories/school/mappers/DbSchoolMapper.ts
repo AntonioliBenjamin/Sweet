@@ -1,7 +1,6 @@
 import {Mapper} from "../../../../core/models/Mapper";
 import {School} from "../../../../core/Entities/School";
 
-
 export type schoolModel = {
     fields: {
         nom_etablissement: string,
@@ -12,7 +11,6 @@ export type schoolModel = {
 }
 
 export class DbSchoolMapper implements Mapper<schoolModel, School> {
-
     toDomain(raw: schoolModel): School {
 
         return new School({

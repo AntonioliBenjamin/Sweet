@@ -3,7 +3,6 @@ import {User} from "./../../../../core/Entities/User";
 import {Mapper} from "../../../../core/models/Mapper";
 
 export class MongoDbUserMapper implements Mapper<userModel, User> {
-
     fromDomain(data: User): userModel {
         const {
             id,

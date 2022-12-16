@@ -16,7 +16,7 @@ export class ResetPassword implements UseCase<ResetPasswordInput, void> {
     async execute(input: ResetPasswordInput): Promise<void> {
         const user = await this.userRepository.getById(input.id);
         user.resetPassword({
-            code: input.recoveryCode,
+            recoveryCode: input.recoveryCode,
             password: input.password,
         });
         await this.userRepository.update(user);
