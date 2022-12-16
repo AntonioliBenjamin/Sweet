@@ -16,6 +16,7 @@ import { SignIn } from "../../core/usecases/user/SignIn";
 import { UpdateUser } from "../../core/Usecases/user/UpdateUser";
 import { DeleteUser } from "../../core/Usecases/user/DeleteUser";
 import { MongoDbUserRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
+import { User } from "../../core/Entities/User";
 const mailService = new MailService();
 mailService.setApiKey(process.env.SENDGRID_API_KEY);
 const emailSender = process.env.RECOVERY_EMAIL_SENDER;
@@ -58,15 +59,15 @@ userRouter.post("/signUp", async (req, res) => {
     };
 
     const user = await signUp.execute(body);
-
     const accessKey = jwt.sign(
       {
         id: user.props.id,
         schoolId: user.props.schoolId,
-        email: user.props.email,
+        email: user.props.email
       },
       secretKey
     );
+    
 
     return res.status(201).send({
       ...userApiUserMapper.fromDomain(user),
