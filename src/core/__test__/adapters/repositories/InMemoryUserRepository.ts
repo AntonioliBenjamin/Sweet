@@ -36,9 +36,4 @@ export class InMemoryUserRepository implements UserRepository {
         this.db.delete(userId)
         return
     };
-
-    getSchoolId(nameOfSchool: string, zipCodeOfSchool: string): Promise<string> {
-
-        return Promise.resolve(nameOfSchool + zipCodeOfSchool);
-    }
 }

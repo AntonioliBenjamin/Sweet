@@ -1,222 +1,277 @@
-import { MailService } from "@sendgrid/mail";
-import { ResetPassword } from "./../../core/usecases/user/ResetPassword";
-import { SendGridGateway } from "./../../adapters/gateways/SendGridGateway";
-import { GenerateRecoveryCode } from "./../../core/usecases/user/GenerateRecoveryCode";
-import { GetAllUsersBySchool } from "./../../core/usecases/user/GetAllUsersBySchool";
-import { UserApiUserMapper } from "./../dtos/UserApiUserMapper";
-import { SchoolDbRepository } from "../../adapters/repositories/school/SchoolDbRepository";
+import {MailService} from "@sendgrid/mail";
+import {ResetPassword} from "./../../core/usecases/user/ResetPassword";
+import {SendGridGateway} from "./../../adapters/gateways/SendGridGateway";
+import {GenerateRecoveryCode} from "./../../core/usecases/user/GenerateRecoveryCode";
+import {GetAllUsersBySchool} from "./../../core/usecases/user/GetAllUsersBySchool";
+import {UserApiUserMapper} from "./../dtos/UserApiUserMapper";
+import {SchoolDbRepository} from "../../adapters/repositories/school/SchoolDbRepository";
 import express from "express";
-import { BcryptGateway } from "../../adapters/gateways/BcryptGateway";
-import { V4IdGateway } from "../../adapters/gateways/V4IdGateway";
+import {BcryptGateway} from "../../adapters/gateways/BcryptGateway";
+import {V4IdGateway} from "../../adapters/gateways/V4IdGateway";
 import jwt from "jsonwebtoken";
-import { authorization } from "../middlewares/JwtAuthorizationMiddleware";
-import { AuthentifiedRequest } from "../types/AuthentifiedRequest";
-import { SignUp } from "../../core/usecases/user/SignUp";
-import { SignIn } from "../../core/usecases/user/SignIn";
-import { UpdateUser } from "../../core/Usecases/user/UpdateUser";
-import { DeleteUser } from "../../core/Usecases/user/DeleteUser";
-import { MongoDbUserRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
-import { User } from "../../core/Entities/User";
+import {authorization} from "../middlewares/JwtAuthorizationMiddleware";
+import {AuthentifiedRequest} from "../types/AuthentifiedRequest";
+import {SignUp} from "../../core/usecases/user/SignUp";
+import {SignIn} from "../../core/usecases/user/SignIn";
+import {UpdateUser} from "../../core/Usecases/user/UpdateUser";
+import {DeleteUser} from "../../core/Usecases/user/DeleteUser";
+import {MongoDbUserRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
+import * as joi from 'joi';
+import {Gender} from "../../core/Entities/User";
+import validate from "express-joi-validate";
+
 const mailService = new MailService();
 mailService.setApiKey(process.env.SENDGRID_API_KEY);
 const emailSender = process.env.RECOVERY_EMAIL_SENDER;
 const userRouter = express.Router();
 const secretKey = process.env.SECRET_KEY;
-const schoolDlRepositry = new SchoolDbRepository();
+const schoolDbRepository = new SchoolDbRepository();
 const mongoDbUserRepository = new MongoDbUserRepository();
 const bcryptGateway = new BcryptGateway();
 const v4IdGateway = new V4IdGateway();
 const sendGridGateway = new SendGridGateway(mailService, emailSender);
 const signUp = new SignUp(
-  mongoDbUserRepository,
-  schoolDlRepositry,
-  v4IdGateway,
-  bcryptGateway
+    mongoDbUserRepository,
+    schoolDbRepository,
+    v4IdGateway,
+    bcryptGateway
 );
 const signIn = new SignIn(mongoDbUserRepository, bcryptGateway);
 const updateUser = new UpdateUser(mongoDbUserRepository);
 const deleteUser = new DeleteUser(mongoDbUserRepository);
 const getAllUsersBySchool = new GetAllUsersBySchool(mongoDbUserRepository);
 const generateRecoveryCode = new GenerateRecoveryCode(
-  mongoDbUserRepository,
-  v4IdGateway
+    mongoDbUserRepository,
+    v4IdGateway
 );
 const resetPassword = new ResetPassword(mongoDbUserRepository);
 const userApiUserMapper = new UserApiUserMapper();
 
+
+const SignUpSchema = joi.object({
+    userName: joi.string().required(),
+    email: joi.string().required(),
+    password: joi.string().required(),
+    age: joi.number().required(),
+    firstName: joi.string().required(),
+    lastName: joi.string().required(),
+    schoolId: joi.string().required(),
+    section: joi.string().required(),
+    gender: joi.string().valid(...Object.values(Gender)).required(),
+})
+
+const SignInSchema = joi.object({
+    email: joi.string().required(),
+    password: joi.string().required(),
+})
+
+const RecoverySchema = joi.object({
+    email: joi.string().required(),
+})
+
+const ResetPasswordSchema = joi.object({
+    email: joi.string().required(),
+    token: joi.string().required(),
+})
+
+const UpdateUserSchema = joi.object({
+    userName: joi.string().required(),
+    age: joi.number().required(),
+    firstName: joi.string().required(),
+    lastName: joi.string().required(),
+    section: joi.string().required(),
+})
+
+const GetAllUserBySchoolSchema = ({
+    params: {
+        schoolId: joi.string().required()
+    }
+})
+
+const DeleteUserSchema = ({
+    params: {
+        id: joi.string().required()
+    }
+})
+
 userRouter.post("/signUp", async (req, res) => {
-  try {
-    const body = {
-      userName: req.body.userName,
-      email: req.body.email,
-      password: req.body.password,
-      age: req.body.age,
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      schoolId: req.body.schoolId,
-      section: req.body.section,
-      gender: req.body.gender,
-    };
+    try {
+        const body = {
+            userName: req.body.userName,
+            email: req.body.email,
+            password: req.body.password,
+            age: req.body.age,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            schoolId: req.body.schoolId,
+            section: req.body.section,
+            gender: req.body.gender,
+        };
+        const values = await SignUpSchema.validateAsync(body);
+        const user = await signUp.execute(values);
+        const accessKey = jwt.sign(
+            {
+                id: user.props.id,
+                schoolId: user.props.schoolId,
+                email: user.props.email,
+            },
+            secretKey
+        );
 
-    const user = await signUp.execute(body);
-    const accessKey = jwt.sign(
-      {
-        id: user.props.id,
-        schoolId: user.props.schoolId,
-        email: user.props.email
-      },
-      secretKey
-    );
-    
-
-    return res.status(201).send({
-      ...userApiUserMapper.fromDomain(user),
-      accessKey,
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(400).send({
-      message: "An error occured",
-    });
-  }
+        return res.status(201).send({
+            ...userApiUserMapper.fromDomain(user),
+            accessKey,
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(400).send({
+            message: "An error occurred",
+        });
+    }
 });
 
 userRouter.post("/signIn", async (req, res) => {
-  try {
-    const body = {
-      email: req.body.email.toLowerCase().trim(),
-      password: req.body.password,
-    };
+    try {
+        const body = {
+            email: req.body.email.toLowerCase().trim(),
+            password: req.body.password,
+        };
 
-    const user = await signIn.execute(body);
-    const accessKey = jwt.sign(
-      {
-        id: user.props.id,
-        schoolId: user.props.schoolId,
-        email: user.props.email,
-      },
-      secretKey
-    );
+        const values = await SignInSchema.validateAsync(body);
 
-    return res.status(200).send({
-      ...userApiUserMapper.fromDomain(user),
-      accessKey,
-    });
-  } catch (err) {
-    return res.status(400).send({
-      message: "An error occured",
-    });
-  }
+        const user = await signIn.execute(values);
+        const accessKey = jwt.sign(
+            {
+                id: user.props.id,
+                schoolId: user.props.schoolId,
+                email: user.props.email,
+            },
+            secretKey
+        );
+
+        return res.status(200).send({
+            ...userApiUserMapper.fromDomain(user),
+            accessKey,
+        });
+    } catch (err) {
+        return res.status(400).send({
+            message: "An error occurred",
+        });
+    }
 });
 
 userRouter.post("/recovery", async (req, res) => {
-  try {
-    const body = {
-      email: req.body.email,
-    };
+    try {
+        const body = {
+            email: req.body.email.toLowerCase().trim(),
+        };
+        const values = await RecoverySchema.validateAsync(body);
+        const user = await generateRecoveryCode.execute(values);
+        const token = jwt.sign(
+            {
+                id: user.props.id,
+                recoveryCode: user.props.recoveryCode
+            },
+            secretKey, {expiresIn: '1h'}
+        );
 
-    const user = await generateRecoveryCode.execute(body);
-    const token = jwt.sign(
-      {
-        id: user.props.id,
-        recoveryCode: user.props.recoveryCode
-      },
-      secretKey, { expiresIn: '1h' }
-    );
+        await sendGridGateway.sendRecoveryCode({
+            email: user.props.email,
+            resetLink: `http://localhost:3005/reset?trustedKey=${token}`,
+            userName: user.props.userName
+        });
 
-    await sendGridGateway.sendRecoveryCode({
-      email: user.props.email,
-      resetLink: `http://localhost:3005/reset?trustedKey=${token}`,
-      userName: user.props.userName
-    });
-
-    return res.status(200).send(userApiUserMapper.fromDomain(user));
-  } catch (err) {
-    console.error(err)
-    return res.status(400).send({
-      message: "An error occured",
-    });
-  }
+        return res.status(200).send(userApiUserMapper.fromDomain(user));
+    } catch (err) {
+        console.error(err)
+        return res.status(400).send({
+            message: "An error occurred",
+        });
+    }
 });
 
 userRouter.post("/resetPassword", async (req, res) => {
-  try {
-    const body = {
-      password: req.body.password,
-      token: req.body.token,
-    };
+    try {
+        const body = {
+            password: req.body.password,
+            token: req.body.token,
+        };
 
-    const decodedJwt = jwt.verify(body.token, secretKey) as any;
+        const values = await ResetPasswordSchema.validateAsync(body);
 
-    await resetPassword.execute({
-      recoveryCode: decodedJwt.recoveryCode,
-      password: body.password,
-      id: decodedJwt.id
-    });
+        const decodedJwt = jwt.verify(values.token, secretKey) as any;
 
-    return res.sendStatus(200);
-  } catch (err) {
-    console.error(err)
-    return res.status(400).send({
-      message: "An error occured",
-    });
-  }
+        await resetPassword.execute({
+            recoveryCode: decodedJwt.recoveryCode,
+            password: values.password,
+            id: decodedJwt.id
+        });
+
+        return res.sendStatus(200);
+    } catch (err) {
+        console.error(err)
+        return res.status(400).send({
+            message: "An error occurred",
+        });
+    }
 });
 
 userRouter.use(authorization);
 
 userRouter.patch("/", async (req: AuthentifiedRequest, res) => {
-  try {
-    const body = {
-      userName: req.body.userName.trim(),
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      age: req.body.age,
-      section: req.body.section,
-    };
+    try {
+        const body = {
+            userName: req.body.userName.trim(),
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            age: req.body.age,
+            section: req.body.section,
+        };
 
-    const updatedUser = await updateUser.execute({
-      userName: body.userName,
-      age: body.age,
-      firstName: body.firstName,
-      lastName: body.lastName,
-      section: body.section,
-      id: req.user.id,
-    });
+        const values = await UpdateUserSchema.validateAsync(body);
 
-    return res.status(200).send(userApiUserMapper.fromDomain(updatedUser));
-  } catch (err) {
-    return res.status(400).send({
-      message: "An error occured",
-    });
-  }
+        const updatedUser = await updateUser.execute({
+            userName: values.userName,
+            age: values.age,
+            firstName: values.firstName,
+            lastName: values.lastName,
+            section: values.section,
+            id: req.user.id,
+        });
+
+        return res.status(200).send(userApiUserMapper.fromDomain(updatedUser));
+    } catch (err) {
+        return res.status(400).send({
+            message: "An error occurred",
+        });
+    }
 });
 
-userRouter.get("/users/:schoolId", async (req, res) => {
-  try {
-    const users = await getAllUsersBySchool.execute(req.params.schoolId);
+userRouter.get("/all/:schoolId",validate(GetAllUserBySchoolSchema), async (req, res) => {
+    try {
+        const users = await getAllUsersBySchool.execute(req.params.schoolId);
 
-    return res
-      .status(200)
-      .send(users.map((elm) => userApiUserMapper.fromDomain(elm)));
-  } catch (err) {
-    return res.status(400).send({
-      message: "An error occured",
-    });
-  }
+        return res
+            .status(200)
+            .send(users.map((elm) => userApiUserMapper.fromDomain(elm)));
+    } catch (err) {
+        return res.status(400).send({
+            message: "An error occurred",
+        });
+    }
 });
 
-userRouter.delete("/:id", async (req: AuthentifiedRequest, res) => {
-  try {
-    await deleteUser.execute({
-      userId: req.user.id,
-    });
-    return res.status(200).send({});
-  } catch (err) {
-    return res.status(400).send({
-      message: "An error occured",
-    });
-  }
+userRouter.delete("/:id",validate(DeleteUserSchema), async (req: AuthentifiedRequest, res) => {
+    try {
+        await deleteUser.execute({
+            userId: req.user.id,
+        });
+        return res.status(200).send({});
+    } catch (err) {
+        return res.status(400).send({
+            message: "An error occurred",
+        });
+    }
 });
 
-export { userRouter };
+export {userRouter};
