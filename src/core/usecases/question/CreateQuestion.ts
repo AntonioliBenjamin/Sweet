@@ -4,12 +4,12 @@ import {QuestionRepository} from "../../repositories/QuestionRepository";
 import {IdGateway} from "../../gateways/IdGateway";
 
 
-export type QuestionInput = {
+export type CreateQuestionInput = {
     description: string;
     picture: string;
 };
 
-export class CreateQuestion implements UseCase<QuestionInput, Question> {
+export class CreateQuestion implements UseCase<CreateQuestionInput, Question> {
     constructor(
         private readonly questionRepository: QuestionRepository,
         private readonly idGateway: IdGateway
@@ -17,7 +17,7 @@ export class CreateQuestion implements UseCase<QuestionInput, Question> {
 
     }
 
-    async execute(input: QuestionInput): Promise<Question> {
+    async execute(input: CreateQuestionInput): Promise<Question> {
         const id = this.idGateway.generate();
         const question = Question.create({
             questionId: id,

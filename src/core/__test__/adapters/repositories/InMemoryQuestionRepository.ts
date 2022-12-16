@@ -9,4 +9,8 @@ export class InMemoryQuestionRepository implements QuestionRepository {
         this.db.set(question.props.questionId, question);
         return Promise.resolve(question)
     }
+
+    async getAllQuestions(): Promise<Question[]> {
+        return Array.from(this.db.values());
+    }
 }
