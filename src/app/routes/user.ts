@@ -1,3 +1,7 @@
+import { MailService } from "@sendgrid/mail";
+import { ResetPassword } from "./../../core/usecases/user/ResetPassword";
+import { SendGridGateway } from "./../../adapters/gateways/SendGridGateway";
+import { GenerateRecoveryCode } from "./../../core/usecases/user/GenerateRecoveryCode";
 import { GetAllUsersBySchool } from "./../../core/usecases/user/GetAllUsersBySchool";
 import { UserApiUserMapper } from "./../dtos/UserApiUserMapper";
 import { SchoolDbRepository } from "../../adapters/repositories/school/SchoolDbRepository";
@@ -12,12 +16,16 @@ import { SignIn } from "../../core/usecases/user/SignIn";
 import { UpdateUser } from "../../core/Usecases/user/UpdateUser";
 import { DeleteUser } from "../../core/Usecases/user/DeleteUser";
 import { MongoDbUserRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
+const mailService = new MailService();
+mailService.setApiKey(process.env.SENDGRID_API_KEY);
+const emailSender = process.env.RECOVERY_EMAIL_SENDER;
 const userRouter = express.Router();
 const secretKey = process.env.SECRET_KEY;
 const schoolDlRepositry = new SchoolDbRepository();
 const mongoDbUserRepository = new MongoDbUserRepository();
 const bcryptGateway = new BcryptGateway();
 const v4IdGateway = new V4IdGateway();
+const sendGridGateway = new SendGridGateway(mailService, emailSender);
 const signUp = new SignUp(
   mongoDbUserRepository,
   schoolDlRepositry,
@@ -28,6 +36,11 @@ const signIn = new SignIn(mongoDbUserRepository, bcryptGateway);
 const updateUser = new UpdateUser(mongoDbUserRepository);
 const deleteUser = new DeleteUser(mongoDbUserRepository);
 const getAllUsersBySchool = new GetAllUsersBySchool(mongoDbUserRepository);
+const generateRecoveryCode = new GenerateRecoveryCode(
+  mongoDbUserRepository,
+  v4IdGateway
+);
+const resetPassword = new ResetPassword(mongoDbUserRepository);
 const userApiUserMapper = new UserApiUserMapper();
 
 userRouter.post("/signUp", async (req, res) => {
@@ -95,6 +108,60 @@ userRouter.post("/signIn", async (req, res) => {
   }
 });
 
+userRouter.post("/recovery", async (req, res) => {
+  try {
+    const body = {
+      email: req.body.email,
+    };
+
+    const user = await generateRecoveryCode.execute(body);
+    const token = jwt.sign(
+      {
+        id: user.props.id,
+        recoveryCode: user.props.recoveryCode
+      },
+      secretKey, { expiresIn: '1h' }
+    );
+
+    await sendGridGateway.sendRecoveryCode({
+      email: user.props.email,
+      resetLink: `http://localhost:3005/reset?trustedKey=${token}`,
+      userName: user.props.userName
+    });
+
+    return res.status(200).send(userApiUserMapper.fromDomain(user));
+  } catch (err) {
+    console.error(err)
+    return res.status(400).send({
+      message: "An error occured",
+    });
+  }
+});
+
+userRouter.post("/resetPassword", async (req, res) => {
+  try {
+    const body = {
+      password: req.body.password,
+      token: req.body.token,
+    };
+
+    const decodedJwt = jwt.verify(body.token, secretKey) as any;
+
+    await resetPassword.execute({
+      recoveryCode: decodedJwt.recoveryCode,
+      password: body.password,
+      id: decodedJwt.id
+    });
+
+    return res.sendStatus(200);
+  } catch (err) {
+    console.error(err)
+    return res.status(400).send({
+      message: "An error occured",
+    });
+  }
+});
+
 userRouter.use(authorization);
 
 userRouter.patch("/", async (req: AuthentifiedRequest, res) => {
@@ -126,9 +193,11 @@ userRouter.patch("/", async (req: AuthentifiedRequest, res) => {
 
 userRouter.get("/users/:schoolId", async (req, res) => {
   try {
-    const users = await (await getAllUsersBySchool.execute(req.params.schoolId))
+    const users = await getAllUsersBySchool.execute(req.params.schoolId);
 
-    return res.status(200).send(users.map(elm => userApiUserMapper.fromDomain(elm)))
+    return res
+      .status(200)
+      .send(users.map((elm) => userApiUserMapper.fromDomain(elm)));
   } catch (err) {
     return res.status(400).send({
       message: "An error occured",

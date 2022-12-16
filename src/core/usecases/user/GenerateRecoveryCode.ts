@@ -24,5 +24,4 @@ export class GenerateRecoveryCode implements UseCase<GenerateRecoveryCodeInput, 
         await this.userRepository.update(user);
         return user;
     }
-
 }

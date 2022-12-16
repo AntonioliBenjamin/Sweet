@@ -77,12 +77,12 @@ export class User {
         this.props.updatedAt = new Date();
     }
 
-    generateRecoveryCode(code: string) {
-        this.props.recoveryCode = code;
+    generateRecoveryCode(recoveryCode: string) {
+        this.props.recoveryCode = recoveryCode;
     }
 
-    resetPassword(payload: {code: string; password: string}) {
-        if (this.props.recoveryCode !== payload.code) {
+    resetPassword(payload: {recoveryCode: string; password: string}) {
+        if (this.props.recoveryCode !== payload.recoveryCode) {
             throw new UserErrors.InvalidRecoveryCode();
         }
         this.props.password = payload.password;

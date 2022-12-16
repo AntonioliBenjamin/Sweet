@@ -1,4 +1,4 @@
-import { BcryptGateway } from "../BcryptGateway";
+import { BcryptGateway } from "../gateways/BcryptGateway";
 
 
 describe("Unit - BcryptGateway", () => {

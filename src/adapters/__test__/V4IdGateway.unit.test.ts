@@ -1,4 +1,4 @@
-import { V4IdGateway } from './../V4IdGateway';
+import { V4IdGateway } from '../gateways/V4IdGateway';
 
 describe("Unit - V4IdGateway", () => {
     const v4IdGateway = new V4IdGateway();
