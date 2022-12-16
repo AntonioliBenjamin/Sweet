@@ -5,7 +5,7 @@ import {IdGateway} from "../../gateways/IdGateway";
 
 
 export type QuestionInput = {
-    question: string;
+    description: string;
     picture: string;
 };
 
@@ -21,7 +21,7 @@ export class CreateQuestion implements UseCase<QuestionInput, Question> {
         const id = this.idGateway.generate();
         const question = Question.create({
             questionId: id,
-            question: input.question,
+            description: input.description,
             picture: input.picture
         });
         return await this.questionRepository.create(question);
