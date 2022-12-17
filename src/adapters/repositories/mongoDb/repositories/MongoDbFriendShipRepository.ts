@@ -1,4 +1,5 @@
 import { FriendShip } from "../../../../core/Entities/FriendShip";
+import { FriendShipErrors } from "../../../../core/errors/FriendShipErrors";
 import { FriendShipRepository } from "../../../../core/repositories/FriendShipRepository";
 import { MongoDbFriendShipMapper } from "../mappers/MongoDbFriendShipMapper";
 import { FriendShipModel } from "../models/friendShip";
@@ -18,8 +19,11 @@ export class MongoDbFriendShiprepository implements FriendShipRepository {
   ): Promise<FriendShip> {
     const friendShip = await FriendShipModel.findOne({
       senderId: senderId,
-      recipientId: recipientId,
+      recipientId: recipientId
     });
+    if(!friendShip) {
+      return null;
+    }
     return friendsMapper.toDomain(friendShip);
   }
 

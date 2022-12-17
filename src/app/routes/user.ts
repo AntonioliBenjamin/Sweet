@@ -247,7 +247,7 @@ userRouter.patch("/", async (req: AuthentifiedRequest, res) => {
     }
 });
 
-userRouter.get("/all/:schoolId",validate(GetAllUserBySchoolSchema), async (req, res) => {
+userRouter.get("/all/:schoolId", validate(GetAllUserBySchoolSchema), async (req, res) => {
     try {
         const users = await getAllUsersBySchool.execute(req.params.schoolId);
 

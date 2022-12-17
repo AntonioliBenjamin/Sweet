@@ -22,7 +22,7 @@ export class CreateFriendShip implements UseCase<CreateFriendShipProperties, Fri
         if(friendShipAlreadyExists) {
             return friendShipAlreadyExists
         }
-        
+
         const user = await this.userRepository.getById(input.recipientId)
         if(!user) {
             throw new UserErrors.NotFound()

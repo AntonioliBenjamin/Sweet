@@ -9,7 +9,7 @@ import {questionRouter} from "./app/routes/question";
 const port = +process.env.PORT_KEY;
 
 mongoose.set('strictQuery', false)
-mongoose.connect("mongodb://127.0.0.1:27017/weather_server_data", (err) => {
+mongoose.connect("mongodb://127.0.0.1:27017/sweet", (err) => {
     if (err) {
         throw err;
     }

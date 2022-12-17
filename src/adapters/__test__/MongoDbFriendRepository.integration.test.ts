@@ -56,6 +56,7 @@ describe("Integration - MongoDbFriendShipRepository", () => {
             senderId: "1111"
         }))
         expect(result.props.id).toEqual("99999")
+        expect(result.props.recipientId).toEqual("5555")
     })
 
     it("should get friendShip by users Id", async () => {
