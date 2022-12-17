@@ -4,11 +4,11 @@ import { FriendShipModel } from "../models/friendShip";
 
 export class MongoDbFriendShipMapper implements Mapper<FriendShipModel, FriendShip> {
     toDomain(raw: FriendShipModel): FriendShip {
-        console.log(raw)
         return new FriendShip({
             id: raw.id,
+            senderId: raw.senderId,
             recipientId: raw.recipientId,
-            senderId: raw.senderId
+           
         })
     }
 

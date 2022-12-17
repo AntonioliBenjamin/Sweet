@@ -54,7 +54,9 @@ describe("Unit - CreatFriendShip", () => {
             senderId: sender.props.id, 
             recipientId: recipient.props.id
         })
-        expect(result).toBeTruthy()  
+        expect(result.props.recipientId).toEqual("22222")
+        expect(result.props.senderId).toEqual("11111")
+        expect(result.props.id).toBeTruthy()
     })
 
     it("should return friendship if friendship is already establsihed", async () => {

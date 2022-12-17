@@ -157,11 +157,12 @@ describe("E2E - User Router", () => {
             },
             "maytheforcebewithyou"
         );
-
+            
         await supertest(app)
             .get(`/user/all/${result.props.schoolId}`)
             .set("access_key", accessKey)
             .expect((response) => {
+                 console.log(response)
                 const responseBody = response.body;
                 expect(responseBody).toHaveLength(1);
             })
