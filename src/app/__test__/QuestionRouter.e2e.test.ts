@@ -7,7 +7,7 @@ import {QuestionRepository} from "../../core/repositories/QuestionRepository";
 import {MongoDbQuestionRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbQuestionRepository";
 import {Question} from "../../core/Entities/Question";
 import {QuestionModel} from "../../adapters/repositories/mongoDb/models/question";
-
+import {sign} from "jsonwebtoken";
 const app = express();
 
 describe("E2E - Question Router", () => {
@@ -27,13 +27,13 @@ describe("E2E - Question Router", () => {
             }
             console.info("Connected to mongodb");
         });
-
         questionRepository = new MongoDbQuestionRepository();
         question = Question.create({
             questionId: "1234",
             description: "yes",
             picture: "http://yes"
         });
+
     });
 
     afterEach(async () => {
@@ -46,8 +46,19 @@ describe("E2E - Question Router", () => {
     });
 
     it("Should post/question/create", async () => {
+
+        // accessKey = sign(
+        //     {
+        //         id:"1234",
+        //         schoolId: "5678",
+        //         email: "blabla@gmail.com"
+        //     },
+        //     "maytheforcebewithyou"
+        // );
+
         await supertest(app)
             .post("/question/create")
+            //.set("access_key", accessKey)
             .send({
                 description: "yes",
                 picture: "http://yes"
@@ -63,8 +74,18 @@ describe("E2E - Question Router", () => {
 
     it("Should get/question/all", async () => {
         await questionRepository.create(question);
+
+        // accessKey = sign(
+        //     {
+        //         id:"1234",
+        //         schoolId: "5678",
+        //         email: "blabla@gmail.com"
+        //     },
+        //     "maytheforcebewithyou"
+        // );
         await supertest(app)
             .get("/question/all")
+            //.set("access_key", accessKey)
             .expect((response) => {
                 const responseBody = response.body;
                 expect(responseBody).toHaveLength(1);
