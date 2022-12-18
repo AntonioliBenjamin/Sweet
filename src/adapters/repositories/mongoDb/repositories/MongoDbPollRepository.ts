@@ -1,0 +1,44 @@
+import {Poll} from "../../../../core/Entities/Poll";
+import {PollModel, pollModel} from "../models/poll";
+import {MongoDbPollMapper} from "../mappers/MongoDbPollMapper";
+import {PollRepository} from "../../../../core/repositories/PollRepository";
+import {PollErrors} from "../../../../core/errors/PollErrors";
+import {UserModel} from "../models/user";
+
+const mongoDbPollMapper = new MongoDbPollMapper();
+
+export class mongoDbPollRepository implements PollRepository{
+    async create(poll: Poll): Promise<Poll> {
+        const toPollModel = mongoDbPollMapper.fromDomain(poll)
+        const pollModel = new PollModel(toPollModel);
+        await pollModel.save()
+        return poll;
+    }
+
+    async getAllPolls(): Promise<Poll[]> {
+        const polls = await PollModel.find();
+        return polls.map(elm => mongoDbPollMapper.toDomain(elm))
+    }
+
+    async getByPollId(pollId: string): Promise<Poll> {
+        const poll = await PollModel.findOne({pollId: pollId});
+        if (!poll) {
+            throw new PollErrors.NotFound();
+        }
+        return mongoDbPollMapper.toDomain(poll);
+    }
+
+    async update(poll: Poll): Promise<Poll> {
+        const toPollModel = mongoDbPollMapper.fromDomain(poll)
+        await UserModel.findOneAndUpdate(
+            {id: toPollModel.pollId},
+            {
+                $set: {
+
+                },
+            },
+            {new: true}
+        );
+        return poll;
+    }
+}

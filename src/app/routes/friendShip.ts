@@ -10,18 +10,18 @@ import { DeleteFriendShipCommand } from "../commands/friendShip/DeleteFriendShip
 import { authorization } from "../middlewares/JwtAuthorizationMiddleware";
 import { AuthentifiedRequest } from "../types/AuthentifiedRequest";
 const friendShipRouter = express.Router();
-const mongoDbFriendShiprepository = new MongoDbFriendShiprepository();
+const mongoDbFriendShipRepository = new MongoDbFriendShiprepository();
 const mongoDbUserRepository = new MongoDbUserRepository();
 const v4IdGateway = new V4IdGateway();
 const createFriendShip = new CreateFriendShip(
   mongoDbUserRepository,
-  mongoDbFriendShiprepository,
+  mongoDbFriendShipRepository,
   v4IdGateway
 );
 const getAllFriendShipsByUserId = new GetAllFriendShipsByUserId(
-  mongoDbFriendShiprepository
+  mongoDbFriendShipRepository
 );
-const deleteFriendShip = new DeleteFriendShip(mongoDbFriendShiprepository);
+const deleteFriendShip = new DeleteFriendShip(mongoDbFriendShipRepository);
 
 
 
@@ -46,7 +46,7 @@ friendShipRouter.post("/add", async (req: AuthentifiedRequest, res) => {
   } catch (err) {
     console.error(err);
     return res.status(400).send({
-      message: "An error occured",
+      message: "An error occurred",
     });
   }
 });
@@ -63,7 +63,7 @@ friendShipRouter.get("/all/:userId", async (req, res) => {
   } catch (err) {
     console.error(err);
     return res.status(400).send({
-      message: "An error occured",
+      message: "An error occurred",
     });
   }
 });
@@ -83,7 +83,7 @@ friendShipRouter.delete("/", async (req, res) => {
   } catch (err) {
     console.error(err);
     return res.status(400).send({
-      message: "An error occured",
+      message: "An error occurred",
     });
   }
 });

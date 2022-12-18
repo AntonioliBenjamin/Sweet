@@ -10,7 +10,7 @@ export function authorization(req, res, next) {
     ) as any;
     req.user = {
       id: decodedJwt.id,
-      userName: decodedJwt.userName,
+      schoolId: decodedJwt.schoolId,
       email: decodedJwt.email,
     };
     return next();

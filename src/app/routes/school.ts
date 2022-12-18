@@ -1,4 +1,4 @@
-import { GetAllSchools } from './../../core/usecases/school/GetAllSchools';
+import { GetAllSchools } from '../../core/usecases/school/GetAllSchools';
 import express from "express";
 import { SchoolDbRepository } from '../../adapters/repositories/school/SchoolDbRepository';
 import { authorization } from '../middlewares/JwtAuthorizationMiddleware';

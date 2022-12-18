@@ -1,9 +1,9 @@
 import {MailService} from "@sendgrid/mail";
-import {ResetPassword} from "./../../core/usecases/user/ResetPassword";
-import {SendGridGateway} from "./../../adapters/gateways/SendGridGateway";
-import {GenerateRecoveryCode} from "./../../core/usecases/user/GenerateRecoveryCode";
-import {GetAllUsersBySchool} from "./../../core/usecases/user/GetAllUsersBySchool";
-import {UserApiUserMapper} from "./../dtos/UserApiUserMapper";
+import {ResetPassword} from "../../core/usecases/user/ResetPassword";
+import {SendGridGateway} from "../../adapters/gateways/SendGridGateway";
+import {GenerateRecoveryCode} from "../../core/usecases/user/GenerateRecoveryCode";
+import {GetAllUsersBySchool} from "../../core/usecases/user/GetAllUsersBySchool";
+import {UserApiUserMapper} from "../dtos/UserApiUserMapper";
 import {SchoolDbRepository} from "../../adapters/repositories/school/SchoolDbRepository";
 import express from "express";
 import {BcryptGateway} from "../../adapters/gateways/BcryptGateway";
@@ -16,10 +16,16 @@ import {SignIn} from "../../core/usecases/user/SignIn";
 import {UpdateUser} from "../../core/Usecases/user/UpdateUser";
 import {DeleteUser} from "../../core/Usecases/user/DeleteUser";
 import {MongoDbUserRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
-import * as joi from 'joi';
-import {Gender} from "../../core/Entities/User";
-import validate from "express-joi-validate";
+import {createValidator} from 'express-joi-validation'
+import {SignUpSchema} from "../commands/user/SignUpSchema";
+import {SignInSchema} from "../commands/user/SignInSchema";
+import {RecoverySchema} from "../commands/user/RecoverySchema";
+import {ResetPasswordSchema} from "../commands/user/ResetPasswordSchema";
+import {UpdateUserSchema} from "../commands/user/UpdateUserSchema";
+import {GetAllUsersBySchoolIdSchema} from "../commands/user/GetAllUsersBySchoolIdSchema";
+import {DeleteUserSchema} from "../commands/user/DeleteUserSchema";
 
+const validator = createValidator()
 const mailService = new MailService();
 mailService.setApiKey(process.env.SENDGRID_API_KEY);
 const emailSender = process.env.RECOVERY_EMAIL_SENDER;
@@ -46,53 +52,6 @@ const generateRecoveryCode = new GenerateRecoveryCode(
 );
 const resetPassword = new ResetPassword(mongoDbUserRepository);
 const userApiUserMapper = new UserApiUserMapper();
-
-
-const SignUpSchema = joi.object({
-    userName: joi.string().required(),
-    email: joi.string().required(),
-    password: joi.string().required(),
-    age: joi.number().required(),
-    firstName: joi.string().required(),
-    lastName: joi.string().required(),
-    schoolId: joi.string().required(),
-    section: joi.string().required(),
-    gender: joi.string().valid(...Object.values(Gender)).required(),
-})
-
-const SignInSchema = joi.object({
-    email: joi.string().required(),
-    password: joi.string().required(),
-})
-
-const RecoverySchema = joi.object({
-    email: joi.string().required(),
-})
-
-const ResetPasswordSchema = joi.object({
-    email: joi.string().required(),
-    token: joi.string().required(),
-})
-
-const UpdateUserSchema = joi.object({
-    userName: joi.string().required(),
-    age: joi.number().required(),
-    firstName: joi.string().required(),
-    lastName: joi.string().required(),
-    section: joi.string().required(),
-})
-
-const GetAllUserBySchoolSchema = ({
-    params: {
-        schoolId: joi.string().required()
-    }
-})
-
-const DeleteUserSchema = ({
-    params: {
-        id: joi.string().required()
-    }
-})
 
 userRouter.post("/signUp", async (req, res) => {
     try {
@@ -247,7 +206,7 @@ userRouter.patch("/", async (req: AuthentifiedRequest, res) => {
     }
 });
 
-userRouter.get("/all/:schoolId", validate(GetAllUserBySchoolSchema), async (req, res) => {
+userRouter.get("/all/:schoolId", validator.params(GetAllUsersBySchoolIdSchema), async (req, res) => {
     try {
         const users = await getAllUsersBySchool.execute(req.params.schoolId);
 
@@ -261,7 +220,7 @@ userRouter.get("/all/:schoolId", validate(GetAllUserBySchoolSchema), async (req,
     }
 });
 
-userRouter.delete("/:id",validate(DeleteUserSchema), async (req: AuthentifiedRequest, res) => {
+userRouter.delete("/:id", validator.params(DeleteUserSchema), async (req: AuthentifiedRequest, res) => {
     try {
         await deleteUser.execute({
             userId: req.user.id,

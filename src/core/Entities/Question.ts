@@ -5,7 +5,7 @@ export type QuestionProperties = {
 }
 
 export class Question {
-    props: QuestionProperties
+    props: QuestionProperties;
 
     constructor(props: QuestionProperties) {
         this.props = props
