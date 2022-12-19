@@ -1,20 +1,20 @@
-export type FirendShipProperties = {
+export type FollowedProperties = {
   id: string;
   senderId: string;
   recipientId: string;
 };
 
-export class FriendShip {
-  props: FirendShipProperties;
+export class Followed {
+  props: FollowedProperties;
 
-  constructor(props: FirendShipProperties) {
+  constructor(props: FollowedProperties) {
     this.props = props;
   }
 
   static create(props: { 
     id: string; senderId: string; recipientId: string 
 }) {
-    return new FriendShip({
+    return new Followed({
       id: props.id,
       recipientId: props.recipientId,
       senderId: props.senderId,

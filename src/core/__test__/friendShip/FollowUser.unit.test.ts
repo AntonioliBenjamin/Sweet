@@ -1,15 +1,16 @@
-import { FriendShip } from "../../Entities/FriendShip";
+import { Followed } from "../../Entities/Followed";
 import { Gender, User } from "../../Entities/User";
-import { CreateFriendShip } from "../../usecases/friendShip/CreateFriendShip";
+import { FollowErrors } from "../../errors/FollowErrors";
+import { FollowUser } from "../../usecases/friendShip/FollowUser";
 import { UuidGateway } from "../adapters/gateways/UuidGateway";
-import { InMemoryFriendShipRepository } from "../adapters/repositories/InMemoryFirendShipRepository";
+import { InMemoryFriendShipRepository } from "../adapters/repositories/InMemoryFollowRepository";
 import { InMemoryUserRepository } from "../adapters/repositories/InMemoryUserRepository";
 
 const db = new Map<string, User>();
-const dbFriends = new Map<string, FriendShip>();
+const dbFriends = new Map<string, Followed>();
 
 describe("Unit - CreatFriendShip", () => {
-    let createFriendShip: CreateFriendShip;
+    let followUser: FollowUser;
     let sender: User;
     let recipient: User;
     
@@ -17,7 +18,7 @@ describe("Unit - CreatFriendShip", () => {
         const inMemoryUserRepository = new InMemoryUserRepository(db)
         const inMemoryFriendShipRepository = new InMemoryFriendShipRepository(dbFriends)
         const idGateway = new UuidGateway()
-        createFriendShip = new CreateFriendShip(inMemoryUserRepository, inMemoryFriendShipRepository, idGateway)
+        followUser = new FollowUser(inMemoryUserRepository, inMemoryFriendShipRepository, idGateway)
 
         sender = User.create({
             age: 15,
@@ -49,8 +50,8 @@ describe("Unit - CreatFriendShip", () => {
         db.set(recipient.props.id, recipient);
     })    
 
-    it("should create a friendship", async () => {
-        const result = await createFriendShip.execute({
+    it("should create a followed", async () => {
+        const result = await followUser.execute({
             senderId: sender.props.id, 
             recipientId: recipient.props.id
         })
@@ -59,18 +60,18 @@ describe("Unit - CreatFriendShip", () => {
         expect(result.props.id).toBeTruthy()
     })
 
-    it("should return friendship if friendship is already establsihed", async () => {
-        const friendship = FriendShip.create({
+    it("should return followed if followed is already establsihed", async () => {
+        const followed = Followed.create({
             id: "already exist",
             recipientId: recipient.props.id,
             senderId: sender.props.id
         })
-        dbFriends.set(friendship.props.id, friendship)
+        dbFriends.set(followed.props.id, followed)
 
-        const result = await createFriendShip.execute({
+        const result = followUser.execute({
             senderId: sender.props.id, 
             recipientId: recipient.props.id
         })
-        expect(result).toBeTruthy()  
+        await expect(result).rejects.toThrow(new FollowErrors.AlreadyExist) 
     })
 })

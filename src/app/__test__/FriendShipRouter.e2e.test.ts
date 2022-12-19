@@ -8,22 +8,22 @@ import express from "express";
 import { MongoDbUserRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
 import { Gender, User } from "../../core/Entities/User";
 import { UserRepository } from "../../core/repositories/UserRepository";
-import { FriendShipRepository } from "../../core/repositories/FriendShipRepository";
-import { MongoDbFriendShiprepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbFriendShipRepository";
+import { FollowedRepository } from "../../core/repositories/FollowedRepository";
+import { MongoDbFriendShiprepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
 import { UserModel } from "../../adapters/repositories/mongoDb/models/user";
 import { FriendShipModel } from "../../adapters/repositories/mongoDb/models/friendShip";
-import { FriendShip } from "../../core/Entities/FriendShip";
+import { Followed } from "../../core/Entities/Followed";
 
 const app = express();
 
 describe("E2E - FriendShipRouter", () => {
   let accessKey;
   let userRepository: UserRepository;
-  let friendShipRepository: FriendShipRepository;
+  let friendShipRepository: FollowedRepository;
   let user: User;
   let user2: User;
-  let friendShip: FriendShip;
-  let friendShip2: FriendShip
+  let friendShip: Followed;
+  let friendShip2: Followed
 
   beforeAll(() => {
     userRepository = new MongoDbUserRepository();
@@ -67,13 +67,13 @@ describe("E2E - FriendShipRouter", () => {
       section: "cp",
     });
 
-    friendShip = FriendShip.create({
+    friendShip = Followed.create({
       id: "1111",
       recipientId: user2.props.id,
       senderId: user.props.id, 
     })
 
-    friendShip2 = FriendShip.create({
+    friendShip2 = Followed.create({
       id: "2222",
       recipientId: user2.props.id,
       senderId: "0000", 
