@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { v4 } from "uuid"
 import { Followed } from "../../core/Entities/Followed";
-import { FriendShipModel } from "../repositories/mongoDb/models/friendShip";
+import { FriendShipModel } from "../repositories/mongoDb/models/follow";
 import { MongoDbFriendShiprepository } from "../repositories/mongoDb/repositories/MongoDbFollowRepository";
 
 
@@ -49,7 +49,7 @@ describe("Integration - MongoDbFriendShipRepository", () => {
           await mongoose.connection.close();
         });
     
-    it("should save a friendShip", async () => {
+    it("should save a follow", async () => {
         const result = await mongoDbFriendShiprepository.create( new Followed({
             id: "99999",
             recipientId: "5555",
@@ -59,7 +59,7 @@ describe("Integration - MongoDbFriendShipRepository", () => {
         expect(result.props.recipientId).toEqual("5555")
     })
 
-    it("should get friendShip by users Id", async () => {
+    it("should get follow by users Id", async () => {
         const result = await mongoDbFriendShiprepository.getFollowByUsersId(friendShip.props.senderId, friendShip.props.recipientId)
         expect(result.props.id).toEqual("12345")
     })
@@ -69,12 +69,12 @@ describe("Integration - MongoDbFriendShipRepository", () => {
         expect(result).toHaveLength(2)
     })
 
-    it("should get friendShip by id", async () => {
+    it("should get follow by id", async () => {
         const result = await mongoDbFriendShiprepository.getById("12345")
         expect(result.props.recipientId).toEqual("0000")
     })
 
-    it("should delete friendShip by Id", async () => {
+    it("should delete follow by Id", async () => {
         await mongoDbFriendShiprepository.delete("12345")
         const result = await mongoDbFriendShiprepository.getById("12345")
         expect(result).toBeFalsy()

@@ -1,9 +1,9 @@
 import { Followed } from "../../../../core/Entities/Followed";
 import { FollowErrors } from "../../../../core/errors/FollowErrors";
 import { FollowedRepository } from "../../../../core/repositories/FollowedRepository";
-import { MongoDbFriendShipMapper } from "../mappers/MongoDbFriendShipMapper";
-import { FriendShipModel } from "../models/friendShip";
-const friendsMapper = new MongoDbFriendShipMapper();
+import { MongoDbFollowMapper } from "../mappers/MongoDbFollowMapper";
+import { FriendShipModel } from "../models/follow";
+const friendsMapper = new MongoDbFollowMapper();
 
 export class MongoDbFriendShiprepository implements FollowedRepository {
   async create(input: Followed): Promise<Followed> {

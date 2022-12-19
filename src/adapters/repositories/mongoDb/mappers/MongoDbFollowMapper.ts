@@ -1,9 +1,9 @@
 import { Followed } from "../../../../core/Entities/Followed";
 import { Mapper } from "../../../../core/models/Mapper";
-import { FriendShipModel } from "../models/friendShip";
+import {FollowModel} from "../models/follow";
 
-export class MongoDbFriendShipMapper implements Mapper<FriendShipModel, Followed> {
-    toDomain(raw: FriendShipModel): Followed {
+export class MongoDbFollowMapper implements Mapper<FollowModel, Followed> {
+    toDomain(raw: FollowModel): Followed {
         return new Followed({
             id: raw.id,
             senderId: raw.senderId,
@@ -12,7 +12,7 @@ export class MongoDbFriendShipMapper implements Mapper<FriendShipModel, Followed
         })
     }
 
-    fromDomain(data: Followed): FriendShipModel {
+    fromDomain(data: Followed): FollowModel {
         return {
             id: data.props.id,
             recipientId: data.props.recipientId,

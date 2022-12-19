@@ -2,14 +2,14 @@ import express from "express";
 import { V4IdGateway } from "../../adapters/gateways/V4IdGateway";
 import { MongoDbFriendShiprepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
 import { MongoDbUserRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
-import { FollowUser } from "../../core/usecases/friendShip/FollowUser";
-import { GetFollowersByUsersId } from "../../core/usecases/friendShip/GetFollowersByUsersId";
+import { FollowUser } from "../../core/usecases/follow/FollowUser";
+import { GetFollowersByUsersId } from "../../core/usecases/follow/GetFollowersByUsersId";
 
 
-import { UnfollowUser } from "../../core/usecases/friendShip/UnfollowUser";
+import { UnfollowUser } from "../../core/usecases/follow/UnfollowUser";
 
-import { AddFriendShipCommand } from "../commands/friendShip/AddFriendShipCommand";
-import { DeleteFriendShipCommand } from "../commands/friendShip/DeleteFriendShipCommand";
+import { AddFriendShipCommand } from "../commands/follow/AddFriendShipCommand";
+import { DeleteFriendShipCommand } from "../commands/follow/DeleteFriendShipCommand";
 import { authorization } from "../middlewares/JwtAuthorizationMiddleware";
 import { AuthentifiedRequest } from "../types/AuthentifiedRequest";
 const friendShipRouter = express.Router();
