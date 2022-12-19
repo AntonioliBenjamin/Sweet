@@ -1,10 +1,13 @@
 import express from "express";
 import { V4IdGateway } from "../../adapters/gateways/V4IdGateway";
-import { MongoDbFriendShiprepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbFriendShipRepository";
+import { MongoDbFriendShiprepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
 import { MongoDbUserRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
-import { CreateFriendShip } from "../../core/usecases/friendShip/CreateFriendShip";
-import { DeleteFriendShip } from "../../core/usecases/friendShip/DeleteFriendShip";
-import { GetAllFriendShipsByUserId } from "../../core/usecases/friendShip/GetAllFriendShipsByUserId";
+import { FollowUser } from "../../core/usecases/friendShip/FollowUser";
+import { GetFollowersByUsersId } from "../../core/usecases/friendShip/GetFollowersByUsersId";
+
+
+import { UnfollowUser } from "../../core/usecases/friendShip/UnfollowUser";
+
 import { AddFriendShipCommand } from "../commands/friendShip/AddFriendShipCommand";
 import { DeleteFriendShipCommand } from "../commands/friendShip/DeleteFriendShipCommand";
 import { authorization } from "../middlewares/JwtAuthorizationMiddleware";
@@ -13,15 +16,15 @@ const friendShipRouter = express.Router();
 const mongoDbFriendShipRepository = new MongoDbFriendShiprepository();
 const mongoDbUserRepository = new MongoDbUserRepository();
 const v4IdGateway = new V4IdGateway();
-const createFriendShip = new CreateFriendShip(
+const followUser = new FollowUser(
   mongoDbUserRepository,
   mongoDbFriendShipRepository,
   v4IdGateway
 );
-const getAllFriendShipsByUserId = new GetAllFriendShipsByUserId(
+const getFollowersByUsersId = new GetFollowersByUsersId(
   mongoDbFriendShipRepository
 );
-const deleteFriendShip = new DeleteFriendShip(mongoDbFriendShipRepository);
+const unfollowUser = new UnfollowUser(mongoDbFriendShipRepository);
 
 
 
@@ -36,7 +39,7 @@ friendShipRouter.post("/add", async (req: AuthentifiedRequest, res) => {
 
     const values = await AddFriendShipCommand.validateAsync(body)
 
-    const friendShip = await createFriendShip.execute({
+    const friendShip = await followUser.execute({
       recipientId: values.recipientId,
       senderId: values.senderId,
     });
@@ -54,7 +57,7 @@ friendShipRouter.post("/add", async (req: AuthentifiedRequest, res) => {
 friendShipRouter.get("/all/:userId", async (req, res) => {
   try {
     
-    const friendShips = await getAllFriendShipsByUserId.execute(
+    const friendShips = await getFollowersByUsersId.execute(
       req.params.userId
     );
 
@@ -76,7 +79,7 @@ friendShipRouter.delete("/", async (req, res) => {
 
     const values = await DeleteFriendShipCommand.validateAsync(body)
 
-    await deleteFriendShip.execute(values.id);
+    await unfollowUser.execute(values.id);
 
     return res.sendStatus(200);
 

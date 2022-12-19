@@ -1,10 +1,10 @@
-import { FriendShip } from "../../../../core/Entities/FriendShip";
+import { Followed } from "../../../../core/Entities/Followed";
 import { Mapper } from "../../../../core/models/Mapper";
 import { FriendShipModel } from "../models/friendShip";
 
-export class MongoDbFriendShipMapper implements Mapper<FriendShipModel, FriendShip> {
-    toDomain(raw: FriendShipModel): FriendShip {
-        return new FriendShip({
+export class MongoDbFriendShipMapper implements Mapper<FriendShipModel, Followed> {
+    toDomain(raw: FriendShipModel): Followed {
+        return new Followed({
             id: raw.id,
             senderId: raw.senderId,
             recipientId: raw.recipientId,
@@ -12,7 +12,7 @@ export class MongoDbFriendShipMapper implements Mapper<FriendShipModel, FriendSh
         })
     }
 
-    fromDomain(data: FriendShip): FriendShipModel {
+    fromDomain(data: Followed): FriendShipModel {
         return {
             id: data.props.id,
             recipientId: data.props.recipientId,

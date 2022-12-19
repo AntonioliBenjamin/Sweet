@@ -1,15 +1,15 @@
 import mongoose from "mongoose";
 import { v4 } from "uuid"
-import { FriendShip } from "../../core/Entities/FriendShip";
+import { Followed } from "../../core/Entities/Followed";
 import { FriendShipModel } from "../repositories/mongoDb/models/friendShip";
-import { MongoDbFriendShiprepository } from "../repositories/mongoDb/repositories/MongoDbFriendShipRepository";
+import { MongoDbFriendShiprepository } from "../repositories/mongoDb/repositories/MongoDbFollowRepository";
 
 
 describe("Integration - MongoDbFriendShipRepository", () => {
 
     let mongoDbFriendShiprepository: MongoDbFriendShiprepository
-    let friendShip: FriendShip;
-    let friendShip2: FriendShip;
+    let friendShip: Followed;
+    let friendShip2: Followed;
 
     beforeAll(async () => {
         mongoDbFriendShiprepository = new MongoDbFriendShiprepository()
@@ -22,13 +22,13 @@ describe("Integration - MongoDbFriendShipRepository", () => {
           console.info("Connected to mongodb");
         });
 
-        friendShip = FriendShip.create({
+        friendShip = Followed.create({
             id: "12345",
             recipientId: "0000",
             senderId: "1111"
         })
 
-        friendShip2 = FriendShip.create({
+        friendShip2 = Followed.create({
             id: "54321",
             recipientId: "5555",
             senderId: "1111"
@@ -50,7 +50,7 @@ describe("Integration - MongoDbFriendShipRepository", () => {
         });
     
     it("should save a friendShip", async () => {
-        const result = await mongoDbFriendShiprepository.create( new FriendShip({
+        const result = await mongoDbFriendShiprepository.create( new Followed({
             id: "99999",
             recipientId: "5555",
             senderId: "1111"
@@ -60,12 +60,12 @@ describe("Integration - MongoDbFriendShipRepository", () => {
     })
 
     it("should get friendShip by users Id", async () => {
-        const result = await mongoDbFriendShiprepository.getFriendShipByUsersId(friendShip.props.senderId, friendShip.props.recipientId)
+        const result = await mongoDbFriendShiprepository.getFollowByUsersId(friendShip.props.senderId, friendShip.props.recipientId)
         expect(result.props.id).toEqual("12345")
     })
 
     it("should get all friendShips by userId", async () => {
-        const result = await mongoDbFriendShiprepository.getAllFriendShipsByUserId("1111");
+        const result = await mongoDbFriendShiprepository.getFollowersByUsersId("1111");
         expect(result).toHaveLength(2)
     })
 
