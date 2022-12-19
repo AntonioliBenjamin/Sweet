@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { v4 } from "uuid"
 import { Followed } from "../../core/Entities/Followed";
-import { FriendShipModel } from "../repositories/mongoDb/models/friendShip";
+import { FollowModel } from "../repositories/mongoDb/models/follow";
 import { MongoDbFriendShiprepository } from "../repositories/mongoDb/repositories/MongoDbFollowRepository";
 
 
@@ -41,7 +41,7 @@ describe("Integration - MongoDbFriendShipRepository", () => {
         });
     
         afterEach(async () => {
-          await FriendShipModel.collection.drop();
+          await FollowModel.collection.drop();
         });
     
         afterAll(async () => {

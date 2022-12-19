@@ -1,14 +1,14 @@
 import { Followed } from "../../../../core/Entities/Followed";
 import { FollowErrors } from "../../../../core/errors/FollowErrors";
 import { FollowedRepository } from "../../../../core/repositories/FollowedRepository";
-import { MongoDbFriendShipMapper } from "../mappers/MongoDbFriendShipMapper";
-import { FriendShipModel } from "../models/friendShip";
-const friendsMapper = new MongoDbFriendShipMapper();
+import { MongoDbFollowMapper } from "../mappers/MongoDbFollowMapper";
+import { FollowModel } from "../models/follow";
+const friendsMapper = new MongoDbFollowMapper();
 
 export class MongoDbFriendShiprepository implements FollowedRepository {
   async create(input: Followed): Promise<Followed> {
     const friendShip = friendsMapper.fromDomain(input);
-    const friendShipModel = new FriendShipModel(friendShip);
+    const friendShipModel = new FollowModel(friendShip);
     await friendShipModel.save();
     return input;
   }
@@ -17,7 +17,7 @@ export class MongoDbFriendShiprepository implements FollowedRepository {
     senderId: string,
     recipientId: string
   ): Promise<Followed> {
-    const friendShip = await FriendShipModel.findOne({
+    const friendShip = await FollowModel.findOne({
       senderId: senderId,
       recipientId: recipientId
     });
@@ -28,7 +28,7 @@ export class MongoDbFriendShiprepository implements FollowedRepository {
   }
 
   async getFollowersByUsersId(userId: string): Promise<Followed[]> {
-    const friendShipsModel = await FriendShipModel.find({});
+    const friendShipsModel = await FollowModel.find({});
     const friendShips = friendShipsModel.filter(
       (elm) => elm.senderId === userId || elm.recipientId === userId
     );
@@ -36,7 +36,7 @@ export class MongoDbFriendShiprepository implements FollowedRepository {
   }
 
   async getById(FriendShipId: string): Promise<Followed> {
-    const friendShip = await FriendShipModel.findOne({ id: FriendShipId });
+    const friendShip = await FollowModel.findOne({ id: FriendShipId });
     if (!friendShip) {
       return null;
     }
@@ -44,7 +44,7 @@ export class MongoDbFriendShiprepository implements FollowedRepository {
   }
 
   async delete(FollowId: string): Promise<void> {
-    await FriendShipModel.deleteOne({ id: FollowId });
+    await FollowModel.deleteOne({ id: FollowId });
     return;
   }
 }

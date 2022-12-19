@@ -1,10 +1,11 @@
 import "dotenv/config";
 import express from "express";
 import * as mongoose from "mongoose";
-import { friendShipRouter } from "./app/routes/friendShip";
+import { friendShipRouter } from "./app/routes/follow";
 import { schoolRouter } from "./app/routes/school";
 import {userRouter} from "./app/routes/user";
 import {questionRouter} from "./app/routes/question";
+import { answerRouter } from "./app/routes/answer";
 
 const port = +process.env.PORT_KEY;
 
@@ -27,6 +28,8 @@ app.use("/school", schoolRouter);
 app.use("/friend", friendShipRouter)
 
 app.use("/question", questionRouter);
+
+app.use("/answer", answerRouter);
 
 app.listen(port, () => {
     console.log(`listening on port ${port}`);

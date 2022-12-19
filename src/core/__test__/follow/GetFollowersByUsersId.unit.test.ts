@@ -1,5 +1,5 @@
 import { Followed } from "../../Entities/Followed";
-import { GetFollowersByUsersId } from "../../usecases/friendShip/GetFollowersByUsersId";
+import { GetFollowersByUsersId } from "../../usecases/follow/GetFollowersByUsersId";
 import { InMemoryFriendShipRepository } from "../adapters/repositories/InMemoryFollowRepository"
 const db = new Map<string, Followed>();
 

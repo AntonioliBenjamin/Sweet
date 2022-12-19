@@ -1,12 +1,12 @@
 import { model, Schema } from "mongoose";
 
-export type FriendShipModel = {
+export type FollowModel = {
     id: string;
     senderId: string;
     recipientId: string;
 }
 
-const friendShipSchema = new Schema({
+const followSchema = new Schema({
     id: {
         type: String,
         required: true,
@@ -23,4 +23,4 @@ const friendShipSchema = new Schema({
     }
 })
 
-export const FriendShipModel = model("friendShip", friendShipSchema);
+export const FollowModel = model("follow", followSchema);

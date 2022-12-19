@@ -1,3 +1,4 @@
+import "dotenv/config";
 import supertest from 'supertest';
 import mongoose from 'mongoose';
 import express from "express";
@@ -47,18 +48,18 @@ describe("E2E - Question Router", () => {
 
     it("Should post/question/create", async () => {
 
-        // accessKey = sign(
-        //     {
-        //         id:"1234",
-        //         schoolId: "5678",
-        //         email: "blabla@gmail.com"
-        //     },
-        //     "maytheforcebewithyou"
-        // );
+        accessKey = sign(
+            {
+                id:"1234",
+                schoolId: "5678",
+                email: "blabla@gmail.com"
+            },
+            "maytheforcebewithyou"
+        );
 
         await supertest(app)
             .post("/question/create")
-            //.set("access_key", accessKey)
+            .set("access_key", accessKey)
             .send({
                 description: "yes",
                 picture: "http://yes"
@@ -75,17 +76,17 @@ describe("E2E - Question Router", () => {
     it("Should get/question/all", async () => {
         await questionRepository.create(question);
 
-        // accessKey = sign(
-        //     {
-        //         id:"1234",
-        //         schoolId: "5678",
-        //         email: "blabla@gmail.com"
-        //     },
-        //     "maytheforcebewithyou"
-        // );
+        accessKey = sign(
+            {
+                id:"1234",
+                schoolId: "5678",
+                email: "blabla@gmail.com"
+            },
+            "maytheforcebewithyou"
+        );
         await supertest(app)
             .get("/question/all")
-            //.set("access_key", accessKey)
+            .set("access_key", accessKey)
             .expect((response) => {
                 const responseBody = response.body;
                 expect(responseBody).toHaveLength(1);

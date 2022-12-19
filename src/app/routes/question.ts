@@ -7,7 +7,6 @@ import {GetAllQuestions} from "../../core/usecases/question/GetAllQuestions";
 import {ApiQuestionMapper} from "../dtos/ApiQuestionMapper";
 import {CreateQuestionSchema} from "../commands/question/CreateQuestionSchema";
 import {AuthentifiedRequest} from "../types/AuthentifiedRequest";
-
 const questionRouter = express.Router();
 const mongoDbQuestionRepository = new MongoDbQuestionRepository();
 const v4IdGateway = new V4IdGateway();
@@ -15,7 +14,7 @@ const createQuestion = new CreateQuestion(mongoDbQuestionRepository, v4IdGateway
 const getAllQuestions = new GetAllQuestions(mongoDbQuestionRepository);
 const apiQuestionMapper = new ApiQuestionMapper()
 
-//questionRouter.use(authorization)
+questionRouter.use(authorization)
 
 questionRouter.post("/create", async (req: AuthentifiedRequest, res) => {
     try {
