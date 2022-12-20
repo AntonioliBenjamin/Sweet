@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import * as mongoose from "mongoose";
 import { answerRouter } from "./app/routes/answer";
-import { friendShipRouter } from "./app/routes/follow";
+import { followRouter } from "./app/routes/follow";
 import { schoolRouter } from "./app/routes/school";
 import {userRouter} from "./app/routes/user";
 import {questionRouter} from "./app/routes/question";
@@ -30,7 +30,7 @@ app.use("/", userRouter);
 
 app.use("/school", schoolRouter);
 
-app.use("/friend", friendShipRouter)
+app.use("/follow", followRouter)
 
 app.use("/question", questionRouter);
 

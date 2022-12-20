@@ -1,6 +1,6 @@
 import "dotenv/config";
-import { friendShipRouter } from "../routes/follow";
-import { friendShipRouter } from "../routes/follow";
+import { followRouter } from "../routes/follow";
+import { followRouter } from "../routes/follow";
 import supertest from "supertest";
 import mongoose from "mongoose";
 import { v4 } from "uuid";
@@ -25,7 +25,7 @@ describe("E2E - FriendShipRouter", () => {
   let friendShipRepository: FollowedRepository;
   let user: User;
   let user2: User;
-  let friendShip: Followed;
+  let follow: Followed;
   let friendShip2: Followed
 
   beforeAll(() => {
@@ -33,7 +33,7 @@ describe("E2E - FriendShipRouter", () => {
     friendShipRepository = new MongoDbFollowRepository();
 
     app.use(express.json());
-    app.use("/friend", friendShipRouter);
+    app.use("/follow", followRouter);
 
     const databaseId = v4();
     mongoose.set("strictQuery", false);
@@ -70,16 +70,16 @@ describe("E2E - FriendShipRouter", () => {
       section: "cp",
     });
 
-    friendShip = Followed.create({
+    follow = Followed.create({
       id: "1111",
-      recipientId: user2.props.id,
-      senderId: user.props.id, 
+      userId: user2.props.id,
+      addedBy: user.props.id, 
     })
 
     friendShip2 = Followed.create({
       id: "2222",
-      recipientId: user2.props.id,
-      senderId: "0000", 
+      userId: user2.props.id,
+      addedBy: "0000", 
     })
   });
 
@@ -99,7 +99,7 @@ describe("E2E - FriendShipRouter", () => {
     await mongoose.connection.close();
   });
 
-  it("should post/friend/add", async () => {
+  it("should post/follow/add", async () => {
     accessKey = sign(
         {
             id: user.props.id,
@@ -109,22 +109,22 @@ describe("E2E - FriendShipRouter", () => {
     );
     
     await supertest(app)
-        .post("/friend/add")
+        .post("/follow/add")
         .set("access_key", accessKey)
         .send({
-          recipientId: user2.props.id,
-            senderId: user.props.id, 
+          userId: user2.props.id,
+            addedBy: user.props.id, 
         })
 
         .expect((response) => {
             const responseBody = response.body;
-            expect(responseBody.senderId).toEqual("8888")
+            expect(responseBody.addedBy).toEqual("8888")
         })
         .expect(201)
   })
 
-  it("should get/friend/all/:userId", async () => {
-      await friendShipRepository.create(friendShip)
+  it("should get/follow/all/:userId", async () => {
+      await friendShipRepository.create(follow)
       await friendShipRepository.create(friendShip2)
 
       accessKey = sign(
@@ -136,7 +136,7 @@ describe("E2E - FriendShipRouter", () => {
     );
     
     await supertest(app)
-        .get(`/friend/all/${user2.props.id}`)
+        .get(`/follow/all/${user2.props.id}`)
         .set("access_key", accessKey)
 
         .expect((response) => {
@@ -158,7 +158,7 @@ describe("E2E - FriendShipRouter", () => {
   );
   
   await supertest(app)
-      .delete("/friend")
+      .delete("/follow")
       .set("access_key", accessKey)
       .send({
         id: friendShip2.props.id

@@ -10,21 +10,21 @@ export class InMemoryFollowRepository implements FollowedRepository {
   }
 
   async getFollowByUsersId(
-    senderId: string,
-    recipientId: string
+    addedBy: string,
+    userId: string
   ): Promise<Followed> {
     const values = Array.from(this.db.values());
-    const friendShip = values.find(
+    const follow = values.find(
       (v) =>
-        v.props.recipientId === recipientId && v.props.senderId === senderId
+        v.props.userId === userId && v.props.addedBy === addedBy
     );
-    return friendShip;
+    return follow;
   }
 
   async getFollowersByUsersId(id: string): Promise<Followed[]> {
     const values = Array.from(this.db.values());
     return values.filter(
-      (elm) => elm.props.recipientId === id || elm.props.senderId === id
+      (elm) => elm.props.userId === id || elm.props.addedBy === id
     );
   }
 
@@ -40,7 +40,7 @@ export class InMemoryFollowRepository implements FollowedRepository {
   async deleteAllByUserId(userId: string): Promise<void> {
     const values = Array.from(this.db.values());
     const match = values.filter(
-      (elm) => elm.props.recipientId === userId || elm.props.senderId === userId
+      (elm) => elm.props.userId === userId || elm.props.addedBy === userId
     );
     match.map((elm) => this.db.delete(elm.props.id));
     return;

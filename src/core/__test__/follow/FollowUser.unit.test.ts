@@ -52,25 +52,25 @@ describe("Unit - CreatFriendShip", () => {
 
     it("should create a followed", async () => {
         const result = await followUser.execute({
-            senderId: sender.props.id, 
-            recipientId: recipient.props.id
+            addedBy: sender.props.id, 
+            userId: recipient.props.id
         })
-        expect(result.props.recipientId).toEqual("22222")
-        expect(result.props.senderId).toEqual("11111")
+        expect(result.props.userId).toEqual("22222")
+        expect(result.props.addedBy).toEqual("11111")
         expect(result.props.id).toBeTruthy()
     })
 
     it("should return followed if followed is already establsihed", async () => {
         const followed = Followed.create({
             id: "already exist",
-            recipientId: recipient.props.id,
-            senderId: sender.props.id
+            userId: recipient.props.id,
+            addedBy: sender.props.id
         })
         dbFriends.set(followed.props.id, followed)
 
         const result = followUser.execute({
-            senderId: sender.props.id, 
-            recipientId: recipient.props.id
+            addedBy: sender.props.id, 
+            userId: recipient.props.id
         })
         await expect(result).rejects.toThrow(new FollowErrors.AlreadyExist) 
     })

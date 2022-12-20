@@ -18,8 +18,8 @@ describe("Unit - UnfollowUser", () => {
     it("should delete followed", async () => {
         const followed = Followed.create({
             id: "0000",
-            recipientId: "1111",
-            senderId: "2222"
+            userId: "1111",
+            addedBy: "2222"
         })
         db.set(followed.props.id, followed)
 
@@ -30,8 +30,8 @@ describe("Unit - UnfollowUser", () => {
     it("should throw if followed not found", async () => {
         const followed = Followed.create({
             id: "0000",
-            recipientId: "1111",
-            senderId: "2222"
+            userId: "1111",
+            addedBy: "2222"
         })
         db.set(followed.props.id, followed)
 

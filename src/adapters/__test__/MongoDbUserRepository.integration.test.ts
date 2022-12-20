@@ -68,8 +68,8 @@ describe("Integration - MongoDbUserRepository", () => {
 
     follow = new Followed({
       id: "156456454564",
-      recipientId: "0000",
-      senderId: "12345",
+      userId: "0000",
+      addedBy: "12345",
     });
   });
 

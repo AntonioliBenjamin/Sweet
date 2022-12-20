@@ -7,8 +7,8 @@ import { UserRepository } from "../../repositories/UserRepository";
 import { UseCase } from "../Usecase";
 
 export type CreateFriendShipProperties = {
-    senderId: string
-    recipientId: string
+    addedBy: string
+    userId: string
 }
 
 export class FollowUser implements UseCase<CreateFriendShipProperties, Followed> {
@@ -19,21 +19,16 @@ export class FollowUser implements UseCase<CreateFriendShipProperties, Followed>
     ) {}
 
     async execute(input: CreateFriendShipProperties): Promise<Followed> {
-        const followAlreadyExists = await this.friendShipRepository.getFollowByUsersId(input.senderId, input.recipientId);
+        const followAlreadyExists = await this.friendShipRepository.getFollowByUsersId(input.addedBy, input.userId);
         if(followAlreadyExists) {
-            throw new Error("FOLLOW_ALREADY_EXIST")
-        }
-
-        const user = await this.userRepository.getById(input.recipientId)
-        if(!user) {
-            throw new FollowErrors.AlreadyExist()
+            return followAlreadyExists
         }
         
         const FollowId = this.idGateway.generate()
         const followed = Followed.create({
             id: FollowId,
-            recipientId: input.recipientId,
-            senderId: input.senderId
+            userId: input.userId,
+            addedBy: input.addedBy
         })
 
         await this.friendShipRepository.create(followed)

@@ -6,8 +6,8 @@ export class MongoDbFollowMapper implements Mapper<FollowModel, Followed> {
     toDomain(raw: FollowModel): Followed {
         return new Followed({
             id: raw.id,
-            senderId: raw.senderId,
-            recipientId: raw.recipientId,
+            addedBy: raw.addedBy,
+            userId: raw.userId,
            
         })
     }
@@ -15,8 +15,8 @@ export class MongoDbFollowMapper implements Mapper<FollowModel, Followed> {
     fromDomain(data: Followed): FollowModel {
         return {
             id: data.props.id,
-            recipientId: data.props.recipientId,
-            senderId: data.props.senderId
+            userId: data.props.userId,
+            addedBy: data.props.addedBy
         }
     }
 }

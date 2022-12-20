@@ -1,7 +1,7 @@
 export type FollowedProperties = {
   id: string;
-  senderId: string;
-  recipientId: string;
+  addedBy: string;
+  userId: string;
 };
 
 export class Followed {
@@ -12,12 +12,12 @@ export class Followed {
   }
 
   static create(props: { 
-    id: string; senderId: string; recipientId: string 
+    id: string; addedBy: string; userId: string 
 }) {
     return new Followed({
       id: props.id,
-      recipientId: props.recipientId,
-      senderId: props.senderId,
+      userId: props.userId,
+      addedBy: props.addedBy,
     });
   }
 }

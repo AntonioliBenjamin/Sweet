@@ -1,5 +1,5 @@
 import joi from 'joi';
 
-export const DeleteFriendShipCommand = joi.object({
+export const DeleteFollowCommand = joi.object({
     id: joi.string().required(),
 })

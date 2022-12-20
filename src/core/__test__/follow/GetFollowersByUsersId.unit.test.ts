@@ -11,20 +11,20 @@ describe("Unit - getFollowersByUsersId", () => {
 
         const followed = Followed.create({
             id: "156489sdfsdf8486",
-            recipientId: "1111",
-            senderId: "5555"
+            userId: "1111",
+            addedBy: "5555"
         })
 
         const friendship2 = Followed.create({
             id: "6546545sdfsdf6465465",
-            recipientId: "7777",
-            senderId: "1111"
+            userId: "7777",
+            addedBy: "1111"
         })
 
         const friendship3 = Followed.create({
             id: "65489646816543545dfsdf",
-            recipientId: "1111",
-            senderId: "9999"
+            userId: "1111",
+            addedBy: "9999"
         })
 
         db.set(followed.props.id, followed)
