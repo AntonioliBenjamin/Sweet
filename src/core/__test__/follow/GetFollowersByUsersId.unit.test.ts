@@ -1,12 +1,12 @@
 import { Followed } from "../../Entities/Followed";
 import { GetFollowersByUsersId } from "../../usecases/follow/GetFollowersByUsersId";
-import { InMemoryFriendShipRepository } from "../adapters/repositories/InMemoryFollowRepository"
+import { InMemoryFollowRepository } from "../adapters/repositories/InMemoryFollowRepository"
 const db = new Map<string, Followed>();
 
 
 describe("Unit - getFollowersByUsersId", () => {
     it("should get all friendships by user id", async () => {
-        const inMemoryFriendShipRepository = new InMemoryFriendShipRepository(db)
+        const inMemoryFriendShipRepository = new InMemoryFollowRepository(db)
         const getFollowersByUsersId = new GetFollowersByUsersId(inMemoryFriendShipRepository)
 
         const followed = Followed.create({

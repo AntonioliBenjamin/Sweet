@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import {v4} from "uuid"
-import {Followed} from "../../core/Entities/Followed";
-import {FollowModel} from "../repositories/mongoDb/models/follow";
-import {MongoDbFollowRepository} from "../repositories/mongoDb/repositories/MongoDbFollowRepository";
+import { v4 } from "uuid"
+import { Followed } from "../../core/Entities/Followed";
+import { FollowModel } from "../repositories/mongoDb/models/follow";
+import { MongoDbFollowRepository } from "../repositories/mongoDb/repositories/MongoDbFollowRepository";
 
 
 describe("Integration - MongoDbFriendShipRepository", () => {

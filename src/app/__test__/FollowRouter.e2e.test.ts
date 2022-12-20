@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { friendShipRouter } from "../routes/follow";
+import { friendShipRouter } from "../routes/follow";
 import supertest from "supertest";
 import mongoose from "mongoose";
 import { v4 } from "uuid";
@@ -10,7 +11,9 @@ import { Gender, User } from "../../core/Entities/User";
 import { UserRepository } from "../../core/repositories/UserRepository";
 import { FollowedRepository } from "../../core/repositories/FollowedRepository";
 import { MongoDbFollowRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
+import { MongoDbFollowRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
 import { UserModel } from "../../adapters/repositories/mongoDb/models/user";
+import { FollowModel } from "../../adapters/repositories/mongoDb/models/follow";
 import { Followed } from "../../core/Entities/Followed";
 import {FollowModel} from "../../adapters/repositories/mongoDb/models/follow";
 
@@ -87,6 +90,7 @@ describe("E2E - FriendShipRouter", () => {
 
   afterEach(async () => {
     await UserModel.collection.drop();
+    await FollowModel.collection.drop();
     await FollowModel.collection.drop();
   });
 

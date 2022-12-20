@@ -1,30 +1,43 @@
-import {QuestionProperties} from "./Question";
-import {Gender} from "./User";
+import { QuestionProperties } from "./Question";
+import { Gender } from "./User";
 
 export type ResponseProperties = {
-    userId: string,
-    firstName: string,
-    lastName: string,
-    userName: string,
-    school: string,
-    section: string,
-    gender: Gender
-}
+  userId: string;
+  firstName: string;
+  lastName: string;
+  userName: string;
+  schoolId: string;
+  section: string;
+  gender: Gender;
+};
 
 export type AnswerProperties = {
-    answerId: string,
-    question: QuestionProperties,
-    response: ResponseProperties,
-    answer: string,
-    createdAt: Date
-}
+  answerId: string;
+  question: QuestionProperties;
+  response: ResponseProperties;
+  answer: string;
+  createdAt: Date;
+};
 
 export class Answer {
-    props : AnswerProperties
+  props: AnswerProperties;
 
-    constructor (props:AnswerProperties){
-        this.props = props
-    }
+  constructor(props: AnswerProperties) {
+    this.props = props;
+  }
 
-    
+  static create(props: {
+    answerId: string;
+    question: QuestionProperties;
+    response: ResponseProperties;
+    answer: string;
+  }) {
+    return new Answer({
+      answerId: props.answerId,
+      question: props.question,
+      response: props.response,
+      answer: props.answer,
+      createdAt: new Date(),
+    });
+  }
 }

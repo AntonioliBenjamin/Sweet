@@ -3,7 +3,7 @@ import { Gender, User } from "../../Entities/User";
 import { FollowErrors } from "../../errors/FollowErrors";
 import { FollowUser } from "../../usecases/follow/FollowUser";
 import { UuidGateway } from "../adapters/gateways/UuidGateway";
-import { InMemoryFriendShipRepository } from "../adapters/repositories/InMemoryFollowRepository";
+import { InMemoryFollowRepository } from "../adapters/repositories/InMemoryFollowRepository";
 import { InMemoryUserRepository } from "../adapters/repositories/InMemoryUserRepository";
 
 const db = new Map<string, User>();
@@ -16,7 +16,7 @@ describe("Unit - CreatFriendShip", () => {
     
     beforeAll(() => {
         const inMemoryUserRepository = new InMemoryUserRepository(db)
-        const inMemoryFriendShipRepository = new InMemoryFriendShipRepository(dbFriends)
+        const inMemoryFriendShipRepository = new InMemoryFollowRepository(dbFriends)
         const idGateway = new UuidGateway()
         followUser = new FollowUser(inMemoryUserRepository, inMemoryFriendShipRepository, idGateway)
 

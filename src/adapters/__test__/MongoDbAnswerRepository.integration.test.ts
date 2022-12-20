@@ -1,0 +1,86 @@
+import mongoose from "mongoose";
+import { v4 } from "uuid";
+import { Answer } from "../../core/Entities/Answer";
+import { Gender } from "../../core/Entities/User";
+import { AnswerModel } from "../repositories/mongoDb/models/answer";
+import { MongoDbAnswerRepository } from "../repositories/mongoDb/repositories/MongoDbAnswerRepository";
+
+describe("Integration - MongoDbAnswerRepository", () => {
+  let mongoDbAnswerRepository: MongoDbAnswerRepository;
+  let answer: Answer;
+  let answer2: Answer;
+
+  beforeAll(async () => {
+    const databaseId = v4();
+    mongoose.connect(`mongodb://127.0.0.1:27017/${databaseId}`, (err) => {
+      if (err) {
+        throw err;
+      }
+      console.info("Connected to mongodb");
+    });
+    mongoDbAnswerRepository = new MongoDbAnswerRepository();
+    answer = new Answer({
+      answerId: "1234",
+      question: {
+        questionId: "9999",
+        description: "this is a desc",
+        picture: "http://pic",
+      },
+      response: {
+        userId: "8888",
+        firstName: "name",
+        lastName: "lastname",
+        userName: "username",
+        schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
+        section: "1er L",
+        gender: Gender.GIRL,
+      },
+      answer: "9999",
+      createdAt: new Date(),
+    });
+
+    answer2 = new Answer({
+      answerId: "4321",
+      question: {
+        questionId: "1111",
+        description: "this is a desc",
+        picture: "http://pic",
+      },
+      response: {
+        userId: "8888",
+        firstName: "name",
+        lastName: "lastname",
+        userName: "username",
+        schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
+        section: "1er L",
+        gender: Gender.GIRL,
+      },
+      answer: "9999",
+      createdAt: new Date(),
+    });
+  });
+
+  beforeEach(async () => {
+    await mongoDbAnswerRepository.create(answer);
+    await mongoDbAnswerRepository.create(answer2);
+  });
+
+  afterEach(async () => {
+    await AnswerModel.collection.drop();
+  });
+
+  afterAll(async () => {
+    await mongoose.connection.dropDatabase();
+    await mongoose.connection.close();
+  });
+
+  it("should save answer", async () => {
+    const result = await mongoDbAnswerRepository.create(answer2);
+    expect(result.props.answerId).toEqual("4321");
+  });
+
+  it("shoul get all answers", async () => {
+    const result = await mongoDbAnswerRepository.getAllAnswers();
+    expect(result).toHaveLength(2)
+  })
+});

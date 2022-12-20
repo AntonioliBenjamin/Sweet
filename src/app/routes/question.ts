@@ -7,7 +7,6 @@ import {GetAllQuestions} from "../../core/usecases/question/GetAllQuestions";
 import {ApiQuestionMapper} from "../dtos/ApiQuestionMapper";
 import {CreateQuestionSchema} from "../commands/question/CreateQuestionSchema";
 import {AuthentifiedRequest} from "../types/AuthentifiedRequest";
-
 const questionRouter = express.Router();
 const mongoDbQuestionRepository = new MongoDbQuestionRepository();
 const v4IdGateway = new V4IdGateway();

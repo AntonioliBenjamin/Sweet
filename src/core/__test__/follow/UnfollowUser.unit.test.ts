@@ -2,7 +2,7 @@
 import { Followed } from "../../Entities/Followed";
 import { FollowErrors } from "../../errors/FollowErrors";
 import { UnfollowUser } from "../../usecases/follow/UnfollowUser";
-import { InMemoryFriendShipRepository } from "../adapters/repositories/InMemoryFollowRepository";
+import { InMemoryFollowRepository } from "../adapters/repositories/InMemoryFollowRepository";
 
 const db = new Map<string, Followed>();
 
@@ -10,7 +10,7 @@ describe("Unit - UnfollowUser", () => {
     let unfollowUser: UnfollowUser
 
     beforeAll(() => {
-    const inMemoryFriendShipRepository = new InMemoryFriendShipRepository(db)
+    const inMemoryFriendShipRepository = new InMemoryFollowRepository(db)
     unfollowUser = new UnfollowUser(inMemoryFriendShipRepository)
 
     })

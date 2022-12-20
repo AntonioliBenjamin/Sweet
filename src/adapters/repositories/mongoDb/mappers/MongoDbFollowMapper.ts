@@ -1,7 +1,9 @@
 import { Followed } from "../../../../core/Entities/Followed";
 import { Mapper } from "../../../../core/models/Mapper";
-import {FollowModel} from "../models/follow";
+import { FollowModel } from "../models/follow";
 
+export class MongoDbFollowMapper implements Mapper<FollowModel, Followed> {
+    toDomain(raw: FollowModel): Followed {
 export class MongoDbFollowMapper implements Mapper<FollowModel, Followed> {
     toDomain(raw: FollowModel): Followed {
         return new Followed({
@@ -12,6 +14,7 @@ export class MongoDbFollowMapper implements Mapper<FollowModel, Followed> {
         })
     }
 
+    fromDomain(data: Followed): FollowModel {
     fromDomain(data: Followed): FollowModel {
         return {
             id: data.props.id,
