@@ -5,10 +5,10 @@ import { MongoDbUserRepository } from "../../adapters/repositories/mongoDb/repos
 import { FollowUser } from "../../core/usecases/follow/FollowUser";
 import { GetFollowersByUsersId } from "../../core/usecases/follow/GetFollowersByUsersId";
 import { UnfollowUser } from "../../core/usecases/follow/UnfollowUser";
-import { AddFriendShipCommand } from "../commands/friendShip/AddFriendShipCommand";
-import { DeleteFriendShipCommand } from "../commands/friendShip/DeleteFriendShipCommand";
 import { authorization } from "../middlewares/JwtAuthorizationMiddleware";
 import { AuthentifiedRequest } from "../types/AuthentifiedRequest";
+import {AddFriendShipCommand} from "../commands/follow/AddFriendShipCommand";
+import {DeleteFriendShipCommand} from "../commands/follow/DeleteFriendShipCommand";
 const friendShipRouter = express.Router();
 const mongoDbFriendShipRepository = new MongoDbFollowRepository();
 const mongoDbUserRepository = new MongoDbUserRepository();
