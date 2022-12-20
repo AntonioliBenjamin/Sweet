@@ -4,8 +4,6 @@ import { FollowModel } from "../models/follow";
 
 export class MongoDbFollowMapper implements Mapper<FollowModel, Followed> {
     toDomain(raw: FollowModel): Followed {
-export class MongoDbFollowMapper implements Mapper<FollowModel, Followed> {
-    toDomain(raw: FollowModel): Followed {
         return new Followed({
             id: raw.id,
             senderId: raw.senderId,
@@ -14,7 +12,6 @@ export class MongoDbFollowMapper implements Mapper<FollowModel, Followed> {
         })
     }
 
-    fromDomain(data: Followed): FollowModel {
     fromDomain(data: Followed): FollowModel {
         return {
             id: data.props.id,
