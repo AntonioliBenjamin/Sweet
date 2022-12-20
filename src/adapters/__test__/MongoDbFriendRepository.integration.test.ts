@@ -8,7 +8,7 @@ import { MongoDbFollowRepository } from "../repositories/mongoDb/repositories/Mo
 describe("Integration - MongoDbFriendShipRepository", () => {
 
     let mongoDbFollowRepository: MongoDbFollowRepository
-    let friendShip: Followed;
+    let follow: Followed;
     let friendShip2: Followed;
 
     beforeAll(async () => {
@@ -22,21 +22,21 @@ describe("Integration - MongoDbFriendShipRepository", () => {
             console.info("Connected to mongodb");
         });
 
-        friendShip = Followed.create({
+        follow = Followed.create({
             id: "12345",
-            recipientId: "0000",
-            senderId: "1111"
+            userId: "0000",
+            addedBy: "1111"
         })
 
         friendShip2 = Followed.create({
             id: "54321",
-            recipientId: "5555",
-            senderId: "1111"
+            userId: "5555",
+            addedBy: "1111"
         })
     });
 
     beforeEach(async () => {
-        await mongoDbFollowRepository.create(friendShip);
+        await mongoDbFollowRepository.create(follow);
         await mongoDbFollowRepository.create(friendShip2);
     });
 
@@ -52,26 +52,26 @@ describe("Integration - MongoDbFriendShipRepository", () => {
     it("should save a follow", async () => {
         const result = await mongoDbFollowRepository.create(new Followed({
             id: "99999",
-            recipientId: "5555",
-            senderId: "1111"
+            userId: "5555",
+            addedBy: "1111"
         }))
         expect(result.props.id).toEqual("99999")
-        expect(result.props.recipientId).toEqual("5555")
+        expect(result.props.userId).toEqual("5555")
     })
 
     it("should get follow by users Id", async () => {
-        const result = await mongoDbFollowRepository.getFollowByUsersId(friendShip.props.senderId, friendShip.props.recipientId)
+        const result = await mongoDbFollowRepository.getFollowByUsersId(follow.props.addedBy, follow.props.userId)
         expect(result.props.id).toEqual("12345")
     })
 
-    it("should get all friendShips by userId", async () => {
+    it("should get all follows by userId", async () => {
         const result = await mongoDbFollowRepository.getFollowersByUsersId("1111");
         expect(result).toHaveLength(2)
     })
 
     it("should get follow by id", async () => {
         const result = await mongoDbFollowRepository.getById("12345")
-        expect(result.props.recipientId).toEqual("0000")
+        expect(result.props.userId).toEqual("0000")
     })
 
     it("should delete follow by Id", async () => {

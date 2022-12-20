@@ -1,9 +1,9 @@
 import "dotenv/config";
 import express from "express";
 import * as mongoose from "mongoose";
-import {answerRouter} from "./app/routes/answer";
-import {friendShipRouter} from "./app/routes/follow";
-import {schoolRouter} from "./app/routes/school";
+import { answerRouter } from "./app/routes/answer";
+import { followRouter } from "./app/routes/follow";
+import { schoolRouter } from "./app/routes/school";
 import {userRouter} from "./app/routes/user";
 import {questionRouter} from "./app/routes/question";
 //import {pollRouter} from "./app/routes/poll";
@@ -42,7 +42,7 @@ app.use("/user", userRouter);
 
 app.use("/school", schoolRouter);
 
-app.use("/friend", friendShipRouter)
+app.use("/follow", followRouter)
 
 app.use("/question", questionRouter);
 

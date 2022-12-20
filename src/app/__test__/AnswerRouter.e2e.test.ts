@@ -143,7 +143,7 @@ describe("E2E - FriendShipRouter", () => {
       .expect(200);
   });
 
-  it("should get all friend answers", async () => {
+  it("should get all follow answers", async () => {
     accessKey = sign(
       {
         id: "9999",
@@ -153,7 +153,7 @@ describe("E2E - FriendShipRouter", () => {
     );
 
     await supertest(app)
-      .get("/answer/friend/9999")
+      .get("/answer/follow/9999")
       .set("access_key", accessKey)
       .expect((response) => {
         const responseBody = response.body;

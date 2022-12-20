@@ -6,7 +6,7 @@ import { InMemoryAnswerRepository } from "../adapters/repositories/InMemoryAnswe
 const db = new Map<string, Answer>();
 describe("Unit - AnswerToQuestion", () => {
 
-    it("should get friend Answers", async () => {
+    it("should get follow Answers", async () => {
         const answer = new Answer({
             answerId: "1234",
             question: {

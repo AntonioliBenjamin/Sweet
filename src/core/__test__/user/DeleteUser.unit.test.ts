@@ -24,8 +24,8 @@ describe("Unit - deleteUser", () => {
   it("should delete user", async () => {
     const followed = new Followed({
       id: "156489sdfsdf8486",
-      recipientId: "12345",
-      senderId: "5555",
+      userId: "12345",
+      addedBy: "5555",
     });
 
     const answer = new Answer({

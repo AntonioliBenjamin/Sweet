@@ -2,8 +2,8 @@ import { model, Schema } from "mongoose";
 
 export type FollowModel = {
     id: string;
-    senderId: string;
-    recipientId: string;
+    addedBy: string;
+    userId: string;
 }
 
 const followSchema = new Schema({
@@ -13,11 +13,11 @@ const followSchema = new Schema({
         unique : true,
         index : true,
     },
-    senderId: {
+    addedBy: {
         type: String,
         required: true,   
     },
-    recipientId: {
+    userId: {
         type: String,
         required: true,
     }

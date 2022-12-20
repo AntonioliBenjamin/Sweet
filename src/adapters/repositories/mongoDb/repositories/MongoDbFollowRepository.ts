@@ -6,40 +6,40 @@ const friendsMapper = new MongoDbFollowMapper();
 
 export class MongoDbFollowRepository implements FollowedRepository {
   async create(input: Followed): Promise<Followed> {
-    const friendShip = friendsMapper.fromDomain(input);
-    const friendShipModel = new FollowModel(friendShip);
+    const follow = friendsMapper.fromDomain(input);
+    const friendShipModel = new FollowModel(follow);
     await friendShipModel.save();
     return input;
   }
 
   async getFollowByUsersId(
-    senderId: string,
-    recipientId: string
+    addedBy: string,
+    userId: string
   ): Promise<Followed> {
-    const friendShip = await FollowModel.findOne({
-      senderId: senderId,
-      recipientId: recipientId,
+    const follow = await FollowModel.findOne({
+      addedBy: addedBy,
+      userId: userId,
     });
-    if (!friendShip) {
+    if (!follow) {
       return null;
     }
-    return friendsMapper.toDomain(friendShip);
+    return friendsMapper.toDomain(follow);
   }
 
   async getFollowersByUsersId(userId: string): Promise<Followed[]> {
     const friendShipsModel = await FollowModel.find({});
-    const friendShips = friendShipsModel.filter(
-      (elm) => elm.senderId === userId || elm.recipientId === userId
+    const follows = friendShipsModel.filter(
+      (elm) => elm.addedBy === userId || elm.userId === userId
     );
-    return friendShips.map((elm) => friendsMapper.toDomain(elm));
+    return follows.map((elm) => friendsMapper.toDomain(elm));
   }
 
   async getById(FriendShipId: string): Promise<Followed> {
-    const friendShip = await FollowModel.findOne({ id: FriendShipId });
-    if (!friendShip) {
+    const follow = await FollowModel.findOne({ id: FriendShipId });
+    if (!follow) {
       return null;
     }
-    return friendsMapper.toDomain(friendShip);
+    return friendsMapper.toDomain(follow);
   }
 
   async delete(FollowId: string): Promise<void> {
@@ -48,7 +48,7 @@ export class MongoDbFollowRepository implements FollowedRepository {
   }
 
   async deleteAllByUserId(id: string): Promise<void> {
-    await FollowModel.deleteMany({ recipientId: id, senderId : id });
+    await FollowModel.deleteMany({ userId: id, addedBy : id });
     return;
   }
 }
