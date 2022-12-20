@@ -6,7 +6,7 @@ import { schoolRouter } from "./app/routes/school";
 import {userRouter} from "./app/routes/user";
 import {questionRouter} from "./app/routes/question";
 import {pollRouter} from "./app/routes/poll";
-
+import * as morgan from "morgan";
 const port = +process.env.PORT_KEY;
 
 mongoose.set('strictQuery', false)
@@ -18,6 +18,8 @@ mongoose.connect("mongodb://127.0.0.1:27017/sweet", (err) => {
 });
 
 const app = express();
+
+app.use(morgan('combined'))
 
 app.use(express.json());
 
