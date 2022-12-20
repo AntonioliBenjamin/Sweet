@@ -7,7 +7,7 @@ import { schoolRouter } from "./app/routes/school";
 import {userRouter} from "./app/routes/user";
 import {questionRouter} from "./app/routes/question";
 import {pollRouter} from "./app/routes/poll";
-import * as morgan from "morgan";
+import morgan from "morgan";
 const port = +process.env.PORT;
 
 mongoose.set('strictQuery', false)
