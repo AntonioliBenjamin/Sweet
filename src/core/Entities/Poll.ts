@@ -2,7 +2,7 @@ import {QuestionProperties} from "./Question";
 
 export type PollProperties = {
     pollId: string,
-    questions: QuestionProperties [],
+    questions?: Array<QuestionProperties>,
     createdAt: Date,
 };
 
@@ -18,10 +18,10 @@ export class Poll {
     }) {
         return new Poll({
             pollId: props.pollId,
-            questions: [],
             createdAt: new Date()
         })
     }
+
     canAddQuestion(questionId: string) {
         const question = this.props.questions.find(elm => elm.questionId === questionId)
         if (question) {
@@ -33,4 +33,5 @@ export class Poll {
     addQuestion(question: QuestionProperties) {
         this.props.questions.push(question)
     }
+
 }

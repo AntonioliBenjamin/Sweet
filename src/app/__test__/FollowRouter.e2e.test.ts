@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { friendShipRouter } from "../routes/friendShip";
+import { friendShipRouter } from "../routes/follow";
 import supertest from "supertest";
 import mongoose from "mongoose";
 import { v4 } from "uuid";
@@ -9,10 +9,10 @@ import { MongoDbUserRepository } from "../../adapters/repositories/mongoDb/repos
 import { Gender, User } from "../../core/Entities/User";
 import { UserRepository } from "../../core/repositories/UserRepository";
 import { FollowedRepository } from "../../core/repositories/FollowedRepository";
-import { MongoDbFriendShiprepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
+import { MongoDbFollowRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
 import { UserModel } from "../../adapters/repositories/mongoDb/models/user";
-import { FriendShipModel } from "../../adapters/repositories/mongoDb/models/friendShip";
 import { Followed } from "../../core/Entities/Followed";
+import {FollowModel} from "../../adapters/repositories/mongoDb/models/follow";
 
 const app = express();
 
@@ -27,7 +27,7 @@ describe("E2E - FriendShipRouter", () => {
 
   beforeAll(() => {
     userRepository = new MongoDbUserRepository();
-    friendShipRepository = new MongoDbFriendShiprepository();
+    friendShipRepository = new MongoDbFollowRepository();
 
     app.use(express.json());
     app.use("/friend", friendShipRouter);
@@ -87,7 +87,7 @@ describe("E2E - FriendShipRouter", () => {
 
   afterEach(async () => {
     await UserModel.collection.drop();
-    await FriendShipModel.collection.drop();
+    await FollowModel.collection.drop();
   });
 
   afterAll(async () => {

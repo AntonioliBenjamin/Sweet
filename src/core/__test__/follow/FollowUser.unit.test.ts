@@ -1,7 +1,7 @@
 import { Followed } from "../../Entities/Followed";
 import { Gender, User } from "../../Entities/User";
 import { FollowErrors } from "../../errors/FollowErrors";
-import { FollowUser } from "../../usecases/friendShip/FollowUser";
+import { FollowUser } from "../../usecases/follow/FollowUser";
 import { UuidGateway } from "../adapters/gateways/UuidGateway";
 import { InMemoryFriendShipRepository } from "../adapters/repositories/InMemoryFollowRepository";
 import { InMemoryUserRepository } from "../adapters/repositories/InMemoryUserRepository";

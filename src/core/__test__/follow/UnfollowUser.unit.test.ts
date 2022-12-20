@@ -1,7 +1,7 @@
 
 import { Followed } from "../../Entities/Followed";
 import { FollowErrors } from "../../errors/FollowErrors";
-import { UnfollowUser } from "../../usecases/friendShip/UnfollowUser";
+import { UnfollowUser } from "../../usecases/follow/UnfollowUser";
 import { InMemoryFriendShipRepository } from "../adapters/repositories/InMemoryFollowRepository";
 
 const db = new Map<string, Followed>();

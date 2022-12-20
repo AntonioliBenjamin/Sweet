@@ -15,7 +15,7 @@ const createQuestion = new CreateQuestion(mongoDbQuestionRepository, v4IdGateway
 const getAllQuestions = new GetAllQuestions(mongoDbQuestionRepository);
 const apiQuestionMapper = new ApiQuestionMapper()
 
-//questionRouter.use(authorization)
+questionRouter.use(authorization)
 
 questionRouter.post("/create", async (req: AuthentifiedRequest, res) => {
     try {

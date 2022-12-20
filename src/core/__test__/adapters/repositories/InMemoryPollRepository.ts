@@ -1,5 +1,7 @@
 import {PollRepository} from "../../../repositories/PollRepository";
 import {Poll} from "../../../Entities/Poll";
+import {Question, QuestionProperties} from "../../../Entities/Question";
+import {questionFixtures} from "../../../fixtures/questionFixtures";
 
 export class InMemoryPollRepository implements PollRepository{
     constructor(private readonly db: Map<string, Poll>) {
@@ -20,6 +22,11 @@ export class InMemoryPollRepository implements PollRepository{
 
     update(poll: Poll): Promise<Poll> {
         this.db.set(poll.props.pollId, poll);
+        return Promise.resolve(poll);
+    }
+
+    addQuestions(poll : Poll, questions: QuestionProperties[]): Promise<Poll> {
+        poll.props.questions.push(...questionFixtures);
         return Promise.resolve(poll);
     }
 }

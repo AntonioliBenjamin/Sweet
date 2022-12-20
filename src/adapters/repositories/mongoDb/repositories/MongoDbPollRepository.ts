@@ -5,9 +5,9 @@ import {PollRepository} from "../../../../core/repositories/PollRepository";
 import {PollErrors} from "../../../../core/errors/PollErrors";
 import {UserModel} from "../models/user";
 
-const mongoDbPollMapper = new MongoDbPollMapper();
+export const mongoDbPollMapper = new MongoDbPollMapper();
 
-export class mongoDbPollRepository implements PollRepository{
+export class MongoDbPollRepository implements PollRepository {
     async create(poll: Poll): Promise<Poll> {
         const toPollModel = mongoDbPollMapper.fromDomain(poll)
         const pollModel = new PollModel(toPollModel);
@@ -30,11 +30,11 @@ export class mongoDbPollRepository implements PollRepository{
 
     async update(poll: Poll): Promise<Poll> {
         const toPollModel = mongoDbPollMapper.fromDomain(poll)
-        await UserModel.findOneAndUpdate(
+        await PollModel.findOneAndUpdate(
             {id: toPollModel.pollId},
             {
                 $set: {
-
+                    questions: toPollModel.questions,
                 },
             },
             {new: true}
