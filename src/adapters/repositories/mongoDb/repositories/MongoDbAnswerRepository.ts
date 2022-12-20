@@ -5,6 +5,7 @@ import { AnswerModel } from "../models/answer";
 const answerMapper = new MongoDbAnswerMapper()
 
 export class MongoDbAnswerRepository implements AnswerRepository {
+
     async create(answer: Answer): Promise<Answer> {
         const toAnswerDomain = answerMapper.fromDomain(answer)
         const answerModel = new AnswerModel(toAnswerDomain)
@@ -20,4 +21,13 @@ export class MongoDbAnswerRepository implements AnswerRepository {
         return answers.map(elm => answerMapper.toDomain(elm))
     }
     
+    async delete(answerId: string): Promise<void> {
+        await AnswerModel.deleteOne({answerId : answerId})
+        return;
+    }
+
+    async deleteAllByUserId(userId: string): Promise<void> {
+        await AnswerModel.deleteMany({ answer: userId })
+        return;
+    }
 }

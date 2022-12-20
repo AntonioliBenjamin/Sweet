@@ -5,7 +5,7 @@ import { MongoDbFollowMapper } from "../mappers/MongoDbFollowMapper";
 import { FollowModel } from "../models/follow";
 const friendsMapper = new MongoDbFollowMapper();
 
-export class MongoDbFriendShiprepository implements FollowedRepository {
+export class MongoDbFollowRepository implements FollowedRepository {
   async create(input: Followed): Promise<Followed> {
     const friendShip = friendsMapper.fromDomain(input);
     const friendShipModel = new FollowModel(friendShip);
@@ -19,9 +19,9 @@ export class MongoDbFriendShiprepository implements FollowedRepository {
   ): Promise<Followed> {
     const friendShip = await FollowModel.findOne({
       senderId: senderId,
-      recipientId: recipientId
+      recipientId: recipientId,
     });
-    if(!friendShip) {
+    if (!friendShip) {
       return null;
     }
     return friendsMapper.toDomain(friendShip);
@@ -45,6 +45,11 @@ export class MongoDbFriendShiprepository implements FollowedRepository {
 
   async delete(FollowId: string): Promise<void> {
     await FollowModel.deleteOne({ id: FollowId });
+    return;
+  }
+
+  async deleteAllByUserId(id: string): Promise<void> {
+    await FollowModel.deleteMany({ recipientId: id, senderId : id });
     return;
   }
 }

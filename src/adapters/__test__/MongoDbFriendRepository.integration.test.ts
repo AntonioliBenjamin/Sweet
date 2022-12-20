@@ -2,17 +2,17 @@ import mongoose from "mongoose";
 import { v4 } from "uuid"
 import { Followed } from "../../core/Entities/Followed";
 import { FollowModel } from "../repositories/mongoDb/models/follow";
-import { MongoDbFriendShiprepository } from "../repositories/mongoDb/repositories/MongoDbFollowRepository";
+import { MongoDbFollowRepository } from "../repositories/mongoDb/repositories/MongoDbFollowRepository";
 
 
 describe("Integration - MongoDbFriendShipRepository", () => {
 
-    let mongoDbFriendShiprepository: MongoDbFriendShiprepository
+    let mongoDbFriendShiprepository: MongoDbFollowRepository
     let friendShip: Followed;
     let friendShip2: Followed;
 
     beforeAll(async () => {
-        mongoDbFriendShiprepository = new MongoDbFriendShiprepository()
+        mongoDbFriendShiprepository = new MongoDbFollowRepository()
 
         const databaseId = v4();
         mongoose.connect(`mongodb://127.0.0.1:27017/${databaseId}`, (err) => {

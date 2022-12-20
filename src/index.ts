@@ -1,4 +1,5 @@
 import "dotenv/config";
+import morgan from 'morgan';
 import express from "express";
 import * as mongoose from "mongoose";
 import { friendShipRouter } from "./app/routes/follow";
@@ -7,7 +8,7 @@ import {userRouter} from "./app/routes/user";
 import {questionRouter} from "./app/routes/question";
 import { answerRouter } from "./app/routes/answer";
 
-const port = +process.env.PORT_KEY;
+const port = +process.env.PORT;
 
 mongoose.set('strictQuery', false)
 mongoose.connect("mongodb://127.0.0.1:27017/sweet", (err) => {
@@ -18,6 +19,8 @@ mongoose.connect("mongodb://127.0.0.1:27017/sweet", (err) => {
 });
 
 const app = express();
+
+app.use(morgan('combined'))
 
 app.use(express.json());
 

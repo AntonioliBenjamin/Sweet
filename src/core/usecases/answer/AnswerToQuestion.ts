@@ -10,9 +10,7 @@ export type AnswerToQuestionInput = {
     answer: string;
 };
 
-export class AnswerToQuestion
-  implements UseCase<AnswerToQuestionInput, Answer>
-{
+export class AnswerToQuestion implements UseCase<AnswerToQuestionInput, Answer> {
   constructor(
     private readonly answerRepository: AnswerRepository,
     private readonly idGateway: IdGateway

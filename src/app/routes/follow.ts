@@ -1,6 +1,6 @@
 import express from "express";
 import { V4IdGateway } from "../../adapters/gateways/V4IdGateway";
-import { MongoDbFriendShiprepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
+import { MongoDbFollowRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
 import { MongoDbUserRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
 import { FollowUser } from "../../core/usecases/follow/FollowUser";
 import { GetFollowersByUsersId } from "../../core/usecases/follow/GetFollowersByUsersId";
@@ -10,7 +10,7 @@ import { DeleteFriendShipCommand } from "../commands/friendShip/DeleteFriendShip
 import { authorization } from "../middlewares/JwtAuthorizationMiddleware";
 import { AuthentifiedRequest } from "../types/AuthentifiedRequest";
 const friendShipRouter = express.Router();
-const mongoDbFriendShipRepository = new MongoDbFriendShiprepository();
+const mongoDbFriendShipRepository = new MongoDbFollowRepository();
 const mongoDbUserRepository = new MongoDbUserRepository();
 const v4IdGateway = new V4IdGateway();
 const followUser = new FollowUser(

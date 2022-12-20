@@ -15,5 +15,14 @@ export class InMemoryAnswerRepository implements AnswerRepository {
         return Array.from(this.db.values());
     }
 
+    async delete(answerId: string): Promise<void> {
+        this.db.delete(answerId)
+    }
 
+    async deleteAllByUserId(userId: string): Promise<void> {
+        const values = Array.from(this.db.values());
+        const match = values.filter(elm => elm.props.answer === userId); 
+        match.map(elm => this.db.delete(elm.props.answerId));
+        return;
+    }
 }

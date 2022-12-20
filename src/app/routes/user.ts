@@ -24,33 +24,29 @@ import { ResetPasswordSchema } from "../commands/user/ResetPasswordSchema";
 import { UpdateUserSchema } from "../commands/user/UpdateUserSchema";
 import { GetAllUsersBySchoolIdSchema } from "../commands/user/GetAllUsersBySchoolIdSchema";
 import { DeleteUserSchema } from "../commands/user/DeleteUserSchema";
+import { MongoDbFollowRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
+import { MongoDbAnswerRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbAnswerRepository";
 const validator = createValidator();
 const mailService = new MailService();
-mailService.setApiKey(process.env.SENDGRID_API_KEY);
 const emailSender = process.env.RECOVERY_EMAIL_SENDER;
 const userRouter = express.Router();
 const secretKey = process.env.SECRET_KEY;
 const schoolDbRepository = new SchoolDbRepository();
 const mongoDbUserRepository = new MongoDbUserRepository();
+const mongoDbAnswerRepository = new MongoDbAnswerRepository();
+const mongoDbFollowRepository = new MongoDbFollowRepository();
 const bcryptGateway = new BcryptGateway();
 const v4IdGateway = new V4IdGateway();
 const sendGridGateway = new SendGridGateway(mailService, emailSender);
-const signUp = new SignUp(
-  mongoDbUserRepository,
-  schoolDbRepository,
-  v4IdGateway,
-  bcryptGateway
-);
+const signUp = new SignUp(mongoDbUserRepository, schoolDbRepository, v4IdGateway, bcryptGateway);
 const signIn = new SignIn(mongoDbUserRepository, bcryptGateway);
 const updateUser = new UpdateUser(mongoDbUserRepository);
-const deleteUser = new DeleteUser(mongoDbUserRepository);
+const deleteUser = new DeleteUser(mongoDbUserRepository, mongoDbFollowRepository, mongoDbAnswerRepository);
 const getAllUsersBySchool = new GetAllUsersBySchool(mongoDbUserRepository);
-const generateRecoveryCode = new GenerateRecoveryCode(
-  mongoDbUserRepository,
-  v4IdGateway
-);
-const resetPassword = new ResetPassword(mongoDbUserRepository);
+const generateRecoveryCode = new GenerateRecoveryCode(mongoDbUserRepository, v4IdGateway);
+const resetPassword = new ResetPassword(mongoDbUserRepository, bcryptGateway);
 const userApiUserMapper = new UserApiUserMapper();
+mailService.setApiKey(process.env.SENDGRID_API_KEY);
 
 userRouter.post("/signUp", async (req, res) => {
   try {
@@ -206,10 +202,7 @@ userRouter.patch("/", async (req: AuthentifiedRequest, res) => {
   }
 });
 
-userRouter.get(
-  "/all/:schoolId",
-  validator.params(GetAllUsersBySchoolIdSchema),
-  async (req, res) => {
+userRouter.get("/all/:schoolId", validator.params(GetAllUsersBySchoolIdSchema), async (req, res) => {
     try {
       const users = await getAllUsersBySchool.execute(req.params.schoolId);
 
@@ -224,16 +217,14 @@ userRouter.get(
   }
 );
 
-userRouter.delete(
-  "/:id",
-  validator.params(DeleteUserSchema),
-  async (req: AuthentifiedRequest, res) => {
+userRouter.delete("/", validator.params(DeleteUserSchema), async (req: AuthentifiedRequest, res) => {
     try {
       await deleteUser.execute({
         userId: req.user.id,
       });
-      return res.status(200).send({});
+      return res.sendStatus(200)
     } catch (err) {
+      console.error(err);
       return res.status(400).send({
         message: "An error occurred",
       });

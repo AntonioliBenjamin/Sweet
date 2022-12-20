@@ -9,7 +9,7 @@ import { MongoDbUserRepository } from "../../adapters/repositories/mongoDb/repos
 import { Gender, User } from "../../core/Entities/User";
 import { UserRepository } from "../../core/repositories/UserRepository";
 import { FollowedRepository } from "../../core/repositories/FollowedRepository";
-import { MongoDbFriendShiprepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
+import { MongoDbFollowRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
 import { UserModel } from "../../adapters/repositories/mongoDb/models/user";
 import { FollowModel } from "../../adapters/repositories/mongoDb/models/follow";
 import { Followed } from "../../core/Entities/Followed";
@@ -27,7 +27,7 @@ describe("E2E - FriendShipRouter", () => {
 
   beforeAll(() => {
     userRepository = new MongoDbUserRepository();
-    friendShipRepository = new MongoDbFriendShiprepository();
+    friendShipRepository = new MongoDbFollowRepository();
 
     app.use(express.json());
     app.use("/friend", friendShipRouter);
