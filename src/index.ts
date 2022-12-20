@@ -1,13 +1,16 @@
 import "dotenv/config";
 import express from "express";
 import * as mongoose from "mongoose";
-import { answerRouter } from "./app/routes/answer";
-import { friendShipRouter } from "./app/routes/follow";
-import { schoolRouter } from "./app/routes/school";
+import {answerRouter} from "./app/routes/answer";
+import {friendShipRouter} from "./app/routes/follow";
+import {schoolRouter} from "./app/routes/school";
 import {userRouter} from "./app/routes/user";
 import {questionRouter} from "./app/routes/question";
-import {pollRouter} from "./app/routes/poll";
+//import {pollRouter} from "./app/routes/poll";
 import morgan from "morgan";
+import ejs from "ejs";
+import * as path from "path";
+
 const port = +process.env.PORT;
 
 mongoose.set('strictQuery', false)
@@ -20,13 +23,22 @@ mongoose.connect("mongodb://127.0.0.1:27017/sweet", (err) => {
 
 const app = express();
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, './app/views'))
 
+app.get('/views/reset', (req, res) => {
+    return res.render('index')
+})
+
+//app.use(express.static(path.join(__dirname, "./app/views")));
+
+//app.use(express.static(__dirname + '/dist'));
 
 app.use(morgan('combined'))
 
 app.use(express.json());
 
-app.use("/", userRouter);
+app.use("/user", userRouter);
 
 app.use("/school", schoolRouter);
 
@@ -34,7 +46,7 @@ app.use("/friend", friendShipRouter)
 
 app.use("/question", questionRouter);
 
-app.use("/poll", pollRouter);
+//app.use("/poll", pollRouter);
 
 app.use("/answer", answerRouter);
 

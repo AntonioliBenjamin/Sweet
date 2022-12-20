@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sweet Reset Password</title>
+    <link rel="shortcut icon" href="#">
+    <script type="text/javascript" src="./resetPassword.js" defer></script>
+</head>
+<body>
+<h1>MISE A JOUR DU MOT DE PASSE</h1>
+<p>Minimum de huit caractères, au moins une lettre, un chiffre et un caractère spécial</p>
+
+<form id="form">
+    <label for="password">Password:</label><br>
+    <input type="text" id="password" name="password"><br>
+    <label for="confirm">Confirm password:</label><br>
+    <input type="text" id="confirm" name="confirm"><br><br>
+    <input type="submit" value="Submit">
+</form>
+
+<p id="error" style="display : none; color :red">
+    LES MOTS DE PASSE NE SONT PAS IDENTIQUES
+</p>
+<p id="ok" style="display : none; color :green">
+    MOT DE PASSE PRIS EN COMPTE
+</p>
+<p id="false" style="display : none; color :red">
+    Minimum de huit caractères, au moins une lettre, un chiffre et un caractère spécial
+</p>
+
+<script>
+    function getData(form) {
+        const formData = new FormData(form)
+        return Object.fromEntries(formData)
+    }
+
+    const regex = new RegExp(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/)
+
+    let password = document.getElementById('password').value
+    let params = new URLSearchParams(document.location.search);
+    let token = params.get("trustedKey");
+    console.log(password, token)
+    document.getElementById('form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const data = getData(e.target);
+        if (!regex.test(data.password)) {
+            document.getElementById('false').style.display = 'block';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('ok').style.display = 'none';
+            return
+        }
+        if (data.password === data.confirm) {
+            document.getElementById('false').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('ok').style.display = 'block';
+
+            resetPassword(password, token)
+            return
+        }
+        document.getElementById('false').style.display = 'none';
+        document.getElementById('error').style.display = 'block';
+        document.getElementById('ok').style.display = 'none';
+    })
+</script>
+</body>
+</html>
