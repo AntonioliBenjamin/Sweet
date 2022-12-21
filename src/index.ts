@@ -30,10 +30,6 @@ app.get('/views/reset', (req, res) => {
     return res.render('index')
 })
 
-//app.use(express.static(path.join(__dirname, "./app/views")));
-
-//app.use(express.static(__dirname + '/dist'));
-
 app.use(morgan('combined'))
 
 app.use(express.json());

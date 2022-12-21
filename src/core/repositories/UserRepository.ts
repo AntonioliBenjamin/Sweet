@@ -12,4 +12,6 @@ export interface UserRepository {
     update (input: User) : Promise<User>;
 
     delete(userId:string): Promise<void>;
+
+    updatePassword(user: User): Promise<void>
 }

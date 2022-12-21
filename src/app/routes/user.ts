@@ -48,7 +48,7 @@ const resetPassword = new ResetPassword(mongoDbUserRepository, bcryptGateway);
 const userApiUserMapper = new UserApiUserMapper();
 mailService.setApiKey(process.env.SENDGRID_API_KEY);
 
-userRouter.post("/signUp", async (req, res) => {
+userRouter.post("/", async (req, res) => {
   try {
     const body = {
       userName: req.body.userName,
@@ -84,7 +84,7 @@ userRouter.post("/signUp", async (req, res) => {
   }
 });
 
-userRouter.post("/signIn", async (req, res) => {
+userRouter.post("/sign-in", async (req, res) => {
   try {
     const body = {
       email: req.body.email.toLowerCase().trim(),
@@ -92,8 +92,8 @@ userRouter.post("/signIn", async (req, res) => {
     };
 
     const values = await SignInSchema.validateAsync(body);
-
     const user = await signIn.execute(values);
+
     const accessKey = jwt.sign(
       {
         id: user.props.id,
@@ -114,7 +114,7 @@ userRouter.post("/signIn", async (req, res) => {
   }
 });
 
-userRouter.post("/recovery", async (req, res) => {
+userRouter.post("/password/recovery", async (req, res) => {
   try {
     const body = {
       email: req.body.email.toLowerCase().trim(),
@@ -145,7 +145,7 @@ userRouter.post("/recovery", async (req, res) => {
   }
 });
 
-userRouter.post("/resetPassword", async (req, res) => {
+userRouter.post("/password/reset", async (req, res) => {
   try {
     const body = {
       password: req.body.password,
@@ -202,9 +202,9 @@ userRouter.patch("/", async (req: AuthentifiedRequest, res) => {
   }
 });
 
-userRouter.get("/all/:schoolId", validator.params(GetAllUsersBySchoolIdSchema), async (req, res) => {
+userRouter.get("/all", validator.params(GetAllUsersBySchoolIdSchema), async (req: AuthentifiedRequest, res) => {
     try {
-      const users = await getAllUsersBySchool.execute(req.params.schoolId);
+      const users = await getAllUsersBySchool.execute(req.user.schoolId);
 
       return res
         .status(200)

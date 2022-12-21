@@ -19,13 +19,14 @@ export class SignIn implements UseCase<UserInput, User> {
         if (!userExists) {
             throw new Error('user not found')
         }
+
         const hash = userExists.props.password
 
         const comparePasswords = this.passwordGateway.decrypt(input.password, hash)
         if (!comparePasswords) {
             throw new Error('wrong password')
         }
-        console.log('User connected successfully');
+
         return userExists;
     }
 }
