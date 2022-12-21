@@ -1,6 +1,8 @@
 import express from "express";
 import { V4IdGateway } from "../../adapters/gateways/V4IdGateway";
 import { MongoDbAnswerRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbAnswerRepository";
+import { MongoDbQuestionRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbQuestionRepository";
+import { MongoDbUserRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
 import { AnswerToQuestion } from "../../core/usecases/answer/AnswerToQuestion";
 import { GetAllAnswers } from "../../core/usecases/answer/GetAllAnswers";
 import { GetFriendAnswers } from "../../core/usecases/answer/GetFriendAnswers";
@@ -8,9 +10,11 @@ import { GetMyAnswers } from "../../core/usecases/answer/GetMyAnswers";
 import { authorization } from "../middlewares/JwtAuthorizationMiddleware";
 import { AuthentifiedRequest } from "../types/AuthentifiedRequest";
 const answerRouter = express.Router();
+const mongoDbQuestionRepository = new MongoDbQuestionRepository()
+const mongoDbUserRepository = new MongoDbUserRepository()
 const v4IdGateway = new V4IdGateway();
 const mongoDbAnswerRepository = new MongoDbAnswerRepository()
-const answerToQuestion = new AnswerToQuestion(mongoDbAnswerRepository, v4IdGateway)
+const answerToQuestion = new AnswerToQuestion(mongoDbAnswerRepository, mongoDbUserRepository, mongoDbQuestionRepository, v4IdGateway)
 const getAllAnswers = new GetAllAnswers(mongoDbAnswerRepository)
 const getFriendAnswers = new GetFriendAnswers(mongoDbAnswerRepository)
 const getMyAnswers = new GetMyAnswers(mongoDbAnswerRepository)
@@ -18,18 +22,18 @@ const getMyAnswers = new GetMyAnswers(mongoDbAnswerRepository)
 
 answerRouter.use(authorization);
 
-answerRouter.post("/", async (req, res) => {
+answerRouter.post("/:questionId", async (req, res) => {
     try {          
     const body = {
-        question: req.body.question,
-        response: req.body.response,
-        answer: req.body.answer
+        questionId: req.params.questionId,
+        answerUserId: req.body.answerUserId,
+        userId: req.body.answerId
     }
 
     const answer = await answerToQuestion.execute({
-        question: body.question,
-        response: body.response,
-        answer: body.answer
+        answerUserId: body.answerUserId,
+        questionId: body.questionId,
+        userId: body.userId
     })
 
     return res.status(201).send(answer.props)

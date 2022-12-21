@@ -18,12 +18,12 @@ export class ResetPassword implements UseCase<ResetPasswordInput, void> {
     async execute(input: ResetPasswordInput): Promise<void> {
         const user = await this.userRepository.getById(input.id);
         const encryptedPassword = this.encryptionGateway.encrypt(input.password)
-        
+
         user.resetPassword({
             recoveryCode: input.recoveryCode,
             password: encryptedPassword,
         });
-        await this.userRepository.update(user);
+        await this.userRepository.updatePassword(user);
         return;
     }
 }

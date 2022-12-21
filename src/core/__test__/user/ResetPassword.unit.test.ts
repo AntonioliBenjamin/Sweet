@@ -2,6 +2,7 @@ import {InMemoryUserRepository} from "../adapters/repositories/InMemoryUserRepos
 import {UuidGateway} from "../adapters/gateways/UuidGateway";
 import {ResetPassword} from "../../usecases/user/ResetPassword";
 import {Gender, User} from "../../Entities/User";
+import { BcryptGateway } from "../adapters/gateways/BcryptGateway";
 
 
 const db = new Map();
@@ -17,7 +18,8 @@ describe('Unit - ResetPassword', () => {
 
     beforeAll(() => {
         const inMemoryUserRepository = new InMemoryUserRepository(db);
-        resetPassword = new ResetPassword(inMemoryUserRepository)
+        const encryptionGateway = new BcryptGateway()
+        resetPassword = new ResetPassword(inMemoryUserRepository, encryptionGateway)
 
         user = new User({
             userName: "JOJO",

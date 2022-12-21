@@ -55,6 +55,19 @@ export class MongoDbUserRepository implements UserRepository {
         return user;
     }
 
+    async updatePassword(user: User): Promise<void> {
+        const toUserModel = mongoDbUserMapper.fromDomain(user)
+        await UserModel.findOneAndUpdate(
+            {id: toUserModel.id},
+            {
+                $set: {
+                    password: toUserModel.password,
+                },
+            },
+        );
+        return;
+    }
+
     async delete(userId: string): Promise<void> {
         await UserModel.deleteOne({id: userId})
         return;
