@@ -21,11 +21,23 @@ export class InMemoryFollowRepository implements FollowedRepository {
     return follow;
   }
 
-  async getFollowersByUsersId(id: string): Promise<Followed[]> {
+
+
+  async getFollowersByUserId(userId: string): Promise<string[]> {
     const values = Array.from(this.db.values());
-    return values.filter(
-      (elm) => elm.props.userId === id || elm.props.addedBy === id
+    const follows = values.filter(
+      (elm) => elm.props.userId === userId 
     );
+    return follows.map(elm => elm.props.addedBy)
+  }
+
+  
+  async getFollowingsByUserId(userId: string): Promise<string[]> {
+    const values = Array.from(this.db.values());
+    const follows = values.filter(
+      (elm) => elm.props.addedBy === userId
+    );
+    return follows.map(elm => elm.props.userId)
   }
 
   async getById(id: string): Promise<Followed> {
@@ -44,5 +56,11 @@ export class InMemoryFollowRepository implements FollowedRepository {
     );
     match.map((elm) => this.db.delete(elm.props.id));
     return;
+  }
+
+  async exists(userId: string, addedBy: string): Promise<Followed> {
+    const values = Array.from(this.db.values());
+    const match = values.find(elm => elm.props.addedBy === userId && elm.props.userId === addedBy || elm.props.addedBy === addedBy && elm.props.userId === userId )
+    return match
   }
 }

@@ -5,9 +5,6 @@ export class InMemoryUserRepository implements UserRepository {
 
     constructor(private readonly db: Map<string, User>) {
     }
-    updatePassword(user: User): Promise<void> {
-        throw new Error("Method not implemented.");
-    }
 
     create(user: User): Promise<User> {
         this.db.set(user.props.id, user);
@@ -33,6 +30,11 @@ export class InMemoryUserRepository implements UserRepository {
     update(user: User): Promise<User> {
         this.db.set(user.props.id, user);
         return Promise.resolve(user);
+    }
+
+    updatePassword(user: User): Promise<void> {
+        this.db.set(user.props.id, user);
+        return
     }
 
     delete(userId: string): Promise<void> {

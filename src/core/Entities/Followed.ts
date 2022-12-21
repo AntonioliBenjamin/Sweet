@@ -1,6 +1,6 @@
 export type FollowedProperties = {
   id: string;
-  addedBy: string;
+  addedBy: string; 
   userId: string;
 };
 

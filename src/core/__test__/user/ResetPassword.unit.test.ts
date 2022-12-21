@@ -1,24 +1,18 @@
 import {InMemoryUserRepository} from "../adapters/repositories/InMemoryUserRepository";
-import {UuidGateway} from "../adapters/gateways/UuidGateway";
 import {ResetPassword} from "../../usecases/user/ResetPassword";
 import {Gender, User} from "../../Entities/User";
 import { BcryptGateway } from "../adapters/gateways/BcryptGateway";
 
-
 const db = new Map();
 
-
-
-
-
 describe('Unit - ResetPassword', () => {
-    let userId: string;
     let resetPassword : ResetPassword;
     let user : User;
+    let encryptionGateway: BcryptGateway
 
     beforeAll(() => {
         const inMemoryUserRepository = new InMemoryUserRepository(db);
-        const encryptionGateway = new BcryptGateway()
+        encryptionGateway = new BcryptGateway()
         resetPassword = new ResetPassword(inMemoryUserRepository, encryptionGateway)
 
         user = new User({
@@ -45,6 +39,7 @@ describe('Unit - ResetPassword', () => {
             password: "nouveau mot de passe",
             recoveryCode: "test123",
         })
-        expect(user.props.password).toEqual("nouveau mot de passe")
+        const match = encryptionGateway.decrypt("nouveau mot de passe", user.props.password)
+        expect(match).toBeTruthy() 
     })
 })

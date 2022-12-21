@@ -7,7 +7,7 @@ import { InMemoryFollowRepository } from "../adapters/repositories/InMemoryFollo
 import { InMemoryUserRepository } from "../adapters/repositories/InMemoryUserRepository";
 
 const db = new Map<string, User>();
-const dbFriends = new Map<string, Followed>();
+const dbFollow = new Map<string, Followed>();
 
 describe("Unit - CreatFriendShip", () => {
     let followUser: FollowUser;
@@ -16,9 +16,9 @@ describe("Unit - CreatFriendShip", () => {
     
     beforeAll(() => {
         const inMemoryUserRepository = new InMemoryUserRepository(db)
-        const inMemoryFriendShipRepository = new InMemoryFollowRepository(dbFriends)
+        const inMemoryFriendShipRepository = new InMemoryFollowRepository(dbFollow)
         const idGateway = new UuidGateway()
-        followUser = new FollowUser(inMemoryUserRepository, inMemoryFriendShipRepository, idGateway)
+        followUser = new FollowUser(inMemoryFriendShipRepository, idGateway)
 
         sender = User.create({
             age: 15,
@@ -58,20 +58,21 @@ describe("Unit - CreatFriendShip", () => {
         expect(result.props.userId).toEqual("22222")
         expect(result.props.addedBy).toEqual("11111")
         expect(result.props.id).toBeTruthy()
+        dbFollow.clear()
     })
 
     it("should return followed if followed is already establsihed", async () => {
-        const followed = Followed.create({
+        const followed = new Followed({
             id: "already exist",
             userId: recipient.props.id,
             addedBy: sender.props.id
         })
-        dbFriends.set(followed.props.id, followed)
-
-        const result = followUser.execute({
+        dbFollow.set(followed.props.id, followed)
+        
+        const result = await followUser.execute({
             addedBy: sender.props.id, 
             userId: recipient.props.id
         })
-        await expect(result).rejects.toThrow(new FollowErrors.AlreadyExist) 
+        expect(result.props.id).toEqual("already exist")
     })
 })

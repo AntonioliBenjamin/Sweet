@@ -202,7 +202,7 @@ userRouter.patch("/", async (req: AuthentifiedRequest, res) => {
   }
 });
 
-userRouter.get("/all", validator.params(GetAllUsersBySchoolIdSchema), async (req: AuthentifiedRequest, res) => {
+userRouter.get("/all", async (req: AuthentifiedRequest, res) => {
     try {
       const users = await getAllUsersBySchool.execute(req.user.schoolId);
 
@@ -217,7 +217,7 @@ userRouter.get("/all", validator.params(GetAllUsersBySchoolIdSchema), async (req
   }
 );
 
-userRouter.delete("/", validator.params(DeleteUserSchema), async (req: AuthentifiedRequest, res) => {
+userRouter.delete("/", async (req: AuthentifiedRequest, res) => {
     try {
       await deleteUser.execute({
         userId: req.user.id,

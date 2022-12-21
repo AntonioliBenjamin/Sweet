@@ -22,14 +22,14 @@ const getMyAnswers = new GetMyAnswers(mongoDbAnswerRepository)
 
 answerRouter.use(authorization);
 
-answerRouter.post("/:questionId", async (req, res) => {
+answerRouter.post("/:questionId", async (req: AuthentifiedRequest, res) => {
     try {          
     const body = {
         questionId: req.params.questionId,
         answerUserId: req.body.answerUserId,
-        userId: req.body.answerId
+        userId: req.body.userId
     }
-
+    
     const answer = await answerToQuestion.execute({
         answerUserId: body.answerUserId,
         questionId: body.questionId,
