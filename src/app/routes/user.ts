@@ -2,7 +2,7 @@ import { MailService } from "@sendgrid/mail";
 import { ResetPassword } from "../../core/usecases/user/ResetPassword";
 import { SendGridGateway } from "../../adapters/gateways/SendGridGateway";
 import { GenerateRecoveryCode } from "../../core/usecases/user/GenerateRecoveryCode";
-import { GetAllUsersBySchool } from "../../core/usecases/user/GetAllUsersBySchool";
+import { GetAllMyPotentialFriends } from "../../core/usecases/user/GetAllMyPotentialFriends";
 import { UserApiUserMapper } from "../dtos/UserApiUserMapper";
 import { SchoolDbRepository } from "../../adapters/repositories/school/SchoolDbRepository";
 import express from "express";
@@ -38,12 +38,26 @@ const mongoDbFollowRepository = new MongoDbFollowRepository();
 const bcryptGateway = new BcryptGateway();
 const v4IdGateway = new V4IdGateway();
 const sendGridGateway = new SendGridGateway(mailService, emailSender);
-const signUp = new SignUp(mongoDbUserRepository, schoolDbRepository, v4IdGateway, bcryptGateway);
+const signUp = new SignUp(
+  mongoDbUserRepository,
+  schoolDbRepository,
+  v4IdGateway,
+  bcryptGateway
+);
 const signIn = new SignIn(mongoDbUserRepository, bcryptGateway);
 const updateUser = new UpdateUser(mongoDbUserRepository);
-const deleteUser = new DeleteUser(mongoDbUserRepository, mongoDbFollowRepository, mongoDbAnswerRepository);
-const getAllUsersBySchool = new GetAllUsersBySchool(mongoDbUserRepository);
-const generateRecoveryCode = new GenerateRecoveryCode(mongoDbUserRepository, v4IdGateway);
+const deleteUser = new DeleteUser(
+  mongoDbUserRepository,
+  mongoDbFollowRepository,
+  mongoDbAnswerRepository
+);
+const getAllMyPotentialFriends = new GetAllMyPotentialFriends(
+  mongoDbUserRepository
+);
+const generateRecoveryCode = new GenerateRecoveryCode(
+  mongoDbUserRepository,
+  v4IdGateway
+);
 const resetPassword = new ResetPassword(mongoDbUserRepository, bcryptGateway);
 const userApiUserMapper = new UserApiUserMapper();
 mailService.setApiKey(process.env.SENDGRID_API_KEY);
@@ -203,33 +217,35 @@ userRouter.patch("/", async (req: AuthentifiedRequest, res) => {
 });
 
 userRouter.get("/all", async (req: AuthentifiedRequest, res) => {
-    try {
-      const users = await getAllUsersBySchool.execute(req.user.schoolId);
+  try {
+    const users = await getAllMyPotentialFriends.execute(req.user.schoolId);
+    const userApiResponse = users.map((elm) =>
+      userApiUserMapper.fromDomain(elm)
+    );
+    const ArrayWithoutCurrentUser = userApiResponse.filter(
+      (elm) => elm.id !== req.user.id
+    );
 
-      return res
-        .status(200)
-        .send(users.map((elm) => userApiUserMapper.fromDomain(elm)));
-    } catch (err) {
-      return res.status(400).send({
-        message: "An error occurred",
-      });
-    }
+    return res.status(200).send(ArrayWithoutCurrentUser);
+  } catch (err) {
+    return res.status(400).send({
+      message: "An error occurred",
+    });
   }
-);
+});
 
 userRouter.delete("/", async (req: AuthentifiedRequest, res) => {
-    try {
-      await deleteUser.execute({
-        userId: req.user.id,
-      });
-      return res.sendStatus(200)
-    } catch (err) {
-      console.error(err);
-      return res.status(400).send({
-        message: "An error occurred",
-      });
-    }
+  try {
+    await deleteUser.execute({
+      userId: req.user.id,
+    });
+    return res.sendStatus(200);
+  } catch (err) {
+    console.error(err);
+    return res.status(400).send({
+      message: "An error occurred",
+    });
   }
-);
+});
 
 export { userRouter };

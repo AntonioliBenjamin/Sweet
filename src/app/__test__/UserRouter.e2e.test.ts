@@ -148,10 +148,24 @@ describe("E2E - User Router", () => {
     });
 
     it("Should get/all", async () => {
-        const result = await userRepository.create(user);
+        const curentUser = User.create({
+            userName: "jojolapin",
+            email: "jojolapin@gmail.com",
+            password: "1234",
+            id: "curent user id",
+            age: 15,
+            firstName: "mich",
+            gender: Gender.BOY,
+            lastName: "popo",
+            schoolId: "1234",
+            section: "dfsdfs"
+        });
+        await userRepository.create(curentUser);
+        await userRepository.create(user);
+
         accessKey = sign(
             {
-                id: user.props.id,
+                id: "curent user id",
                 schoolId: user.props.schoolId,
                 email: user.props.email,
             },
@@ -162,6 +176,7 @@ describe("E2E - User Router", () => {
             .get(`/user/all`)
             .set("access_key", accessKey)
             .expect((response) => {
+                console.log(response.body)
                 const responseBody = response.body;
                 expect(responseBody).toHaveLength(1);
             })
