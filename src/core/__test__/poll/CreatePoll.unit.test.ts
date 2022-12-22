@@ -20,7 +20,9 @@ describe("Unit - CreatePoll", () => {
     });
 
     it("should create poll", async () => {
-        const result = await createPoll.execute();
+        const result = await createPoll.execute({
+            numberOfQuestions :12
+        });
         expect(result).toBe(void 0);
     });
 });
