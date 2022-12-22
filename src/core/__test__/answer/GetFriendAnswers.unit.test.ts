@@ -1,13 +1,15 @@
-import { Answer } from "../../Entities/Answer"
-import { Gender } from "../../Entities/User"
-import { GetFriendAnswers } from "../../usecases/answer/GetFriendAnswers";
-import { InMemoryAnswerRepository } from "../adapters/repositories/InMemoryAnswerRepository";
+import {Answer} from "../../Entities/Answer";
+import {Gender} from "../../Entities/User";
+import {GetFriendAnswers} from "../../usecases/answer/GetFriendAnswers";
+import {InMemoryAnswerRepository} from "../adapters/repositories/InMemoryAnswerRepository";
 
 const db = new Map<string, Answer>();
 
 describe("Unit - AnswerToQuestion", () => {
-
     it("should get follow Answers", async () => {
+        const inMemoryAnswerRepository = new InMemoryAnswerRepository(db);
+        const getFriendAnswers = new GetFriendAnswers(inMemoryAnswerRepository);
+
         const answer = new Answer({
             answerId: "1234",
             question: {
@@ -25,9 +27,10 @@ describe("Unit - AnswerToQuestion", () => {
                 gender: Gender.GIRL,
             },
             answer: "8888",
-            createdAt: new Date()   
+            createdAt: new Date()
         })
-        
+        db.set(answer.props.answerId, answer);
+
         const answer2 = new Answer({
             answerId: "4321",
             question: {
@@ -45,14 +48,12 @@ describe("Unit - AnswerToQuestion", () => {
                 gender: Gender.GIRL,
             },
             answer: "8888",
-            createdAt: new Date()   
+            createdAt: new Date()
         })
-        db.set(answer.props.answerId, answer)
-        db.set(answer2.props.answerId, answer2)
-        const inMemoryAnswerRepository = new InMemoryAnswerRepository(db)
-        const getFriendAnswers = new GetFriendAnswers(inMemoryAnswerRepository)
+        db.set(answer2.props.answerId, answer2);
 
-        const result = await getFriendAnswers.execute("8888")
-        expect(result).toHaveLength(2)
+        const result = await getFriendAnswers.execute("8888");
+
+        expect(result).toHaveLength(2);
     })
 })

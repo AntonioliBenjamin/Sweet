@@ -1,66 +1,65 @@
-import { Followed } from "../../../Entities/Followed";
-import { FollowedRepository } from "../../../repositories/FollowedRepository";
+import {Followed} from "../../../Entities/Followed";
+import {FollowedRepository} from "../../../repositories/FollowedRepository";
 
 export class InMemoryFollowRepository implements FollowedRepository {
-  constructor(private readonly db: Map<string, Followed>) {}
+    constructor(
+        private readonly db: Map<string, Followed>
+    ) {
+    }
 
-  async create(followed: Followed): Promise<Followed> {
-    this.db.set(followed.props.id, followed);
-    return followed;
-  }
+    async create(followed: Followed): Promise<Followed> {
+        this.db.set(followed.props.id, followed);
 
-  async getFollowByUsersId(
-    addedBy: string,
-    userId: string
-  ): Promise<Followed> {
-    const values = Array.from(this.db.values());
-    const follow = values.find(
-      (v) =>
-        v.props.userId === userId && v.props.addedBy === addedBy
-    );
-    return follow;
-  }
+        return followed;
+    }
 
+    async getFollowersByUserId(userId: string): Promise<string[]> {
+        const values = Array.from(this.db.values());
 
+        const follows = values.filter(
+            (elm) => elm.props.userId === userId
+        );
 
-  async getFollowersByUserId(userId: string): Promise<string[]> {
-    const values = Array.from(this.db.values());
-    const follows = values.filter(
-      (elm) => elm.props.userId === userId 
-    );
-    return follows.map(elm => elm.props.addedBy)
-  }
+        return follows.map(elm => elm.props.addedBy);
+    }
 
-  
-  async getFollowingsByUserId(userId: string): Promise<string[]> {
-    const values = Array.from(this.db.values());
-    const follows = values.filter(
-      (elm) => elm.props.addedBy === userId
-    );
-    return follows.map(elm => elm.props.userId)
-  }
+    async getFollowingsByUserId(userId: string): Promise<string[]> {
+        const values = Array.from(this.db.values());
 
-  async getById(id: string): Promise<Followed> {
-    return this.db.get(id);
-  }
+        const follows = values.filter(
+            (elm) => elm.props.addedBy === userId
+        );
 
-  async delete(id: string): Promise<void> {
-    this.db.delete(id);
-    return;
-  }
+        return follows.map(elm => elm.props.userId);
+    }
 
-  async deleteAllByUserId(userId: string): Promise<void> {
-    const values = Array.from(this.db.values());
-    const match = values.filter(
-      (elm) => elm.props.userId === userId || elm.props.addedBy === userId
-    );
-    match.map((elm) => this.db.delete(elm.props.id));
-    return;
-  }
+    async getById(id: string): Promise<Followed> {
+        return this.db.get(id);
+    }
 
-  async exists(userId: string, addedBy: string): Promise<Followed> {
-    const values = Array.from(this.db.values());
-    const match = values.find(elm => elm.props.addedBy === userId && elm.props.userId === addedBy || elm.props.addedBy === addedBy && elm.props.userId === userId )
-    return match
-  }
+    async delete(id: string): Promise<void> {
+        this.db.delete(id);
+
+        return;
+    }
+
+    async deleteAllByUserId(userId: string): Promise<void> {
+        const values = Array.from(this.db.values());
+
+        const match = values.filter(
+            (elm) => elm.props.userId === userId || elm.props.addedBy === userId
+        );
+        match.map((elm) => this.db.delete(elm.props.id));
+
+        return;
+    }
+
+    async exists(userId: string, addedBy: string): Promise<Followed> {
+        const values = Array.from(this.db.values());
+
+        return values.find(
+            elm => elm.props.addedBy === userId && elm.props.userId === addedBy
+                || elm.props.addedBy === addedBy && elm.props.userId === userId
+        )
+    }
 }
