@@ -1,4 +1,5 @@
 import {QuestionProperties} from "./Question";
+import {UserErrors} from "../errors/UserErrors";
 
 export type PollProperties = {
     pollId: string,
@@ -22,16 +23,10 @@ export class Poll {
         })
     }
 
-    canAddQuestion(questionId: string) {
-        const question = this.props.questions.find(elm => elm.questionId === questionId)
-        if (question) {
-            return false;
-        }
-        return true;
-    }
-
-    addQuestion(question: QuestionProperties) {
-        this.props.questions.push(question)
+    update(props: {
+        questions: Array<QuestionProperties>
+    }) {
+        this.props.questions = props.questions;
     }
 
 }

@@ -9,7 +9,6 @@ export interface PollRepository {
 
     getByPollId(pollId: string): Promise<Poll>;
 
-    addQuestions(poll: Poll, questions: QuestionProperties[]): Promise<Poll>;
+    update(poll: Poll): Promise<Poll>;
 
-    update(input: Poll): Promise<Poll>;
 }

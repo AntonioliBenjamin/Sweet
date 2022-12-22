@@ -1,5 +1,6 @@
 import {QuestionRepository} from "../../../repositories/QuestionRepository";
-import {Question} from "../../../Entities/Question";
+import {Question, QuestionProperties} from "../../../Entities/Question";
+import {questionFixtures} from "../../../fixtures/questionFixtures";
 
 export class InMemoryQuestionRepository implements QuestionRepository {
     constructor(private readonly db: Map<string, Question>) {
@@ -17,5 +18,9 @@ export class InMemoryQuestionRepository implements QuestionRepository {
     getByQuestionId(questionId: string): Promise<Question> {
         const question = this.db.get(questionId);
         return Promise.resolve(question);
+    }
+
+    selectRandomQuestions(numberOfQuestions: number): Promise<QuestionProperties[]> {
+        return Promise.resolve(questionFixtures);
     }
 }

@@ -4,6 +4,8 @@ import {MongoDbPollMapper} from "../mappers/MongoDbPollMapper";
 import {PollRepository} from "../../../../core/repositories/PollRepository";
 import {PollErrors} from "../../../../core/errors/PollErrors";
 import {UserModel} from "../models/user";
+import {QuestionProperties} from "../../../../core/Entities/Question";
+import {QuestionModel} from "../models/question";
 
 export const mongoDbPollMapper = new MongoDbPollMapper();
 
@@ -41,4 +43,6 @@ export class MongoDbPollRepository implements PollRepository {
         );
         return poll;
     }
+
+
 }

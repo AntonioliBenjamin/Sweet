@@ -4,13 +4,17 @@ import {Poll} from "../../core/Entities/Poll";
 import {MongoDbPollRepository} from "../repositories/mongoDb/repositories/MongoDbPollRepository";
 import {PollModel} from "../repositories/mongoDb/models/poll";
 import {Question} from "../../core/Entities/Question";
+import {MongoDbQuestionRepository} from "../repositories/mongoDb/repositories/MongoDbQuestionRepository";
+import {questionFixtures} from "../../core/fixtures/questionFixtures";
 
 describe('Integration - MongoDbPollRepository', () => {
     let mongoDbPollRepository: MongoDbPollRepository;
+    let mongoDbQuestionRepository: MongoDbQuestionRepository;
     let poll: Poll;
     let poll2: Poll;
     let result: Poll;
     let question: Question;
+    let questionMongoFixtures: Question[]
 
     beforeAll(async () => {
         const databaseId = v4();
@@ -58,19 +62,9 @@ describe('Integration - MongoDbPollRepository', () => {
         expect(result.props.pollId).toEqual("1234")
     })
 
-    it("Should update questions of poll", async () => {
-        question = new Question({
-                questionId: "7890",
-                description: "Description",
-                picture: "Picture"
-            }
-        )
-        poll.addQuestion(question.props)
+    it("Should update poll with questions", async () => {
+        poll.props.questions = questionFixtures
         result = await mongoDbPollRepository.update(poll);
-        expect(result.props.questions[0]).toEqual({
-            questionId: "7890",
-            description: "Description",
-            picture: "Picture"
-        })
+        expect(result.props.questions).toHaveLength(12)
     })
 });
