@@ -6,6 +6,7 @@ import { SignUp } from "../../usecases/user/SignUp";
 import { UuidGateway } from "../adapters/gateways/UuidGateway";
 import { InMemorySchoolRepository } from "../adapters/repositories/InMemorySchoolRepository";
 import { School } from "../../Entities/School";
+import {UserErrors} from "../../errors/UserErrors";
 
 const db = new Map<string, User>();
 const dbSchool = new Map<string, School>();
@@ -75,7 +76,7 @@ describe("Unit - SignUp", () => {
         password: "1234",
       });
 
-    await expect(() => result()).rejects.toThrow();
+    await expect(() => result()).rejects.toThrow(UserErrors.WrongEmail);
   });
 
   it("should throw if password doesnt match", async () => {
@@ -85,6 +86,6 @@ describe("Unit - SignUp", () => {
         password: "5678",
       });
       
-    await expect(() => result()).rejects.toThrow();
+    await expect(() => result()).rejects.toThrow(UserErrors.WrongPassword);
   });
 });
