@@ -24,6 +24,8 @@ describe("E2E - Poll Router", () => {
     let poll: Poll;
 
     beforeAll(async () => {
+        questionRepository = new MongoDbQuestionRepository();
+        pollRepository = new MongoDbPollRepository();
         app.use(express.json());
         app.use("/poll", pollRouter);
 
@@ -35,20 +37,22 @@ describe("E2E - Poll Router", () => {
             }
             console.info("Connected to mongodb");
         });
-        questionRepository = new MongoDbQuestionRepository();
-        pollRepository = new MongoDbPollRepository();
+
         poll = Poll.create({
             pollId: "5678"
         })
+
         question = Question.create({
             questionId: "1234",
             description: "yes",
             picture: "http://yes"
         });
     });
+
     afterEach(async () => {
         await PollModel.collection.drop();
     });
+
     afterAll(async () => {
         await mongoose.connection.dropDatabase();
         await mongoose.connection.close();
@@ -65,6 +69,7 @@ describe("E2E - Poll Router", () => {
             },
             "maytheforcebewithyou"
         );
+
         await supertest(app)
             .get("/poll/all")
             .set("access_key", accessKey)
@@ -72,11 +77,10 @@ describe("E2E - Poll Router", () => {
                 const responseBody = response.body;
                 expect(responseBody).toHaveLength(1);
             })
-            .expect(201);
+            .expect(200);
     });
 
     it("Should post/poll/create", async () => {
-
         await Promise.all( questionMongoFixtures.map( elem =>  questionRepository.create(elem)));
 
         accessKey = sign(
@@ -100,7 +104,5 @@ describe("E2E - Poll Router", () => {
             })
             .expect(201);
     });
-
-
 });
 

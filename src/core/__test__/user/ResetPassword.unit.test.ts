@@ -39,7 +39,8 @@ describe('Unit - ResetPassword', () => {
             password: "nouveau mot de passe",
             recoveryCode: "test123",
         })
-        const match = encryptionGateway.decrypt("nouveau mot de passe", user.props.password)
+
+        const match = encryptionGateway.decrypt("nouveau mot de passe", user.props.password) 
         expect(match).toBeTruthy() 
     })
 })

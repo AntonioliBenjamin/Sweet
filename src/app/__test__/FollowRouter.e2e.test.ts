@@ -14,7 +14,6 @@ import { UserModel } from "../../adapters/repositories/mongoDb/models/user";
 import { FollowModel } from "../../adapters/repositories/mongoDb/models/follow";
 import { Followed } from "../../core/Entities/Followed";
 
-
 const app = express();
 
 describe("E2E - FriendShipRouter", () => {
@@ -57,7 +56,7 @@ describe("E2E - FriendShipRouter", () => {
       section: "cp",
       createdAt: new Date(),
       updatedAt: null,
-      recoveryCode: null
+      recoveryCode: null,
     });
 
     user2 = new User({
@@ -73,11 +72,10 @@ describe("E2E - FriendShipRouter", () => {
       section: "cp",
       createdAt: new Date(),
       updatedAt: null,
-      recoveryCode: null
+      recoveryCode: null,
     });
 
-    
-    user3 =  new User({
+    user3 = new User({
       email: "pollicr@example.com",
       id: "mazen",
       password: "jkhfsdkjhfkjs",
@@ -90,34 +88,33 @@ describe("E2E - FriendShipRouter", () => {
       section: "cp",
       createdAt: new Date(),
       updatedAt: null,
-      recoveryCode: null
+      recoveryCode: null,
     });
 
     follow = new Followed({
       id: "1111",
       userId: "cedric",
-      addedBy: "mazen", 
-    })
+      addedBy: "mazen",
+    });
 
     follow2 = new Followed({
       id: "2222",
       userId: "cedric",
-      addedBy: "chalom", 
-    })
+      addedBy: "chalom",
+    });
 
-    
     follow3 = new Followed({
       id: "3333",
       userId: "chalom",
-      addedBy: "cedric", 
-    })
+      addedBy: "cedric",
+    });
   });
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     await userRepository.create(user);
     await userRepository.create(user2);
     await userRepository.create(user3);
-  })
+  });
 
   afterEach(async () => {
     await UserModel.collection.drop();
@@ -131,93 +128,93 @@ describe("E2E - FriendShipRouter", () => {
 
   it("should post/follow", async () => {
     accessKey = sign(
-        {
-            id: user.props.id,
-            schoolId: user.props.schoolId
-        },
-        "maytheforcebewithyou" 
+      {
+        id: user.props.id,
+        schoolId: user.props.schoolId,
+      },
+      "maytheforcebewithyou"
     );
-    
-    await supertest(app)
-        .post("/follow")
-        .set("access_key", accessKey)
-        .send({
-          userIdArray: ["cedric", "mazen"],
-          addedBy: "chalom", 
-        })
 
-        .expect( (response) => {
-            const responseBody = response.body;
-           expect(responseBody).toHaveLength(2)
-        })
-        .expect(201)
-  })
+    await supertest(app)
+      .post("/follow")
+      .set("access_key", accessKey)
+      .send({
+        userIdArray: ["cedric", "mazen"],
+        addedBy: "chalom",
+      })
+
+      .expect((response) => {
+        const responseBody = response.body;
+        expect(responseBody).toHaveLength(2);
+      })
+      .expect(201);
+  });
 
   it("should get/follow/mine", async () => {
-    await followRepository.create(follow)
-    await followRepository.create(follow2)
-    await followRepository.create(follow3)
+    await followRepository.create(follow);
+    await followRepository.create(follow2);
+    await followRepository.create(follow3);
 
     accessKey = sign(
       {
-          id: user2.props.id,
-          schoolId: user2.props.schoolId
+        id: user2.props.id,
+        schoolId: user2.props.schoolId,
       },
-      "maytheforcebewithyou" 
-  );
-  
-  await supertest(app)
+      "maytheforcebewithyou"
+    );
+
+    await supertest(app)
       .get(`/follow/mine`)
       .set("access_key", accessKey)
 
       .expect((response) => {
-          const responseBody = response.body;
-          expect(responseBody).toHaveLength(1)
+        const responseBody = response.body;
+        expect(responseBody).toHaveLength(1);
       })
-      .expect(200)
-})
+      .expect(200);
+  });
 
   it("should get/follow/theirs", async () => {
-      await followRepository.create(follow)
-      await followRepository.create(follow2)
-      await followRepository.create(follow3)
-
-      accessKey = sign(
-        {
-            id: user2.props.id,
-            schoolId: user2.props.schoolId
-        },
-        "maytheforcebewithyou" 
-    );
-    
-    await supertest(app)
-        .get(`/follow/theirs`)
-        .set("access_key", accessKey)
-
-        .expect((response) => {
-            const responseBody = response.body;
-            expect(responseBody).toHaveLength(2)
-        })
-        .expect(200)
-  })
-
-  it("should delete/", async () => {
-    await followRepository.create(follow2)
+    await followRepository.create(follow);
+    await followRepository.create(follow2);
+    await followRepository.create(follow3);
 
     accessKey = sign(
       {
-          id: user.props.id,
-          schoolId: user.props.schoolId
+        id: user2.props.id,
+        schoolId: user2.props.schoolId,
       },
-      "maytheforcebewithyou" 
-  );
-  
-  await supertest(app)
+      "maytheforcebewithyou"
+    );
+
+    await supertest(app)
+      .get(`/follow/theirs`)
+      .set("access_key", accessKey)
+
+      .expect((response) => {
+        const responseBody = response.body;
+        expect(responseBody).toHaveLength(2);
+      })
+      .expect(200);
+  });
+
+  it("should delete/", async () => {
+    await followRepository.create(follow2);
+
+    accessKey = sign(
+      {
+        id: user.props.id,
+        schoolId: user.props.schoolId,
+      },
+      "maytheforcebewithyou"
+    );
+
+    await supertest(app)
       .delete("/follow")
       .set("access_key", accessKey)
       .send({
-        id: follow2.props.id
+        id: follow2.props.id,
       })
-      .expect(200)
-  })
+      .expect(200);
+  });
 });

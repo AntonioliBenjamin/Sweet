@@ -1,5 +1,5 @@
-import * as joi from "joi";
+import joi from "joi";
 
 export const DeleteUserSchema = joi.object({
-    id: joi.string().required()
-})
+  id: joi.string().required(),
+});

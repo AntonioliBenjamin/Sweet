@@ -1,9 +1,10 @@
-import { V4IdGateway } from '../gateways/V4IdGateway';
+import { V4IdGateway } from "../gateways/V4IdGateway";
 
 describe("Unit - V4IdGateway", () => {
+  it("should create an unique id", () => {
     const v4IdGateway = new V4IdGateway();
-    it("should create an unique id", () => {
-        const result = v4IdGateway.generate()
-        expect(result.length).toBeGreaterThan(0);
-    })
-})
+
+    const result = v4IdGateway.generate();
+    expect(result.length).toBeGreaterThan(0);
+  });
+});

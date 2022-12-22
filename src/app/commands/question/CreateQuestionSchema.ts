@@ -1,6 +1,6 @@
-import * as joi from "joi";
+import joi from "joi";
 
 export const CreateQuestionSchema = joi.object({
-    description: joi.string().required(),
-    picture: joi.string().required(),
-})
+  description: joi.string().required(),
+  picture: joi.string().required(),
+});

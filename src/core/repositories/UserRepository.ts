@@ -1,17 +1,17 @@
-import {User} from "../Entities/User";
+import { User } from "../Entities/User";
 
 export interface UserRepository {
-    create(input: User): Promise<User>;
+  create(input: User): Promise<User>;
 
-    getByEmail(email: string): Promise<User>;
+  getByEmail(email: string): Promise<User>;
 
-    getById(userId: string): Promise<User>;
+  getById(userId: string): Promise<User>;
 
-    getAllUsersBySchool(schoolId: string): Promise<User[]>
+  getAllUsersBySchool(schoolId: string): Promise<User[]>;
 
-    update (input: User) : Promise<User>;
+  update(input: User): Promise<User>;
 
-    delete(userId:string): Promise<void>;
+  delete(userId: string): Promise<void>;
 
-    updatePassword(user: User): Promise<void>
+  updatePassword(user: User): Promise<void>;
 }

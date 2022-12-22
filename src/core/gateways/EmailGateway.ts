@@ -1,3 +1,3 @@
 export interface EmailGateway {
-    sendRecoveryCode(payload: {email: string, resetLink: string, userName: string}): void
+    sendRecoveryCode(payload: {email: string, resetLink: string, userName: string}): void;
 }
