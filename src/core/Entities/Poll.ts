@@ -1,5 +1,4 @@
 import {QuestionProperties} from "./Question";
-import {UserErrors} from "../errors/UserErrors";
 
 export type PollProperties = {
     pollId: string,
@@ -28,5 +27,4 @@ export class Poll {
     }) {
         this.props.questions = props.questions;
     }
-
 }

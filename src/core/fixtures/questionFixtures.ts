@@ -1,6 +1,5 @@
 import {QuestionProperties} from "../Entities/Question";
 
-
 export const questionFixtures: QuestionProperties[] = [
     {
         questionId: "1",
@@ -62,5 +61,4 @@ export const questionFixtures: QuestionProperties[] = [
         description: "yes",
         picture: "http://from"
     },
-
 ]

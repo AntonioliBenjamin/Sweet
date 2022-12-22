@@ -1,90 +1,88 @@
 import {Question} from "../Entities/Question";
 
-
 export const questionMongoFixtures: Question[] = [
     {
-        props : {
+        props: {
             questionId: "1",
             description: "yes",
             picture: "http://from"
         },
     },
     {
-        props : {
+        props: {
             questionId: "2",
             description: "yes",
             picture: "http://from"
         },
     },
     {
-        props : {
+        props: {
             questionId: "3",
             description: "yes",
             picture: "http://from"
         },
     },
     {
-        props : {
+        props: {
             questionId: "4",
             description: "yes",
             picture: "http://from"
         },
     },
     {
-        props : {
+        props: {
             questionId: "5",
             description: "yes",
             picture: "http://from"
         },
     },
     {
-        props : {
+        props: {
             questionId: "6",
             description: "yes",
             picture: "http://from"
         },
     },
     {
-        props : {
+        props: {
             questionId: "7",
             description: "yes",
             picture: "http://from"
         },
     },
     {
-        props : {
+        props: {
             questionId: "8",
             description: "yes",
             picture: "http://from"
         },
     },
     {
-        props : {
+        props: {
             questionId: "9",
             description: "yes",
             picture: "http://from"
         },
     },
     {
-        props : {
+        props: {
             questionId: "10",
             description: "yes",
             picture: "http://from"
         },
     },
     {
-        props : {
+        props: {
             questionId: "11",
             description: "yes",
             picture: "http://from"
         },
     },
     {
-        props : {
+        props: {
             questionId: "12",
             description: "yes",
             picture: "http://from"
         },
     },
-
 ]

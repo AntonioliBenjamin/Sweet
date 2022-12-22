@@ -18,14 +18,19 @@ export class CreatePoll implements UseCase<CreatePollInput, void> {
 
     async execute(input: CreatePollInput): Promise<void> {
         const id = this.idGateway.generate();
+
         const poll = Poll.create({
             pollId: id,
         })
+
         const questions = await this.questionRepository.selectRandomQuestions(input.numberOfQuestions);
+
         poll.update({
-            questions : questions
+            questions: questions
         })
+
         await this.pollRepository.update(poll);
+
         return
     }
 }
