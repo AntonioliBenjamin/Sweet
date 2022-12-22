@@ -8,19 +8,29 @@ import { MongoDbAnswerRepository } from "../../adapters/repositories/mongoDb/rep
 import { Answer } from "../../core/Entities/Answer";
 import { AnswerRepository } from "../../core/repositories/AnswerRepository";
 import { answerRouter } from "../routes/answer";
-import { Gender } from "../../core/Entities/User";
+import { Gender, User } from "../../core/Entities/User";
 import { v4 } from "uuid";
+import { UserRepository } from "../../core/repositories/UserRepository";
+import { MongoDbUserRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
+import { UserModel } from "../../adapters/repositories/mongoDb/models/user";
+import { MongoDbQuestionRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbQuestionRepository";
+import { QuestionRepository } from "../../core/repositories/QuestionRepository";
+import { Question } from "../../core/Entities/Question";
 
 const app = express();
 
 describe("E2E - FriendShipRouter", () => {
   let accessKey;
   let answerRepository: AnswerRepository;
+  let userRepository: UserRepository;
   let answer: Answer;
   let answer2: Answer;
+  let questionRepository: QuestionRepository;
+  let question: Question;
 
   beforeAll(() => {
     answerRepository = new MongoDbAnswerRepository();
+    userRepository = new MongoDbUserRepository();
 
     app.use(express.json());
     app.use("/answer", answerRouter);
@@ -33,6 +43,14 @@ describe("E2E - FriendShipRouter", () => {
       }
       console.info("Connected to mongodb");
     });
+
+    questionRepository = new MongoDbQuestionRepository();
+    question = Question.create({
+        questionId: "9999",
+        description: "yes",
+        picture: "http://yes"
+    });
+
     answer = new Answer({
       answerId: "1234",
       question: {
@@ -89,6 +107,25 @@ describe("E2E - FriendShipRouter", () => {
   });
 
   it("should post/answer", async () => {
+    await questionRepository.create(question)
+
+    const user = new User({
+      email: "user@example.com",
+      id: "123456",
+      password: "password",
+      userName: "user Name",
+      age: 15,
+      firstName: "michou",
+      gender: Gender.BOY,
+      lastName: "papito",
+      schoolId: "456",
+      section: "cp",
+      createdAt: new Date(),
+      updatedAt: null,
+      recoveryCode: null
+    }); 
+    await userRepository.create(user);
+
     accessKey = sign(
       {
         id: "9999",
@@ -98,30 +135,19 @@ describe("E2E - FriendShipRouter", () => {
     );
 
     await supertest(app)
-      .post("/answer")
+      .post("/answer/9999")
       .set("access_key", accessKey)
       .send({
-        question: {
-          questionId: "1234",
-          description: "yes",
-          picture: "http://yes",
-        },
-        response: {
-          userId: "8888",
-          firstName: "name",
-          lastName: "lastname",
-          userName: "username",
-          schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
-          section: "1er L",
-          gender: Gender.GIRL,
-        },
-        answer: "9999",
+        userId: "123456",
+        answerUserId: "9999",
       })
       .expect((response) => {
         const responseBody = response.body;
         expect(responseBody.answerId).toBeTruthy();
       })
       .expect(201);
+
+      await UserModel.collection.drop();
   });
 
   it("should get all answers", async () => {
@@ -143,7 +169,7 @@ describe("E2E - FriendShipRouter", () => {
       .expect(200);
   });
 
-  it("should get all follow answers", async () => {
+  it("should get/answer/all", async () => {
     accessKey = sign(
       {
         id: "9999",
@@ -162,7 +188,7 @@ describe("E2E - FriendShipRouter", () => {
       .expect(200);
   });
 
-  it("should get all my answers", async () => {
+  it("should get/answer/mine", async () => {
     accessKey = sign(
       {
         id: "9999",
@@ -177,6 +203,24 @@ describe("E2E - FriendShipRouter", () => {
       .expect((response) => {
         const responseBody = response.body;
         expect(responseBody).toHaveLength(2);
+      })
+      .expect(200);
+  });
+
+  it("should delete/answer", async () => {
+    accessKey = sign(
+      {
+        id: "9999",
+        schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
+      },
+      "maytheforcebewithyou"
+    );
+
+    await supertest(app)
+      .delete("/answer")
+      .set("access_key", accessKey)
+      .send({
+        answerId: "1234",
       })
       .expect(200);
   });

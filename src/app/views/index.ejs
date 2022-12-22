@@ -15,17 +15,21 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
-
   </head>
-  <body style="background-image: url('https://images.theconversation.com/files/270320/original/file-20190423-15218-9to8i9.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=900.0&fit=crop'); background-repeat: no-repeat; background-size: cover;">
-
-    <h1 style="text-align: center;">MISE A JOUR DU MOT DE PASSE</h1>
-    <p style="text-align: center;">
+  <body
+    style="
+      background-image: url('https://images.theconversation.com/files/270320/original/file-20190423-15218-9to8i9.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=900.0&fit=crop');
+      background-repeat: no-repeat;
+      background-size: cover;
+    "
+  >
+    <h1 style="text-align: center">MISE A JOUR DU MOT DE PASSE</h1>
+    <p style="text-align: center">
       Minimum de huit caractères, au moins une lettre, un chiffre et un
       caractère spécial
     </p>
 
-    <form id="form" style="text-align: center;">
+    <form id="form" style="text-align: center">
       <label for="password">Password:</label><br />
       <input type="password" id="password" name="password" /><br />
       <label for="confirm">Confirm password:</label><br />
@@ -33,13 +37,13 @@
       <input type="submit" value="Submit" />
     </form>
 
-    <p id="error" style="display: none; color: red; text-align: center;">
+    <p id="error" style="display: none; color: red; text-align: center">
       LES MOTS DE PASSE NE SONT PAS IDENTIQUES
     </p>
-    <p id="ok" style="display: none; color: green; text-align: center;">
+    <p id="ok" style="display: none; color: green; text-align: center">
       MOT DE PASSE PRIS EN COMPTE
     </p>
-    <p id="false" style="display: none; color: red; text-align: center;">
+    <p id="false" style="display: none; color: red; text-align: center">
       Minimum de huit caractères, au moins une lettre, un chiffre et un
       caractère spécial
     </p>
@@ -75,7 +79,7 @@
           document.getElementById("ok").style.display = "block";
 
           async function resetPassword(password, token) {
-           await axios({
+            await axios({
               method: "post",
               url: "http://localhost:3005/user/password/reset",
               data: {

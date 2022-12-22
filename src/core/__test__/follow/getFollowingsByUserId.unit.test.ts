@@ -1,6 +1,7 @@
 import { Followed } from "../../Entities/Followed";
 import { Gender, User } from "../../Entities/User";
-import { GetFollowersByUsersId } from "../../usecases/follow/GetFollowersByUsersId";
+import { GetFollowingsByUserId } from "../../usecases/follow/GetFollowingsByUserId";
+
 import { InMemoryFollowRepository } from "../adapters/repositories/InMemoryFollowRepository"
 import { InMemoryUserRepository } from "../adapters/repositories/InMemoryUserRepository";
 const db = new Map<string, Followed>();
@@ -10,7 +11,7 @@ describe("Unit - getFollowersByUserId", () => {
     it("should get all friendships by user id", async () => {
         const inMemoryFriendShipRepository = new InMemoryFollowRepository(db)
         const inMemoryUserRepository = new InMemoryUserRepository(userDb)
-        const getFollowersByUserId = new GetFollowersByUsersId(inMemoryFriendShipRepository, inMemoryUserRepository)
+        const getFollowingsByUserId = new GetFollowingsByUserId(inMemoryFriendShipRepository, inMemoryUserRepository)
 
         const followed = Followed.create({
             id: "156489sdfsdf8486",
@@ -26,8 +27,8 @@ describe("Unit - getFollowersByUserId", () => {
 
         const friendship3 = Followed.create({
             id: "65489646816543545dfsdf",
-            userId: "cedric",
-            addedBy: "chalom"
+            userId: "chalom",
+            addedBy: "cedric"
         })
 
         const cedric = new User({
@@ -84,8 +85,7 @@ describe("Unit - getFollowersByUserId", () => {
         db.set(friendship2.props.id, friendship2)
         db.set(friendship3.props.id, friendship3)
 
-        const result = await getFollowersByUserId.execute("cedric")
-        console.log(result)
+        const result = await getFollowingsByUserId.execute("cedric")
         expect(result).toHaveLength(2)
     })
 })

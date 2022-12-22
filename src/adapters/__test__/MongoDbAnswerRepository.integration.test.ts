@@ -75,12 +75,36 @@ describe("Integration - MongoDbAnswerRepository", () => {
   });
 
   it("should save answer", async () => {
-    const result = await mongoDbAnswerRepository.create(answer2);
-    expect(result.props.answerId).toEqual("4321");
+    const result = await mongoDbAnswerRepository.create(new Answer({
+      answerId: "7894564123",
+      question: {
+        questionId: "1111",
+        description: "this is a desc",
+        picture: "http://pic",
+      },
+      response: {
+        userId: "8888",
+        firstName: "name",
+        lastName: "lastname",
+        userName: "username",
+        schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
+        section: "1er L",
+        gender: Gender.GIRL,
+      },
+      answer: "9999",
+      createdAt: new Date(),
+    }));
+    expect(result.props.answerId).toEqual("7894564123");
   });
 
   it("shoul get all answers", async () => {
     const result = await mongoDbAnswerRepository.getAllAnswers();
     expect(result).toHaveLength(2)
+  })
+
+  it("should delete answer", async () => {
+    await mongoDbAnswerRepository.delete(answer.props.answerId)
+    const result = await AnswerModel.findOne({ answerId : answer.props.answerId})
+    expect(result).toBeFalsy()
   })
 });

@@ -1,9 +1,6 @@
-
 import { Followed } from "../../Entities/Followed";
-import { FollowErrors } from "../../errors/FollowErrors";
 import { IdGateway } from "../../gateways/IdGateway";
 import { FollowedRepository } from "../../repositories/FollowedRepository";
-import { UserRepository } from "../../repositories/UserRepository";
 import { UseCase } from "../Usecase";
 
 export type CreateFriendShipProperties = {
@@ -13,13 +10,12 @@ export type CreateFriendShipProperties = {
 
 export class FollowUser implements UseCase<CreateFriendShipProperties, Followed> {
     constructor(
-        private readonly userRepository: UserRepository,
         private readonly friendShipRepository: FollowedRepository,
         private readonly idGateway: IdGateway,
     ) {}
 
     async execute(input: CreateFriendShipProperties): Promise<Followed> {
-        const followAlreadyExists = await this.friendShipRepository.getFollowByUsersId(input.addedBy, input.userId);
+        const followAlreadyExists = await this.friendShipRepository.exists(input.addedBy, input.userId);
         if(followAlreadyExists) {
             return followAlreadyExists
         }

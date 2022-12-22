@@ -24,14 +24,14 @@ describe("Integration - MongoDbFriendShipRepository", () => {
 
         follow = Followed.create({
             id: "12345",
-            userId: "0000",
-            addedBy: "1111"
+            userId: "cedric",
+            addedBy: "chalom"
         })
 
         friendShip2 = Followed.create({
             id: "54321",
-            userId: "5555",
-            addedBy: "1111"
+            userId: "cedric",
+            addedBy: "ben"
         })
     });
 
@@ -64,14 +64,19 @@ describe("Integration - MongoDbFriendShipRepository", () => {
         expect(result.props.id).toEqual("12345")
     })
 
-    it("should get all follows by userId", async () => {
-        const result = await mongoDbFollowRepository.getFollowersByUsersId("1111");
+    it("should get followers by userId", async () => {
+        const result = await mongoDbFollowRepository.getFollowersByUserId("cedric");
         expect(result).toHaveLength(2)
+    })
+
+    it("should get followerings by userId", async () => {
+        const result = await mongoDbFollowRepository.getFollowingsByUserId("ben");
+        expect(result).toHaveLength(1)
     })
 
     it("should get follow by id", async () => {
         const result = await mongoDbFollowRepository.getById("12345")
-        expect(result.props.userId).toEqual("0000")
+        expect(result.props.userId).toEqual("cedric")
     })
 
     it("should delete follow by Id", async () => {

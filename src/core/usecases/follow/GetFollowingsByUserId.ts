@@ -3,16 +3,17 @@ import { FollowedRepository } from "../../repositories/FollowedRepository";
 import { UserRepository } from "../../repositories/UserRepository";
 import { UseCase } from "../Usecase";
 
-export class GetFollowersByUsersId implements UseCase<string, Promise<User[]>> {
+export class GetFollowingsByUserId implements UseCase<string, Promise<User[]>> {
     constructor(
         private readonly friendshipRepository: FollowedRepository,
         private readonly userRepository: UserRepository
     ) {}
 
+    
     async execute(id: string): Promise<User[]> {
-        const followersIds = await this.friendshipRepository.getFollowersByUserId(id)
+        const followersIds = await this.friendshipRepository.getFollowingsByUserId(id)
         const users = followersIds.map(async elm => { return await this.userRepository.getById(elm)})
  
         return Promise.all(users)
-    }  
+    }
 }

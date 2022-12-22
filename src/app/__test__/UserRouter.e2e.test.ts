@@ -55,9 +55,9 @@ describe("E2E - User Router", () => {
         await mongoose.connection.close();
     });
 
-    it("Should post/user/signUp", async () => {
+    it("Should post/user", async () => {
         await supertest(app)
-            .post("/user/signUp")
+            .post("/user")
             .send({
                 userName: "michel",
                 email: "mich@michel.fr",
@@ -77,11 +77,11 @@ describe("E2E - User Router", () => {
             .expect(201);
     });
 
-    it("Should post/user/sigIn", async () => {
+    it("Should post/user/sign-in", async () => {
         await userRepository.create(user);
 
         await supertest(app)
-            .post("/user/signIn")
+            .post("/user/sign-in")
             .send({
                 email: "jojolapin@gmail.com",
                 password: "1234",
@@ -135,7 +135,7 @@ describe("E2E - User Router", () => {
         );
 
         await supertest(app)
-            .delete("/user/:id")
+            .delete("/user")
             .set("access_key", accessKey)
             .send({
                 id: user.props.id,
@@ -147,22 +147,36 @@ describe("E2E - User Router", () => {
             .expect(200);
     });
 
-    it("Should get/users/:schoolId", async () => {
-        const result = await userRepository.create(user);
+    it("Should get/all", async () => {
+        const curentUser = User.create({
+            userName: "jojolapin",
+            email: "jojolapin@gmail.com",
+            password: "1234",
+            id: "curent user id",
+            age: 15,
+            firstName: "mich",
+            gender: Gender.BOY,
+            lastName: "popo",
+            schoolId: "1234",
+            section: "dfsdfs"
+        });
+        await userRepository.create(curentUser);
+        await userRepository.create(user);
+
         accessKey = sign(
             {
-                id: user.props.id,
-                userName: user.props.userName,
+                id: "curent user id",
+                schoolId: user.props.schoolId,
                 email: user.props.email,
             },
             "maytheforcebewithyou"
         );
             
         await supertest(app)
-            .get(`/user/all/${result.props.schoolId}`)
+            .get(`/user/all`)
             .set("access_key", accessKey)
             .expect((response) => {
-                 console.log(response)
+                console.log(response.body)
                 const responseBody = response.body;
                 expect(responseBody).toHaveLength(1);
             })
