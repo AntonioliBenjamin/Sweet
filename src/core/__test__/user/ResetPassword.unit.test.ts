@@ -2,6 +2,7 @@ import {InMemoryUserRepository} from "../adapters/repositories/InMemoryUserRepos
 import {ResetPassword} from "../../usecases/user/ResetPassword";
 import {Gender, User} from "../../Entities/User";
 import { BcryptGateway } from "../adapters/gateways/BcryptGateway";
+import { UserErrors } from "../../errors/UserErrors";
 
 const db = new Map();
 
@@ -42,5 +43,16 @@ describe('Unit - ResetPassword', () => {
 
         const match = encryptionGateway.decrypt("nouveau mot de passe", user.props.password) 
         expect(match).toBeTruthy() 
+    })
+
+    
+    it('Should throw if recovery code is invalid', async () => {
+        const result = () => resetPassword.execute({
+            id: "0000",
+            password: "nouveau mot de passe",
+            recoveryCode: "wrong recovery code",
+        })
+
+        await expect(result).rejects.toThrow(UserErrors.InvalidRecoveryCode)
     })
 })

@@ -9,7 +9,7 @@ describe("Unit - getAllSchools", () => {
   const getAllSchools = new GetAllSchools(inMemorySchoolRepository);
 
   it("should get all schools", async () => {
-    const school = new School({
+    const school = School.create({
       id: "6789",
       city: "Paris",
       name: "ENA",

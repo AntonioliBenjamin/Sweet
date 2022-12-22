@@ -4,7 +4,6 @@ import {Poll} from "../../core/Entities/Poll";
 import {MongoDbPollRepository} from "../repositories/mongoDb/repositories/MongoDbPollRepository";
 import {PollModel} from "../repositories/mongoDb/models/poll";
 import {questionFixtures} from "../../core/fixtures/questionFixtures";
-import {PollErrors} from "../../core/errors/PollErrors";
 
 describe('Integration - MongoDbPollRepository', () => {
     let mongoDbPollRepository: MongoDbPollRepository;
@@ -28,23 +27,23 @@ describe('Integration - MongoDbPollRepository', () => {
             pollId: "1234"
         });
 
-        poll2 = Poll.create({
-            pollId: "5678",
-        });
+    poll2 = Poll.create({
+      pollId: "5678",
     });
+  });
 
-    beforeEach(async () => {
-        result = await mongoDbPollRepository.create(poll);
-    });
+  beforeEach(async () => {
+    result = await mongoDbPollRepository.create(poll);
+  });
 
-    afterEach(async () => {
-        await PollModel.collection.drop();
-    });
+  afterEach(async () => {
+    await PollModel.collection.drop();
+  });
 
-    afterAll(async () => {
-        await mongoose.connection.dropDatabase();
-        await mongoose.connection.close();
-    });
+  afterAll(async () => {
+    await mongoose.connection.dropDatabase();
+    await mongoose.connection.close();
+  });
 
     it("Should get all polls", async () => {
         await mongoDbPollRepository.create(poll2);
@@ -55,23 +54,4 @@ describe('Integration - MongoDbPollRepository', () => {
     it("Should save a poll", () => {
         expect(result.props.createdAt).toBeTruthy();
     });
-
-    it("Should get poll by Id", async () => {
-        result = await mongoDbPollRepository.getByPollId("1234");
-
-        expect(result.props.pollId).toEqual("1234");
-    })
-
-    it("Should throw because pollId not found", async () => {
-        const result = () => mongoDbPollRepository.getByPollId("123");
-
-        await expect(() => result()).rejects.toThrow(PollErrors.NotFound);
-    })
-
-    it("Should update poll with questions", async () => {
-        poll.props.questions = questionFixtures;
-        result = await mongoDbPollRepository.update(poll);
-
-        expect(result.props.questions).toHaveLength(12);
-    })
 });
