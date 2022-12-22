@@ -4,6 +4,7 @@ import { MongoDbQuestionRepository } from "../repositories/mongoDb/repositories/
 import { Question } from "../../core/Entities/Question";
 import { QuestionModel } from "../repositories/mongoDb/models/question";
 import { questionMongoFixtures } from "../../core/fixtures/questionMongoFixtures";
+import { QuestionErrors } from "../../core/errors/QuestionErrors";
 
 describe("Integration - MongoDbQuestionRepository", () => {
   let mongoDbQuestionRepository: MongoDbQuestionRepository;
@@ -65,4 +66,9 @@ describe("Integration - MongoDbQuestionRepository", () => {
     const result = await mongoDbQuestionRepository.selectRandomQuestions(12);
     expect(result).toHaveLength(12);
   });
+
+  it("should throw if question not found", async () => {
+    const result = () => mongoDbQuestionRepository.getByQuestionId("false questionID")
+    await expect(result).rejects.toThrow(QuestionErrors.NotFound)
+  })
 });

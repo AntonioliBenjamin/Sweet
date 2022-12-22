@@ -7,17 +7,28 @@ import { BcryptGateway } from "../adapters/gateways/BcryptGateway";
 import { UpdateUser } from "../../Usecases/user/UpdateUser";
 import { School } from "../../Entities/School";
 import { InMemorySchoolRepository } from "../adapters/repositories/InMemorySchoolRepository";
+import { UserErrors } from "../../errors/UserErrors";
 
 const db = new Map<string, User>();
 const dbSchool = new Map<string, School>();
 
 describe("Unit - UpdateUser", () => {
-  it("should update user", async () => {
-    const inMemoryUserRepository = new InMemoryUserRepository(db);
-    const inMemorySchoolRepository = new InMemorySchoolRepository(dbSchool);
-    const uuidGateway = new UuidGateway();
-    const bcryptGateway = new BcryptGateway();
-    const updateUser = new UpdateUser(inMemoryUserRepository);
+  let inMemoryUserRepository: InMemoryUserRepository;
+  let inMemorySchoolRepository: InMemorySchoolRepository;
+  let uuidGateway: UuidGateway;
+  let bcryptGateway: BcryptGateway;
+  let updateUser: UpdateUser
+  let user:  User;
+  let result: User;
+
+
+
+  beforeAll(async () => {
+   inMemoryUserRepository = new InMemoryUserRepository(db);
+   inMemorySchoolRepository = new InMemorySchoolRepository(dbSchool);
+   uuidGateway = new UuidGateway();
+   bcryptGateway = new BcryptGateway();
+   updateUser = new UpdateUser(inMemoryUserRepository);
     const signUp = new SignUp(
       inMemoryUserRepository,
       inMemorySchoolRepository,
@@ -34,7 +45,7 @@ describe("Unit - UpdateUser", () => {
 
     dbSchool.set("6789", school);
 
-    const user = await signUp.execute({
+    user = await signUp.execute({
       userName: "JOJO",
       email: "jojo@gmail.com",
       password: "1234",
@@ -46,7 +57,7 @@ describe("Unit - UpdateUser", () => {
       section: "dfgdfg",
     });
 
-    const result = await updateUser.execute({
+    result = await updateUser.execute({
       userName: "JOJO",
       age: 13,
       firstName: "gdfgdfg",
@@ -55,9 +66,23 @@ describe("Unit - UpdateUser", () => {
       id: user.props.id,
     });
 
+  })
+  it("should update user", async () => {
     expect(result.props.userName).toEqual("jojo");
     expect(result.props.email).toEqual("jojo@gmail.com");
     expect(bcryptGateway.decrypt("1234", result.props.password)).toEqual(true);
     expect(result.props.id).toEqual(user.props.id);
   });
+
+  it("should throw if user is too young", async () => {
+    const tooYoung = () => updateUser.execute({
+      userName: "JOJO",
+      age: 11,
+      firstName: "gdfgdfg",
+      lastName: "dfgdrfg",
+      section: "dfgdfg",
+      id: user.props.id,
+    });
+    await expect(tooYoung).rejects.toThrow(UserErrors.TooYoung)
+  })
 });

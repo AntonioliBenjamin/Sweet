@@ -19,7 +19,7 @@ import { Question } from "../../core/Entities/Question";
 
 const app = express();
 
-describe("E2E - FriendShipRouter", () => {
+describe("E2E - FollowRouter", () => {
   let accessKey;
   let answerRepository: AnswerRepository;
   let userRepository: UserRepository;

@@ -16,7 +16,7 @@ import { Followed } from "../../core/Entities/Followed";
 
 const app = express();
 
-describe("E2E - FriendShipRouter", () => {
+describe("E2E - FollowRouter", () => {
   let accessKey;
   let userRepository: UserRepository;
   let followRepository: FollowedRepository;
@@ -76,7 +76,7 @@ describe("E2E - FriendShipRouter", () => {
     });
 
     user3 = new User({
-      email: "pollicr@example.com",
+      email: "email@example.com",
       id: "mazen",
       password: "jkhfsdkjhfkjs",
       userName: "mazen",

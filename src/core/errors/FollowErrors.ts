@@ -6,10 +6,4 @@ export namespace FollowErrors {
             super("FOLLOW_NOT_FOUND")
         }
     }
-
-    export class AlreadyExist extends DomainErrors {
-        constructor() {
-            super("FOLLOW_ALREADY_EXIST")
-        }
-    }
 }
