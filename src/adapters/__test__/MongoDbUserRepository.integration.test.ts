@@ -101,9 +101,7 @@ describe("Integration - MongoDbUserRepository", () => {
   });
 
   it("should be falsy if user email does not exist", async () => {
-    const result = await mongoDbUserRepository.getByEmail(
-      "fakeEmail@example.com"
-    );
+    const result = await mongoDbUserRepository.getByEmail("fakeEmail@example.com");
     expect(result).toBeFalsy();
   });
 
@@ -130,23 +128,21 @@ describe("Integration - MongoDbUserRepository", () => {
       lastName: "dfgdrfg",
       section: "dfgdfg",
     });
+
     const result = await mongoDbUserRepository.update(user);
+
     expect(result.props.id).toEqual("12345");
     expect(result.props.userName).toEqual("newusername");
   });
 
   it("should delete a user", async () => {
     await mongoDbUserRepository.delete(user.props.id);
-    const result = await mongoDbUserRepository.getByEmail(
-      "fakeEmail@example.com"
-    );
+
+    const result = await mongoDbUserRepository.getByEmail("fakeEmail@example.com");
+
     expect(result).toBeFalsy();
-    await expect(
-      AnswerModel.findOne({ answerId: user.props.id })
-    ).resolves.toEqual(null);
-    await expect(FollowModel.findOne({ id: user.props.id })).resolves.toEqual(
-      null
-    );
+    await expect(AnswerModel.findOne({ answerId: user.props.id })).resolves.toEqual(null);
+    await expect(FollowModel.findOne({ id: user.props.id })).resolves.toEqual(null);
   });
 
   it("should get all users by school", async () => {
@@ -162,6 +158,7 @@ describe("Integration - MongoDbUserRepository", () => {
       schoolId: "456",
       section: "cp",
     });
+
     await mongoDbUserRepository.create(user2);
     const result = await mongoDbUserRepository.getAllUsersBySchool("456");
     expect(result).toHaveLength(2);

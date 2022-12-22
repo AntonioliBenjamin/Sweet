@@ -5,8 +5,8 @@ import { UserRepository } from "../../repositories/UserRepository";
 import { IdGateway } from "../../gateways/IdGateway";
 import { PasswordGateway } from "../../gateways/PasswordGateway";
 import { UserErrors } from "../../errors/UserErrors";
-import {SchoolRepository} from "../../repositories/SchoolRepository";
-import {SchoolErrors} from "../../errors/SchoolErrors";
+import { SchoolRepository } from "../../repositories/SchoolRepository";
+import { SchoolErrors } from "../../errors/SchoolErrors";
 
 export type UserInput = {
   userName: string;
@@ -36,13 +36,15 @@ export class SignUp implements UseCase<UserInput, User> {
       throw new UserErrors.AlreadyExist();
     }
 
-    const school = await this.schoolRepository.getBySchoolId(input.schoolId);
+    const school = this.schoolRepository.getBySchoolId(input.schoolId);
     if (!school) {
       throw new SchoolErrors.NotFound();
     }
 
     const id = this.idGateway.generate();
+
     const hash = this.passwordGateway.encrypt(input.password);
+
     const user = User.create({
       id: id,
       userName: input.userName,
@@ -57,6 +59,7 @@ export class SignUp implements UseCase<UserInput, User> {
     });
 
     const result = await this.userRepository.create(user);
+
     return result;
   }
 }

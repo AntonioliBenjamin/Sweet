@@ -7,7 +7,6 @@ const db = new Map<string, User>();
 
 describe("Unit - GetAllMyPotentialFriends", () => {
   it("should Get All Users By School", async () => {
-
     const inMemoryUserRepository = new InMemoryUserRepository(db);
     const getAllMyPotentialFriends = new GetAllMyPotentialFriends(inMemoryUserRepository);
 

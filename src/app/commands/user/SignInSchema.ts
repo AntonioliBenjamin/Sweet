@@ -1,6 +1,6 @@
-import * as joi from "joi";
+import joi from "joi";
 
 export const SignInSchema = joi.object({
-    email: joi.string().required(),
-    password: joi.string().required(),
-})
+  email: joi.string().required(),
+  password: joi.string().required(),
+});

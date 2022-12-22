@@ -23,11 +23,13 @@ export class AnswerToQuestion
 
   async execute(input: AnswerToQuestionInput): Promise<Answer> {
     const user = await this.userRepository.getById(input.userId);
+    
     const question = await this.questionRepository.getByQuestionId(
       input.questionId
     );
 
     const id = this.idGateway.generate();
+
     const answer = Answer.create({
       answer: input.answerUserId,
       answerId: id,

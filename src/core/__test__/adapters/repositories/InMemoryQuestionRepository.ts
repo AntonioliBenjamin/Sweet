@@ -1,6 +1,6 @@
-import {QuestionRepository} from "../../../repositories/QuestionRepository";
-import {Question, QuestionProperties} from "../../../Entities/Question";
-import {questionFixtures} from "../../../fixtures/questionFixtures";
+import { QuestionRepository } from "../../../repositories/QuestionRepository";
+import { Question, QuestionProperties } from "../../../Entities/Question";
+import { questionFixtures } from "../../../fixtures/questionFixtures";
 
 export class InMemoryQuestionRepository implements QuestionRepository {
     constructor(
@@ -14,9 +14,9 @@ export class InMemoryQuestionRepository implements QuestionRepository {
         return Promise.resolve(question)
     }
 
-    async getAllQuestions(): Promise<Question[]> {
-        return Array.from(this.db.values());
-    }
+  async getAllQuestions(): Promise<Question[]> {
+    return Array.from(this.db.values());
+  }
 
     getByQuestionId(questionId: string): Promise<Question> {
         const question = this.db.get(questionId);
@@ -24,7 +24,7 @@ export class InMemoryQuestionRepository implements QuestionRepository {
         return Promise.resolve(question);
     }
 
-    selectRandomQuestions(numberOfQuestions: number): Promise<QuestionProperties[]> {
-        return Promise.resolve(questionFixtures);
-    }
+  selectRandomQuestions(numberOfQuestions: number): Promise<QuestionProperties[]> {
+    return Promise.resolve(questionFixtures);
+  }
 }

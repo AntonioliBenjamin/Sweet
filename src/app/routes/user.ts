@@ -16,17 +16,13 @@ import { SignIn } from "../../core/usecases/user/SignIn";
 import { UpdateUser } from "../../core/Usecases/user/UpdateUser";
 import { DeleteUser } from "../../core/Usecases/user/DeleteUser";
 import { MongoDbUserRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
-import { createValidator } from "express-joi-validation";
 import { SignUpSchema } from "../commands/user/SignUpSchema";
 import { SignInSchema } from "../commands/user/SignInSchema";
 import { RecoverySchema } from "../commands/user/RecoverySchema";
 import { ResetPasswordSchema } from "../commands/user/ResetPasswordSchema";
 import { UpdateUserSchema } from "../commands/user/UpdateUserSchema";
-import { GetAllUsersBySchoolIdSchema } from "../commands/user/GetAllUsersBySchoolIdSchema";
-import { DeleteUserSchema } from "../commands/user/DeleteUserSchema";
 import { MongoDbFollowRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
 import { MongoDbAnswerRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbAnswerRepository";
-const validator = createValidator();
 const mailService = new MailService();
 const emailSender = process.env.RECOVERY_EMAIL_SENDER;
 const userRouter = express.Router();
@@ -38,26 +34,12 @@ const mongoDbFollowRepository = new MongoDbFollowRepository();
 const bcryptGateway = new BcryptGateway();
 const v4IdGateway = new V4IdGateway();
 const sendGridGateway = new SendGridGateway(mailService, emailSender);
-const signUp = new SignUp(
-  mongoDbUserRepository,
-  schoolDbRepository,
-  v4IdGateway,
-  bcryptGateway
-);
+const signUp = new SignUp(mongoDbUserRepository, schoolDbRepository, v4IdGateway, bcryptGateway);
 const signIn = new SignIn(mongoDbUserRepository, bcryptGateway);
 const updateUser = new UpdateUser(mongoDbUserRepository);
-const deleteUser = new DeleteUser(
-  mongoDbUserRepository,
-  mongoDbFollowRepository,
-  mongoDbAnswerRepository
-);
-const getAllMyPotentialFriends = new GetAllMyPotentialFriends(
-  mongoDbUserRepository
-);
-const generateRecoveryCode = new GenerateRecoveryCode(
-  mongoDbUserRepository,
-  v4IdGateway
-);
+const deleteUser = new DeleteUser(mongoDbUserRepository, mongoDbFollowRepository, mongoDbAnswerRepository);
+const getAllMyPotentialFriends = new GetAllMyPotentialFriends(mongoDbUserRepository);
+const updateRecoveryCode = new GenerateRecoveryCode(mongoDbUserRepository,v4IdGateway);
 const resetPassword = new ResetPassword(mongoDbUserRepository, bcryptGateway);
 const userApiUserMapper = new UserApiUserMapper();
 mailService.setApiKey(process.env.SENDGRID_API_KEY);
@@ -75,8 +57,11 @@ userRouter.post("/", async (req, res) => {
       section: req.body.section,
       gender: req.body.gender,
     };
+
     const values = await SignUpSchema.validateAsync(body);
+
     const user = await signUp.execute(values);
+
     const accessKey = jwt.sign(
       {
         id: user.props.id,
@@ -90,8 +75,10 @@ userRouter.post("/", async (req, res) => {
       ...userApiUserMapper.fromDomain(user),
       accessKey,
     });
+
   } catch (err) {
     console.error(err);
+
     return res.status(400).send({
       message: "An error occurred",
     });
@@ -106,6 +93,7 @@ userRouter.post("/sign-in", async (req, res) => {
     };
 
     const values = await SignInSchema.validateAsync(body);
+
     const user = await signIn.execute(values);
 
     const accessKey = jwt.sign(
@@ -121,7 +109,10 @@ userRouter.post("/sign-in", async (req, res) => {
       ...userApiUserMapper.fromDomain(user),
       accessKey,
     });
+
   } catch (err) {
+    console.error(err);
+
     return res.status(400).send({
       message: "An error occurred",
     });
@@ -133,8 +124,11 @@ userRouter.post("/password/recovery", async (req, res) => {
     const body = {
       email: req.body.email.toLowerCase().trim(),
     };
+
     const values = await RecoverySchema.validateAsync(body);
-    const user = await generateRecoveryCode.execute(values);
+
+    const user = await updateRecoveryCode.execute(values);
+
     const token = jwt.sign(
       {
         id: user.props.id,
@@ -151,8 +145,10 @@ userRouter.post("/password/recovery", async (req, res) => {
     });
 
     return res.status(200).send(userApiUserMapper.fromDomain(user));
+
   } catch (err) {
     console.error(err);
+
     return res.status(400).send({
       message: "An error occurred",
     });
@@ -177,8 +173,10 @@ userRouter.post("/password/reset", async (req, res) => {
     });
 
     return res.sendStatus(200);
+
   } catch (err) {
     console.error(err);
+
     return res.status(400).send({
       message: "An error occurred",
     });
@@ -209,7 +207,10 @@ userRouter.patch("/", async (req: AuthentifiedRequest, res) => {
     });
 
     return res.status(200).send(userApiUserMapper.fromDomain(updatedUser));
+
   } catch (err) {
+    console.error(err);
+    
     return res.status(400).send({
       message: "An error occurred",
     });
@@ -219,15 +220,16 @@ userRouter.patch("/", async (req: AuthentifiedRequest, res) => {
 userRouter.get("/all", async (req: AuthentifiedRequest, res) => {
   try {
     const users = await getAllMyPotentialFriends.execute(req.user.schoolId);
-    const userApiResponse = users.map((elm) =>
-      userApiUserMapper.fromDomain(elm)
-    );
-    const ArrayWithoutCurrentUser = userApiResponse.filter(
-      (elm) => elm.id !== req.user.id
-    );
+
+    const userApiResponse = users.map((elm) => userApiUserMapper.fromDomain(elm));
+
+    const ArrayWithoutCurrentUser = userApiResponse.filter((elm) => elm.id !== req.user.id);
 
     return res.status(200).send(ArrayWithoutCurrentUser);
+
   } catch (err) {
+    console.error(err);
+
     return res.status(400).send({
       message: "An error occurred",
     });
@@ -239,9 +241,12 @@ userRouter.delete("/", async (req: AuthentifiedRequest, res) => {
     await deleteUser.execute({
       userId: req.user.id,
     });
+
     return res.sendStatus(200);
+
   } catch (err) {
     console.error(err);
+    
     return res.status(400).send({
       message: "An error occurred",
     });

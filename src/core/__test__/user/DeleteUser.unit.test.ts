@@ -62,12 +62,15 @@ describe("Unit - deleteUser", () => {
     });
 
     db.set(user.props.id, user);
+
     dbAnswer.set(answer.props.answerId, answer);
+
     dbFollow.set(followed.props.id, followed);
-    
+
     await deleteUser.execute({
       userId: "12345",
     });
+    
     expect(db.get("12345")).toBeFalsy();
     expect(dbAnswer.get("12345")).toBeFalsy();
     expect(dbFollow.get("12345")).toBeFalsy();

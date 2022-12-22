@@ -7,23 +7,25 @@ import { InMemoryFollowRepository } from "../adapters/repositories/InMemoryFollo
 const db = new Map<string, Followed>();
 
 describe("Unit - UnfollowUser", () => {
-    let unfollowUser: UnfollowUser
+    let unfollowUser: UnfollowUser;
+    let followed: Followed;
 
     beforeAll(() => {
     const inMemoryFriendShipRepository = new InMemoryFollowRepository(db)
     unfollowUser = new UnfollowUser(inMemoryFriendShipRepository)
 
+    followed = Followed.create({
+        id: "0000",
+        userId: "1111",
+        addedBy: "2222"
+    })
+
+    db.set(followed.props.id, followed)
     })
 
     it("should delete followed", async () => {
-        const followed = Followed.create({
-            id: "0000",
-            userId: "1111",
-            addedBy: "2222"
-        })
-        db.set(followed.props.id, followed)
+        await unfollowUser.execute("0000");
 
-        const result = await unfollowUser.execute("0000");
         expect(db.get("0000")).toBeFalsy()
     })
 
@@ -33,9 +35,11 @@ describe("Unit - UnfollowUser", () => {
             userId: "1111",
             addedBy: "2222"
         })
+
         db.set(followed.props.id, followed)
 
         const result = () => unfollowUser.execute("false");
+        
         expect(async () => await result()).rejects.toThrow(FollowErrors.NotFound)
     })
 })

@@ -2,32 +2,31 @@ import { Answer } from "../../../../core/Entities/Answer";
 import { AnswerRepository } from "../../../../core/repositories/AnswerRepository";
 import { MongoDbAnswerMapper } from "../mappers/MongoDbAnswerMapper";
 import { AnswerModel } from "../models/answer";
-const answerMapper = new MongoDbAnswerMapper()
+const answerMapper = new MongoDbAnswerMapper();
 
 export class MongoDbAnswerRepository implements AnswerRepository {
+  async create(answer: Answer): Promise<Answer> {
+    const toAnswerDomain = answerMapper.fromDomain(answer);
+    const answerModel = new AnswerModel(toAnswerDomain);
+    await answerModel.save();
+    return answer;
+  }
 
-    async create(answer: Answer): Promise<Answer> {
-        const toAnswerDomain = answerMapper.fromDomain(answer)
-        const answerModel = new AnswerModel(toAnswerDomain)
-        await answerModel.save()
-        return answer
+  async getAllAnswers(): Promise<Answer[]> {
+    const answers = await AnswerModel.find({});
+    if (!answers) {
+      return null;
     }
+    return answers.map((elm) => answerMapper.toDomain(elm));
+  }
 
-    async getAllAnswers(): Promise<Answer[]> {
-        const answers = await AnswerModel.find({})
-        if(!answers) {
-            return null
-        }
-        return answers.map(elm => answerMapper.toDomain(elm))
-    }
-    
-    async delete(answerId: string): Promise<void> {
-        await AnswerModel.deleteOne({answerId : answerId})
-        return;
-    }
+  async delete(answerId: string): Promise<void> {
+    await AnswerModel.deleteOne({ answerId: answerId });
+    return;
+  }
 
-    async deleteAllByUserId(userId: string): Promise<void> {
-        await AnswerModel.deleteMany({ answer: userId })
-        return;
-    }
+  async deleteAllByUserId(userId: string): Promise<void> {
+    await AnswerModel.deleteMany({ answer: userId });
+    return;
+  }
 }

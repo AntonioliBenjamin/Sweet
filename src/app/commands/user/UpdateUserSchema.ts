@@ -1,4 +1,4 @@
-import * as joi from "joi";
+import joi from "joi";
 
 export const UpdateUserSchema = joi.object({
     userName: joi.string().required(),

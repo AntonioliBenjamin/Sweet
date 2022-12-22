@@ -27,23 +27,23 @@ describe('Integration - MongoDbPollRepository', () => {
             pollId: "1234"
         });
 
-        poll2 = Poll.create({
-            pollId: "5678"
-        });
+    poll2 = Poll.create({
+      pollId: "5678",
     });
+  });
 
-    beforeEach(async () => {
-        result = await mongoDbPollRepository.create(poll);
-    });
+  beforeEach(async () => {
+    result = await mongoDbPollRepository.create(poll);
+  });
 
-    afterEach(async () => {
-        await PollModel.collection.drop();
-    });
+  afterEach(async () => {
+    await PollModel.collection.drop();
+  });
 
-    afterAll(async () => {
-        await mongoose.connection.dropDatabase();
-        await mongoose.connection.close();
-    });
+  afterAll(async () => {
+    await mongoose.connection.dropDatabase();
+    await mongoose.connection.close();
+  });
 
     it("Should get all polls", async () => {
         await mongoDbPollRepository.create(poll2);

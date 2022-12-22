@@ -1,8 +1,8 @@
-import {BcryptGateway} from "../gateways/BcryptGateway";
+import { BcryptGateway } from "../gateways/BcryptGateway";
 
 describe("Unit - BcryptGateway", () => {
-    const bcryptGateway = new BcryptGateway();
-
+    const bcryptGateway = new BcryptGateway()
+ 
     it("should encrypt a password", () => {
         const result = bcryptGateway.encrypt("12345");
         expect(result).not.toEqual("12345");

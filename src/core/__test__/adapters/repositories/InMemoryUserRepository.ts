@@ -1,5 +1,5 @@
-import {User} from "../../../Entities/User";
-import {UserRepository} from "../../../repositories/UserRepository";
+import { User } from "../../../Entities/User";
+import { UserRepository } from "../../../repositories/UserRepository";
 
 export class InMemoryUserRepository implements UserRepository {
     constructor(

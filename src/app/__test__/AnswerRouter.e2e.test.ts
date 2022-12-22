@@ -46,9 +46,9 @@ describe("E2E - FriendShipRouter", () => {
 
     questionRepository = new MongoDbQuestionRepository();
     question = Question.create({
-        questionId: "9999",
-        description: "yes",
-        picture: "http://yes"
+      questionId: "9999",
+      description: "yes",
+      picture: "http://yes",
     });
 
     answer = new Answer({
@@ -107,7 +107,7 @@ describe("E2E - FriendShipRouter", () => {
   });
 
   it("should post/answer", async () => {
-    await questionRepository.create(question)
+    await questionRepository.create(question);
 
     const user = new User({
       email: "user@example.com",
@@ -122,8 +122,8 @@ describe("E2E - FriendShipRouter", () => {
       section: "cp",
       createdAt: new Date(),
       updatedAt: null,
-      recoveryCode: null
-    }); 
+      recoveryCode: null,
+    });
     await userRepository.create(user);
 
     accessKey = sign(
@@ -147,7 +147,7 @@ describe("E2E - FriendShipRouter", () => {
       })
       .expect(201);
 
-      await UserModel.collection.drop();
+    await UserModel.collection.drop();
   });
 
   it("should get all answers", async () => {

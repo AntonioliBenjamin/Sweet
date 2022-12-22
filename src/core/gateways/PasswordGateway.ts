@@ -1,5 +1,5 @@
 export interface PasswordGateway {
-    encrypt(password: string): string;
+  encrypt(password: string): string;
 
-    decrypt(password: string, hash: string): boolean;
+  decrypt(password: string, hash: string): boolean;
 }

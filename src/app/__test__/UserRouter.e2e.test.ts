@@ -1,185 +1,185 @@
-import supertest  from 'supertest';
-import  mongoose  from 'mongoose';
+import supertest from "supertest";
+import mongoose from "mongoose";
 import "dotenv/config";
-import {sign} from "jsonwebtoken";
+import { sign } from "jsonwebtoken";
 import express from "express";
-import {v4} from "uuid";
-import {userRouter} from "../routes/user";
-import {MongoDbUserRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
-import {Gender, User} from "../../core/Entities/User";
-import {UserModel} from "../../adapters/repositories/mongoDb/models/user";
-import {UserRepository} from "../../core/repositories/UserRepository";
-import {BcryptGateway} from "../../adapters/gateways/BcryptGateway";
+import { v4 } from "uuid";
+import { userRouter } from "../routes/user";
+import { MongoDbUserRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
+import { Gender, User } from "../../core/Entities/User";
+import { UserModel } from "../../adapters/repositories/mongoDb/models/user";
+import { UserRepository } from "../../core/repositories/UserRepository";
+import { BcryptGateway } from "../../adapters/gateways/BcryptGateway";
 
 const app = express();
 
 describe("E2E - User Router", () => {
-    let accessKey;
-    let userRepository: UserRepository;
-    let user: User;
+  let accessKey;
+  let userRepository: UserRepository;
+  let user: User;
 
-    beforeAll(async () => {
-        app.use(express.json());
-        app.use("/user", userRouter);
+  beforeAll(async () => {
+    app.use(express.json());
+    app.use("/user", userRouter);
 
-        const databaseId = v4();
-        mongoose.set('strictQuery', false)
-        mongoose.connect(`mongodb://127.0.0.1:27017/${databaseId}`, (err) => {
-            if (err) {
-                throw err;
-            }
-            console.info("Connected to mongodb");
-        });
-        const bcryptGateway = new BcryptGateway();
-        userRepository = new MongoDbUserRepository();
-        user = User.create({
-            userName: "jojolapin",
-            email: "jojolapin@gmail.com",
-            password: bcryptGateway.encrypt("1234"),
-            id: "12345",
-            age: 15,
-            firstName: "mich",
-            gender: Gender.BOY,
-            lastName: "popo",
-            schoolId: "1234",
-            section: "dfsdfs"
-        });
+    const databaseId = v4();
+    mongoose.set("strictQuery", false);
+    mongoose.connect(`mongodb://127.0.0.1:27017/${databaseId}`, (err) => {
+      if (err) {
+        throw err;
+      }
+      console.info("Connected to mongodb");
     });
-
-    afterEach(async () => {
-        await UserModel.collection.drop();
+    const bcryptGateway = new BcryptGateway();
+    userRepository = new MongoDbUserRepository();
+    
+    user = User.create({
+      userName: "jojolapin",
+      email: "jojolapin@gmail.com",
+      password: bcryptGateway.encrypt("1234"),
+      id: "12345",
+      age: 15,
+      firstName: "mich",
+      gender: Gender.BOY,
+      lastName: "popo",
+      schoolId: "1234",
+      section: "dfsdfs",
     });
+  });
 
-    afterAll(async () => {
-        await mongoose.connection.dropDatabase();
-        await mongoose.connection.close();
+  afterEach(async () => {
+    await UserModel.collection.drop();
+  });
+
+  afterAll(async () => {
+    await mongoose.connection.dropDatabase();
+    await mongoose.connection.close();
+  });
+
+  it("Should post/user", async () => {
+    await supertest(app)
+      .post("/user")
+      .send({
+        userName: "michel",
+        email: "mich@michel.fr",
+        password: "12345",
+        age: 15,
+        firstName: "varuk",
+        lastName: "michel",
+        schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
+        section: "cm2",
+        gender: "boy",
+      })
+
+      .expect((response) => {
+        const responseBody = response.body;
+        expect(responseBody.userName).toEqual("michel");
+      })
+      .expect(201);
+  });
+
+  it("Should post/user/sign-in", async () => {
+    await userRepository.create(user);
+
+    await supertest(app)
+      .post("/user/sign-in")
+      .send({
+        email: "jojolapin@gmail.com",
+        password: "1234",
+      })
+      .expect((response) => {
+        const responseBody = response.body;
+        expect(responseBody.email).toEqual("jojolapin@gmail.com");
+      })
+      .expect(200);
+  });
+
+  it("Should patch/user", async () => {
+    await userRepository.create(user);
+
+    accessKey = sign(
+      {
+        id: user.props.id,
+        schoolId: user.props.schoolId,
+      },
+      "maytheforcebewithyou"
+    );
+
+    await supertest(app)
+      .patch("/user")
+      .set("access_key", accessKey)
+      .send({
+        userName: "JOJO",
+        age: 13,
+        firstName: "gdfgdfg",
+        lastName: "dfgdrfg",
+        section: "dfgdfg",
+        id: user.props.id,
+      })
+      .expect((response) => {
+        const responseBody = response.body;
+        expect(responseBody.updatedAt).toBeTruthy();
+      })
+      .expect(200);
+  });
+
+  it("Should delete/user", async () => {
+    await userRepository.create(user);
+
+    accessKey = sign(
+      {
+        id: user.props.id,
+        userName: user.props.userName,
+        email: user.props.email,
+      },
+      "maytheforcebewithyou"
+    );
+
+    await supertest(app)
+      .delete("/user")
+      .set("access_key", accessKey)
+      .send({
+        id: user.props.id,
+      })
+      .expect((response) => {
+        const responseBody = response.body;
+        expect(responseBody.userName).toBeFalsy();
+      })
+      .expect(200);
+  });
+
+  it("Should get/all", async () => {
+    const curentUser = User.create({
+      userName: "jojolapin",
+      email: "jojolapin@gmail.com",
+      password: "1234",
+      id: "curent user id",
+      age: 15,
+      firstName: "mich",
+      gender: Gender.BOY,
+      lastName: "popo",
+      schoolId: "1234",
+      section: "dfsdfs",
     });
+    await userRepository.create(curentUser);
+    await userRepository.create(user);
 
-    it("Should post/user", async () => {
-        await supertest(app)
-            .post("/user")
-            .send({
-                userName: "michel",
-                email: "mich@michel.fr",
-                password: "12345",
-                age: 15,
-                firstName: "varuk",
-                lastName: "michel",
-                schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
-                section: "cm2",
-                gender: "boy",
-            })
+    accessKey = sign(
+      {
+        id: "curent user id",
+        schoolId: user.props.schoolId,
+        email: user.props.email,
+      },
+      "maytheforcebewithyou"
+    );
 
-            .expect((response) => {
-                const responseBody = response.body;
-                expect(responseBody.userName).toEqual("michel");
-            })
-            .expect(201);
-    });
-
-    it("Should post/user/sign-in", async () => {
-        await userRepository.create(user);
-
-        await supertest(app)
-            .post("/user/sign-in")
-            .send({
-                email: "jojolapin@gmail.com",
-                password: "1234",
-            })
-            .expect((response) => {
-                const responseBody = response.body;
-                expect(responseBody.email).toEqual("jojolapin@gmail.com");
-            })
-            .expect(200);
-    });
-
-    it("Should patch/user", async () => {
-        await userRepository.create(user);
-
-        accessKey = sign(
-            {
-                id: user.props.id,
-                schoolId: user.props.schoolId
-            },
-            "maytheforcebewithyou"
-        );
-
-        await supertest(app)
-            .patch("/user")
-            .set("access_key", accessKey)
-            .send({
-                userName: "JOJO",
-                age: 13,
-                firstName: "gdfgdfg",
-                lastName: "dfgdrfg",
-                section: "dfgdfg",
-                id: user.props.id
-            })
-            .expect((response) => {
-                const responseBody = response.body;
-                expect(responseBody.updatedAt).toBeTruthy();
-            })
-            .expect(200);
-    });
-
-    it("Should delete/user", async () => {
-        await userRepository.create(user);
-
-        accessKey = sign(
-            {
-                id: user.props.id,
-                userName: user.props.userName,
-                email: user.props.email,
-            },
-            "maytheforcebewithyou"
-        );
-
-        await supertest(app)
-            .delete("/user")
-            .set("access_key", accessKey)
-            .send({
-                id: user.props.id,
-            })
-            .expect((response) => {
-                const responseBody = response.body;
-                expect(responseBody.userName).toBeFalsy();
-            })
-            .expect(200);
-    });
-
-    it("Should get/all", async () => {
-        const curentUser = User.create({
-            userName: "jojolapin",
-            email: "jojolapin@gmail.com",
-            password: "1234",
-            id: "curent user id",
-            age: 15,
-            firstName: "mich",
-            gender: Gender.BOY,
-            lastName: "popo",
-            schoolId: "1234",
-            section: "dfsdfs"
-        });
-        await userRepository.create(curentUser);
-        await userRepository.create(user);
-
-        accessKey = sign(
-            {
-                id: "curent user id",
-                schoolId: user.props.schoolId,
-                email: user.props.email,
-            },
-            "maytheforcebewithyou"
-        );
-            
-        await supertest(app)
-            .get(`/user/all`)
-            .set("access_key", accessKey)
-            .expect((response) => {
-                console.log(response.body)
-                const responseBody = response.body;
-                expect(responseBody).toHaveLength(1);
-            })
-            .expect(200);
-    });
+    await supertest(app)
+      .get(`/user/all`)
+      .set("access_key", accessKey)
+      .expect((response) => {
+        const responseBody = response.body;
+        expect(responseBody).toHaveLength(1);
+      })
+      .expect(200);
+  });
 });

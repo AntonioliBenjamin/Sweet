@@ -1,8 +1,7 @@
-import {School} from "../Entities/School";
+import { School } from "../Entities/School";
 
 export interface SchoolRepository {
+  getBySchoolId(schoolId: string): School;
 
-    getBySchoolId(schoolId: string): School;
-
-    getAllSchools(): Promise<School[]>
+  getAllSchools(): Promise<School[]>;
 }
