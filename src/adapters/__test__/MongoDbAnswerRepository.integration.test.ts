@@ -101,4 +101,10 @@ describe("Integration - MongoDbAnswerRepository", () => {
     const result = await mongoDbAnswerRepository.getAllAnswers();
     expect(result).toHaveLength(2)
   })
+
+  it("should delete answer", async () => {
+    await mongoDbAnswerRepository.delete(answer.props.answerId)
+    const result = await AnswerModel.findOne({ answerId : answer.props.answerId})
+    expect(result).toBeFalsy()
+  })
 });

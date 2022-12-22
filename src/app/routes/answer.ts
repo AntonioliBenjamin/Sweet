@@ -4,6 +4,7 @@ import { MongoDbAnswerRepository } from "../../adapters/repositories/mongoDb/rep
 import { MongoDbQuestionRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbQuestionRepository";
 import { MongoDbUserRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
 import { AnswerToQuestion } from "../../core/usecases/answer/AnswerToQuestion";
+import { DeleteAnswer } from "../../core/usecases/answer/DeleteAnswer";
 import { GetAllAnswers } from "../../core/usecases/answer/GetAllAnswers";
 import { GetFriendAnswers } from "../../core/usecases/answer/GetFriendAnswers";
 import { GetMyAnswers } from "../../core/usecases/answer/GetMyAnswers";
@@ -18,6 +19,7 @@ const answerToQuestion = new AnswerToQuestion(mongoDbAnswerRepository, mongoDbUs
 const getAllAnswers = new GetAllAnswers(mongoDbAnswerRepository)
 const getFriendAnswers = new GetFriendAnswers(mongoDbAnswerRepository)
 const getMyAnswers = new GetMyAnswers(mongoDbAnswerRepository)
+const deleteAnswer = new DeleteAnswer(mongoDbAnswerRepository)
 
 
 answerRouter.use(authorization);
@@ -85,5 +87,22 @@ answerRouter.get("/mine", async (req: AuthentifiedRequest, res) => {
     }
 })
 
+answerRouter.delete("/", async (req, res) => {
+try {
+    const body = {
+        answerId: req.body.answerId
+    }
+
+    await deleteAnswer.execute(body.answerId)
+
+    return res.sendStatus(200)
+
+} catch (err) {
+    console.error(err);
+        return res.status(400).send({
+          message: "An error occurred",
+        });
+}
+})
 
 export { answerRouter }
