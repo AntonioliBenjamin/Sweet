@@ -3,11 +3,14 @@ import {Question, QuestionProperties} from "../../../Entities/Question";
 import {questionFixtures} from "../../../fixtures/questionFixtures";
 
 export class InMemoryQuestionRepository implements QuestionRepository {
-    constructor(private readonly db: Map<string, Question>) {
+    constructor(
+        private readonly db: Map<string, Question>
+    ) {
     }
 
     create(question: Question): Promise<Question> {
         this.db.set(question.props.questionId, question);
+
         return Promise.resolve(question)
     }
 
@@ -17,6 +20,7 @@ export class InMemoryQuestionRepository implements QuestionRepository {
 
     getByQuestionId(questionId: string): Promise<Question> {
         const question = this.db.get(questionId);
+
         return Promise.resolve(question);
     }
 

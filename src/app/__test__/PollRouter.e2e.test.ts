@@ -72,7 +72,7 @@ describe("E2E - Poll Router", () => {
                 const responseBody = response.body;
                 expect(responseBody).toHaveLength(1);
             })
-            .expect(201);
+            .expect(200);
     });
 
     it("Should post/poll/create", async () => {

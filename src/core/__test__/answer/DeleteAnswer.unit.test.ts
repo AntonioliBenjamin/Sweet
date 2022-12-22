@@ -1,15 +1,14 @@
-import { Answer } from "../../Entities/Answer"
-import { Gender } from "../../Entities/User"
-import { DeleteAnswer } from "../../usecases/answer/DeleteAnswer";
-import { InMemoryAnswerRepository } from "../adapters/repositories/InMemoryAnswerRepository";
+import {Answer} from "../../Entities/Answer";
+import {Gender} from "../../Entities/User";
+import {DeleteAnswer} from "../../usecases/answer/DeleteAnswer";
+import {InMemoryAnswerRepository} from "../adapters/repositories/InMemoryAnswerRepository";
 
 const db = new Map<string, Answer>();
 
 describe("Unit - AnswerToQuestion", () => {
-
     it("should get follow Answers", async () => {
-        const inMemoryAnswerRepository = new InMemoryAnswerRepository(db)
-        const deleteAnswer = new DeleteAnswer(inMemoryAnswerRepository)
+        const inMemoryAnswerRepository = new InMemoryAnswerRepository(db);
+        const deleteAnswer = new DeleteAnswer(inMemoryAnswerRepository);
 
         const answer = new Answer({
             answerId: "1234",
@@ -28,14 +27,12 @@ describe("Unit - AnswerToQuestion", () => {
                 gender: Gender.GIRL,
             },
             answer: "8888",
-            createdAt: new Date()   
-        })
-        db.set(answer.props.answerId, answer)
-  
+            createdAt: new Date()
+        });
+        db.set(answer.props.answerId, answer);
 
+        await deleteAnswer.execute("1234");
 
-
-        await deleteAnswer.execute("1234")
-        expect(db.get("1234")).toBeFalsy()
+        expect(db.get("1234")).toBeFalsy();
     })
 })
