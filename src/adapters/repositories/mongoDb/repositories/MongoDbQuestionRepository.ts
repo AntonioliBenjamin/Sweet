@@ -1,5 +1,5 @@
 import {QuestionRepository} from "../../../../core/repositories/QuestionRepository";
-import {Question} from "../../../../core/Entities/Question";
+import {Question, QuestionProperties} from "../../../../core/Entities/Question";
 import {MongoDbQuestionMapper} from "../mappers/MongoDbQuestionMapper";
 import {QuestionModel} from "../models/question";
 import {QuestionErrors} from "../../../../core/errors/QuestionErrors";
@@ -26,5 +26,13 @@ export class MongoDbQuestionRepository implements QuestionRepository {
             throw new QuestionErrors.NotFound();
         }
         return mongoDbQuestionMapper.toDomain(question);
+    }
+
+    async selectRandomQuestions(numberOfQuestions: number): Promise<QuestionProperties[]> {
+        const questionsModel = await QuestionModel.aggregate([
+            {$sample: {size: numberOfQuestions}}
+        ])
+        const questions = questionsModel.map(elm => mongoDbQuestionMapper.toDomain(elm))
+        return questions.map(elm => elm.props)
     }
 }

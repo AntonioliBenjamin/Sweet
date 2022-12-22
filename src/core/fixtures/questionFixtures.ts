@@ -1,4 +1,4 @@
-import {Question, QuestionProperties} from "../Entities/Question";
+import {QuestionProperties} from "../Entities/Question";
 
 
 export const questionFixtures: QuestionProperties[] = [

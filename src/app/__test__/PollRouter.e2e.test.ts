@@ -6,13 +6,13 @@ import {v4} from "uuid";
 import {QuestionRepository} from "../../core/repositories/QuestionRepository";
 import {MongoDbQuestionRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbQuestionRepository";
 import {Question} from "../../core/Entities/Question";
-import {QuestionModel} from "../../adapters/repositories/mongoDb/models/question";
 import {sign} from "jsonwebtoken";
 import {PollRepository} from "../../core/repositories/PollRepository";
 import {Poll} from "../../core/Entities/Poll";
 import {pollRouter} from "../routes/poll";
 import {MongoDbPollRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbPollRepository";
 import {PollModel} from "../../adapters/repositories/mongoDb/models/poll";
+import {questionMongoFixtures} from "../../core/fixtures/questionMongoFixtures";
 
 const app = express();
 
@@ -72,10 +72,12 @@ describe("E2E - Poll Router", () => {
                 const responseBody = response.body;
                 expect(responseBody).toHaveLength(1);
             })
-            .expect(200);
+            .expect(201);
     });
 
     it("Should post/poll/create", async () => {
+
+        await Promise.all( questionMongoFixtures.map( elem =>  questionRepository.create(elem)));
 
         accessKey = sign(
             {
@@ -89,39 +91,16 @@ describe("E2E - Poll Router", () => {
         await supertest(app)
             .post("/poll/create")
             .set("access_key", accessKey)
+            .send({
+                numberOfQuestions : 12
+            })
             .expect((response) => {
                 const responseBody = response.body;
-                expect(responseBody).toEqual({});
+                expect(responseBody).toBeFalsy();
             })
             .expect(201);
     });
 
-    it("Should post/poll/add/question", async () => {
-        await pollRepository.create(poll);
-        await questionRepository.create(question);
 
-        accessKey = sign(
-            {
-                id: "1234",
-                schoolId: "5678",
-                email: "blabla@gmail.com"
-            },
-            "maytheforcebewithyou"
-        );
-        await supertest(app)
-            .post("/poll/add/question")
-            .set("access_key", accessKey)
-            .send({
-                pollId: "5678",
-                questionId: "1234"
-            })
-            .expect((response) => {
-                console.log(response)
-                const responseBody = response.body;
-                expect(responseBody.questions).toHaveLength(1);
-            })
-            .expect(200);
-        await QuestionModel.collection.drop();
-    });
 });
 

@@ -6,7 +6,7 @@ import { followRouter } from "./app/routes/follow";
 import { schoolRouter } from "./app/routes/school";
 import {userRouter} from "./app/routes/user";
 import {questionRouter} from "./app/routes/question";
-//import {pollRouter} from "./app/routes/poll";
+import {pollRouter} from "./app/routes/poll";
 import morgan from "morgan";
 import ejs from "ejs";
 import * as path from "path";
@@ -42,7 +42,7 @@ app.use("/follow", followRouter)
 
 app.use("/question", questionRouter);
 
-//app.use("/poll", pollRouter);
+app.use("/poll", pollRouter);
 
 app.use("/answer", answerRouter);
 
