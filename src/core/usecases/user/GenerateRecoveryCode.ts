@@ -19,7 +19,7 @@ export class GenerateRecoveryCode
   async execute(input: GenerateRecoveryCodeInput): Promise<User> {
     const user = await this.userRepository.getByEmail(input.email);
     if (!user) {
-      throw new UserErrors.NotFound();
+      throw new UserErrors.WrongEmail();
     }
 
     const recoveryCode = this.idGateway.generate();

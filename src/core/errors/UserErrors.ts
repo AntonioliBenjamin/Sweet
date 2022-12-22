@@ -29,4 +29,10 @@ export namespace UserErrors {
       super("WRONG_PASSWORD");
     }
   }
+
+  export class WrongEmail extends DomainErrors {
+    constructor() {
+      super("WRONG_EMAIL");
+    }
+  }
 }

@@ -20,7 +20,7 @@ export class SignIn implements UseCase<UserInput, User> {
       input.email.toLowerCase().trim()
     );
     if (!user) {
-      throw new UserErrors.NotFound();
+      throw new UserErrors.WrongEmail();
     }
 
     const hash = user.props.password;
