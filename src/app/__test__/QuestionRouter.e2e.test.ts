@@ -93,4 +93,23 @@ describe("E2E - Question Router", () => {
       })
       .expect(200);
   });
+
+  it("Should delete /question", async () => {
+    accessKey = sign(
+      {
+        id: "1234",
+        schoolId: "5678",
+        email: "blabla@gmail.com",
+      },
+      "maytheforcebewithyou"
+    );
+
+    await supertest(app)
+      .delete("/question")
+      .set("access_key", accessKey)
+      .send({
+        questionId: "1234"
+      })
+      .expect(200);
+  });
 });

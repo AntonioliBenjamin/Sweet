@@ -35,4 +35,9 @@ export class MongoDbQuestionRepository implements QuestionRepository {
         const questions = questionsModel.map(elm => mongoDbQuestionMapper.toDomain(elm))
         return questions.map(elm => elm.props)
     }
+
+    async delete(questionId: string): Promise<void> {
+        await QuestionModel.deleteOne({ questionId : questionId })
+        return
+    }
 }

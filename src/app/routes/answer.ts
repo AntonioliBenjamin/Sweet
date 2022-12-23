@@ -34,7 +34,7 @@ answerRouter.post("/:questionId", async (req: AuthentifiedRequest, res) => {
         const body = {
             questionId: req.params.questionId,
             answerUserId: req.body.answerUserId,
-            userId: req.body.userId
+            userId: req.user.id
         }
 
         const answer = await answerToQuestion.execute({

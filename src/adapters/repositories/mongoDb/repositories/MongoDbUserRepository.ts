@@ -71,4 +71,14 @@ export class MongoDbUserRepository implements UserRepository {
     await UserModel.deleteOne({ id: userId });
     return;
   }
+
+  async searchFriends(keyword: string, schoolId?: string): Promise<User[]> {
+    if (schoolId) {
+      const users = await UserModel.find({ schoolId : schoolId, userName: new RegExp(keyword, 'i') })
+      return users.map(elm => mongoDbUserMapper.toDomain(elm)) 
+    }
+   
+    const users = await UserModel.find({ userName: new RegExp(keyword, 'i') });
+    return users.map(elm => mongoDbUserMapper.toDomain(elm))
+  }
 }

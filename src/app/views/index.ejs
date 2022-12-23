@@ -59,7 +59,7 @@
       );
 
       let password = document.getElementById("password").value;
-      let params = new URLSearchParams(document.location.search);
+      let params = new URLSearchParams(document.location.searchFriends);
       let token = params.get("trustedKey");
 
       document.getElementById("form").addEventListener("submit", function (e) {
