@@ -1,5 +1,7 @@
 import {QuestionProperties} from "./Question";
 
+const timeLimit = +process.env.TIME_LIMIT
+
 export type PollProperties = {
     pollId: string,
     questions?: Array<QuestionProperties>,
@@ -21,7 +23,7 @@ export class Poll {
         return new Poll({
             pollId: props.pollId,
             createdAt: new Date(),
-            expirationDate : new Date(new Date().setHours(new Date().getHours()+1)),
+            expirationDate: new Date(new Date().setHours(new Date().getHours() + timeLimit)),
         })
     }
 
