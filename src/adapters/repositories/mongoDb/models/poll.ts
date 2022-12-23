@@ -5,6 +5,7 @@ export type pollModel = {
   pollId: string;
   questions: Array<QuestionProperties>;
   createdAt: number;
+  expirationDate : number
 };
 
 const pollSchema = new Schema({
@@ -33,6 +34,10 @@ const pollSchema = new Schema({
     },
   ],
   createdAt: {
+    type: Number,
+    required: true,
+  },
+  expirationDate: {
     type: Number,
     required: true,
   },

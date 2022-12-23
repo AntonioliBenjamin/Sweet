@@ -17,7 +17,7 @@ describe("Unit - SignUp", () => {
   let school: School;
   let user: User;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     const inMemoryUserRepository = new InMemoryUserRepository(db);
     const inMemorySchoolRepository = new InMemorySchoolRepository(dbSchool);
     const uuidGateway = new UuidGateway();

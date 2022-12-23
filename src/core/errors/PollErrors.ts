@@ -6,4 +6,10 @@ export namespace PollErrors {
             super("POLL_NOT_FOUND")
         }
     }
+
+    export class DateExpired extends DomainErrors {
+        constructor() {
+            super("DATE_EXPIRED")
+        }
+    }
 }
