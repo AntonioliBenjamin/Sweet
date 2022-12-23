@@ -30,7 +30,7 @@ followRouter.use(authorization);
 followRouter.post("/", async (req: AuthentifiedRequest, res) => {
     try {
         const body = {
-            addedBy: req.body.addedBy,
+            addedBy: req.user.id,
             userIdArray: req.body.userIdArray,
         };
 
@@ -57,7 +57,6 @@ followRouter.post("/", async (req: AuthentifiedRequest, res) => {
         });
     }
 });
-
 
 followRouter.get("/mine", async (req: AuthentifiedRequest, res) => { // les gens que je follow
     try {

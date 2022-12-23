@@ -8,9 +8,7 @@ import {CreatePoll} from "../../core/usecases/poll/CreatePoll";
 import {ApiPollMapper} from "../dtos/ApiPollMapper";
 import {GetAllPolls} from "../../core/usecases/poll/GetAllPolls";
 import {MongoDbQuestionRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbQuestionRepository";
-import {CreatePollSchema} from "../commands/poll/CreatePollSchema";
 import {GetCurrentPoll} from "../../core/usecases/poll/GetCurrentPoll";
-
 const pollRouter = express.Router();
 const mongoDbPollRepository = new MongoDbPollRepository();
 const mongoDbQuestionRepository = new MongoDbQuestionRepository();
@@ -23,7 +21,7 @@ const getCurrentPoll = new GetCurrentPoll(mongoDbPollRepository)
 pollRouter.use(authorization);
 
 
-    pollRouter.post("/create", async (req: AuthentifiedRequest, res) => {
+    pollRouter.post("/", async (req: AuthentifiedRequest, res) => {
         try {
             await createPoll.execute();
 
@@ -52,7 +50,7 @@ pollRouter.get("/all", async (req: AuthentifiedRequest, res) => {
     }
 })
 
-pollRouter.get("/recent", async (req: AuthentifiedRequest, res) => {
+pollRouter.get("/curent", async (req: AuthentifiedRequest, res) => {
     try {
         const currentPoll = await getCurrentPoll.execute();
 

@@ -128,7 +128,7 @@ describe("E2E - FollowRouter", () => {
 
     accessKey = sign(
       {
-        id: "9999",
+        id: "123456",
         schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
       },
       "maytheforcebewithyou"
@@ -138,8 +138,8 @@ describe("E2E - FollowRouter", () => {
       .post("/answer/9999")
       .set("access_key", accessKey)
       .send({
-        userId: "123456",
-        answerUserId: "9999",
+        userId: user.props.id,
+        answerUserId: answer.props.answerId,
       })
       .expect((response) => {
         const responseBody = response.body;
@@ -169,7 +169,7 @@ describe("E2E - FollowRouter", () => {
       .expect(200);
   });
 
-  it("should get/answer/all", async () => {
+  it("should get answer/friend/:id", async () => {
     accessKey = sign(
       {
         id: "9999",
@@ -179,7 +179,7 @@ describe("E2E - FollowRouter", () => {
     );
 
     await supertest(app)
-      .get("/answer/follow/9999")
+      .get("/answer/friend/9999")
       .set("access_key", accessKey)
       .expect((response) => {
         const responseBody = response.body;
