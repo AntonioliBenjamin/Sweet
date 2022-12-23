@@ -12,7 +12,6 @@ import {DeleteFollowCommand} from "../commands/follow/DeleteFollowCommand";
 import {UserApiUserMapper} from "../dtos/UserApiUserMapper";
 import {authorization} from "../middlewares/JwtAuthorizationMiddleware";
 import {AuthentifiedRequest} from "../types/AuthentifiedRequest";
-
 const userApiUserMapper = new UserApiUserMapper();
 const followRouter = express.Router();
 const mongoDbFollowRepository = new MongoDbFollowRepository();

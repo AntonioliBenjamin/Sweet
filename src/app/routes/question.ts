@@ -7,12 +7,15 @@ import { GetAllQuestions } from "../../core/usecases/question/GetAllQuestions";
 import { ApiQuestionMapper } from "../dtos/ApiQuestionMapper";
 import { CreateQuestionSchema } from "../commands/question/CreateQuestionSchema";
 import { AuthentifiedRequest } from "../types/AuthentifiedRequest";
+import { DeleteQuestion } from "../../core/usecases/question/DeleteQuestion";
+import { DeleteQuestionSchema } from "../commands/question/DeleteQuestionschema";
 const questionRouter = express.Router();
 const mongoDbQuestionRepository = new MongoDbQuestionRepository();
 const v4IdGateway = new V4IdGateway();
 const createQuestion = new CreateQuestion(mongoDbQuestionRepository, v4IdGateway);
 const getAllQuestions = new GetAllQuestions(mongoDbQuestionRepository);
 const apiQuestionMapper = new ApiQuestionMapper();
+const deleteQuestion = new DeleteQuestion(mongoDbQuestionRepository)
 
 questionRouter.use(authorization);
 
@@ -44,6 +47,26 @@ questionRouter.get("/all", async (req: AuthentifiedRequest, res) => {
 
     return res.status(200).send(questions.map((elm) => elm.props));
 
+  } catch (err) {
+    console.error(err);
+    
+    return res.status(400).send({
+      message: "An error occurred",
+    });
+  }
+});
+
+questionRouter.delete("/", async (req, res) => {
+  try {
+    const body = {
+      questionId: req.body.questionId
+    }
+    
+    const values = await DeleteQuestionSchema.validateAsync(body)
+
+    await deleteQuestion.execute(values.questionId)
+
+    return res.sendStatus(200)
   } catch (err) {
     console.error(err);
     
