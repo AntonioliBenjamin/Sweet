@@ -3,7 +3,6 @@ import {v4} from "uuid";
 import {Poll} from "../../core/Entities/Poll";
 import {MongoDbPollRepository} from "../repositories/mongoDb/repositories/MongoDbPollRepository";
 import {PollModel} from "../repositories/mongoDb/models/poll";
-import {questionFixtures} from "../../core/fixtures/questionFixtures";
 
 describe('Integration - MongoDbPollRepository', () => {
     let mongoDbPollRepository: MongoDbPollRepository;
@@ -23,27 +22,31 @@ describe('Integration - MongoDbPollRepository', () => {
 
         mongoDbPollRepository = new MongoDbPollRepository();
 
-        poll = Poll.create({
-            pollId: "1234"
+        poll =new Poll({
+            pollId: "1234",
+            createdAt : new Date(1),
+            expirationDate : new Date(new Date(1).setHours(new Date(1).getHours()+1)),
         });
 
-    poll2 = Poll.create({
-      pollId: "5678",
+        poll2 =new Poll({
+            pollId: "5678",
+            createdAt : new Date(),
+            expirationDate : new Date(new Date().setHours(new Date().getHours()+1)),
+        });
     });
-  });
 
-  beforeEach(async () => {
-    result = await mongoDbPollRepository.create(poll);
-  });
+    beforeEach(async () => {
+        result = await mongoDbPollRepository.create(poll);
+    });
 
-  afterEach(async () => {
-    await PollModel.collection.drop();
-  });
+    afterEach(async () => {
+        await PollModel.collection.drop();
+    });
 
-  afterAll(async () => {
-    await mongoose.connection.dropDatabase();
-    await mongoose.connection.close();
-  });
+    afterAll(async () => {
+        await mongoose.connection.dropDatabase();
+        await mongoose.connection.close();
+    });
 
     it("Should get all polls", async () => {
         await mongoDbPollRepository.create(poll2);
@@ -51,7 +54,22 @@ describe('Integration - MongoDbPollRepository', () => {
 
         expect(array).toHaveLength(2);
     });
+
     it("Should save a poll", () => {
         expect(result.props.createdAt).toBeTruthy();
+        expect(result.props.expirationDate).toBeTruthy();
+    });
+
+    it("Should get most recent poll", async () => {
+        await mongoDbPollRepository.create(poll2);
+        const result = await mongoDbPollRepository.getCurrentPoll()
+        expect(result.props.pollId).toEqual("5678");
+    });
+
+    it("should delete a poll", async () => {
+        const result = await mongoDbPollRepository.delete(poll.props.pollId);
+
+        expect(result).toBeFalsy();
+        await expect(PollModel.findOne({ pollId: poll.props.pollId })).resolves.toEqual(null);
     });
 });
