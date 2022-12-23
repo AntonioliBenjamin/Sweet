@@ -10,7 +10,7 @@ const userApiUserMapper = new UserApiUserMapper()
 
 friendsRouter.use(authorization);
 
-friendsRouter.get("/search/:keyword/:schoolId", async (req, res) => {
+friendsRouter.get("/search/:keyword/:schoolId?", async (req, res) => {
     try {
         const users = await searchFriends.execute({
             keyword: req.params.keyword,

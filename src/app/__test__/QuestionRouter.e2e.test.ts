@@ -38,6 +38,10 @@ describe("E2E - Question Router", () => {
     });
   });
 
+  beforeEach(async () => {
+    await questionRepository.create(question);
+  })
+
   afterEach(async () => {
     await QuestionModel.collection.drop();
   });
@@ -47,7 +51,7 @@ describe("E2E - Question Router", () => {
     await mongoose.connection.close();
   });
 
-  it("Should post/question/create", async () => {
+  it("Should post /question", async () => {
     accessKey = sign(
       {
         id: "1234",
@@ -58,7 +62,7 @@ describe("E2E - Question Router", () => {
     );
 
     await supertest(app)
-      .post("/question/create")
+      .post("/question")
       .set("access_key", accessKey)
       .send({
         description: "yes",
@@ -74,8 +78,6 @@ describe("E2E - Question Router", () => {
   });
 
   it("Should get/question/all", async () => {
-    await questionRepository.create(question);
-
     accessKey = sign(
       {
         id: "1234",

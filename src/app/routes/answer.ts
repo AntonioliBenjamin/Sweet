@@ -69,7 +69,7 @@ answerRouter.get("/all", async (req, res) => {
     }
 })
 
-answerRouter.get("/follow/:id", async (req, res) => {
+answerRouter.get("/friend/:id", async (req, res) => {
     try {
         const friendAnswers = await getFriendAnswers.execute(req.params.id);
 

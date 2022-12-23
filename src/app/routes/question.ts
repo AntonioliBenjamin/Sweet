@@ -19,7 +19,7 @@ const deleteQuestion = new DeleteQuestion(mongoDbQuestionRepository)
 
 questionRouter.use(authorization);
 
-questionRouter.post("/create", async (req: AuthentifiedRequest, res) => {
+questionRouter.post("/", async (req: AuthentifiedRequest, res) => {
   try {
     const body = {
       description: req.body.description,

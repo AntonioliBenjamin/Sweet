@@ -50,7 +50,7 @@ describe("Integration - MongoDbUserRepository", () => {
     });
 
     user2 = User.create({
-      email: "user@example.com",
+      email: "user1@example.com",
       id: "9999",
       password: "password",
       userName: "mickael",
@@ -63,7 +63,7 @@ describe("Integration - MongoDbUserRepository", () => {
     });
 
     user3 = User.create({
-      email: "user@example.com",
+      email: "user2@example.com",
       id: "sdfsdf",
       password: "password",
       userName: "mini",
@@ -122,12 +122,22 @@ describe("Integration - MongoDbUserRepository", () => {
   });
 
   it("Should save a user", () => {
-    expect(result.props.userName).toEqual("user name");
+    expect(result.props.userName).toEqual("mickey");
   });
+
+  it("should search all users who cotains the keyword in userName", async () => {
+    const result = await mongoDbUserRepository.searchFriends("mick")
+    expect(result).toHaveLength(2)
+  })
+
+  it("should search all users who cotains the keyword in userName in the same school", async () => {
+    const result = await mongoDbUserRepository.searchFriends("mi", "456")
+    expect(result).toHaveLength(2)
+  }) 
 
   it("Should get a user by email", async () => {
     const result = await mongoDbUserRepository.getByEmail("user@example.com");
-    expect(result.props.userName).toEqual("user name");
+    expect(result.props.userName).toEqual("mickey");
     expect(result.props.id).toEqual("12345");
   });
 
@@ -138,7 +148,7 @@ describe("Integration - MongoDbUserRepository", () => {
 
   it("should get a user by id", async () => {
     const result = await mongoDbUserRepository.getById("12345");
-    expect(result.props.userName).toEqual("user name");
+    expect(result.props.userName).toEqual("mickey");
   });
 
   it("should throw if userId does not exist", async () => {
@@ -180,14 +190,4 @@ describe("Integration - MongoDbUserRepository", () => {
     const result = await mongoDbUserRepository.getAllUsersBySchool("456");
     expect(result).toHaveLength(2);
   });
-
-  it("should search all users who cotains the keyword in userName", async () => {
-    const result = await mongoDbUserRepository.searchFriends("mick")
-    expect(result).toHaveLength(2)
-  })
-
-  it("should search all users who cotains the keyword in userName in the same school", async () => {
-    const result = await mongoDbUserRepository.searchFriends("mi", "456")
-    expect(result).toHaveLength(2)
-  })
 });

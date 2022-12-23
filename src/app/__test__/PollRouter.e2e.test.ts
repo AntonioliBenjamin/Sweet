@@ -88,7 +88,7 @@ describe("E2E - Poll Router", () => {
             .expect(200);
     });
 
-    it("Should post poll/create", async () => {
+    it("Should post /poll", async () => {
         await Promise.all(questionMongoFixtures.map(elem => questionRepository.create(elem)));
 
         accessKey = sign(
@@ -101,7 +101,7 @@ describe("E2E - Poll Router", () => {
         );
 
         await supertest(app)
-            .post("/poll/create")
+            .post("/poll")
             .set("access_key", accessKey)
             .expect((response) => {
                 const responseBody = response.body;
@@ -110,7 +110,7 @@ describe("E2E - Poll Router", () => {
             .expect(201);
     });
 
-    it("Should get/poll/recent", async () => {
+    it("Should get/poll/curent", async () => {
         await pollRepository.create(poll);
         await pollRepository.create(poll2);
 
@@ -124,7 +124,7 @@ describe("E2E - Poll Router", () => {
         );
 
         await supertest(app)
-            .get("/poll/recent")
+            .get("/poll/curent")
             .set("access_key", accessKey)
             .expect((response) => {
                 const responseBody = response.body;
