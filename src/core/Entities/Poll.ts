@@ -1,3 +1,4 @@
+import "dotenv/config";
 import {QuestionProperties} from "./Question";
 
 const timeLimit = +process.env.TIME_LIMIT
