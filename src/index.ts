@@ -10,6 +10,7 @@ import {pollRouter} from "./app/routes/poll";
 import morgan from "morgan";
 import ejs from "ejs";
 import * as path from "path";
+import { friendsRouter } from "./app/routes/friends";
 
 const port = +process.env.PORT;
 
@@ -45,6 +46,8 @@ app.use("/question", questionRouter);
 app.use("/poll", pollRouter);
 
 app.use("/answer", answerRouter);
+
+app.use("/friends", friendsRouter);
 
 app.listen(port, () => {
     console.log(`listening on port ${port}`);

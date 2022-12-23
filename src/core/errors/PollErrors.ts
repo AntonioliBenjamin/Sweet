@@ -1,9 +1,9 @@
-import {DomainErrors} from "./DomainErrors";
+import { DomainErrors } from "./DomainErrors";
 
 export namespace PollErrors {
-    export class NotFound extends DomainErrors {
-        constructor() {
-            super("POLL_NOT_FOUND")
-        }
+  export class NotFound extends DomainErrors {
+    constructor() {
+      super("POLL_NOT_FOUND");
     }
+  }
 }

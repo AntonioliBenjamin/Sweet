@@ -71,4 +71,9 @@ describe("Integration - MongoDbQuestionRepository", () => {
     const result = () => mongoDbQuestionRepository.getByQuestionId("false questionID")
     await expect(result).rejects.toThrow(QuestionErrors.NotFound)
   })
+
+  it("should delete question", async () => {
+    await mongoDbQuestionRepository.delete(question.props.questionId)
+    expect(mongoDbQuestionRepository.getByQuestionId(question.props.questionId)).rejects.toThrow(QuestionErrors.NotFound)
+  })
 });

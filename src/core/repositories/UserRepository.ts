@@ -14,4 +14,6 @@ export interface UserRepository {
   delete(userId: string): Promise<void>;
 
   updatePassword(user: User): Promise<void>;
+
+  searchFriends(keyword: string, schoolId?: string): Promise<User[]>
 }

@@ -8,4 +8,6 @@ export interface QuestionRepository {
   selectRandomQuestions(numberOfQuestions: number): Promise<QuestionProperties[]>;
 
   getByQuestionId(questionId: string): Promise<Question>;
+
+  delete(questionId: string): Promise<void>;
 }

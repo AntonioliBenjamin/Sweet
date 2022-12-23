@@ -15,12 +15,15 @@ describe("Integration - MongoDbUserRepository", () => {
   let mongoDbFollowRepository: MongoDbFollowRepository;
   let mongoDbAnswerRepository: MongoDbAnswerRepository;
   let user: User;
+  let user2: User;
+  let user3: User;
   let result: User;
   let answer: Answer;
   let follow: Followed;
 
   beforeAll(async () => {
     const databaseId = v4();
+    mongoose.set('strictQuery', false);
     mongoose.connect(`mongodb://127.0.0.1:27017/${databaseId}`, (err) => {
       if (err) {
         throw err;
@@ -35,15 +38,41 @@ describe("Integration - MongoDbUserRepository", () => {
       email: "user@example.com",
       id: "12345",
       password: "password",
-      userName: "user name",
+      userName: "mickey",
       age: 15,
-      firstName: "mich",
+      firstName: "mickey",
       gender: Gender.BOY,
       lastName: "polllich",
       schoolId: "456",
       section: "cp",
       createdAt: new Date(),
       updatedAt: null,
+    });
+
+    user2 = User.create({
+      email: "user@example.com",
+      id: "9999",
+      password: "password",
+      userName: "mickael",
+      age: 15,
+      firstName: "mickael",
+      gender: Gender.BOY,
+      lastName: "polllich",
+      schoolId: "456",
+      section: "cp",
+    });
+
+    user3 = User.create({
+      email: "user@example.com",
+      id: "sdfsdf",
+      password: "password",
+      userName: "mini",
+      age: 15,
+      firstName: "mich",
+      gender: Gender.BOY,
+      lastName: "polllich",
+      schoolId: "0000",
+      section: "cp",
     });
 
     answer = new Answer({
@@ -75,6 +104,8 @@ describe("Integration - MongoDbUserRepository", () => {
 
   beforeEach(async () => {
     result = await mongoDbUserRepository.create(user);
+    await mongoDbUserRepository.create(user2);
+    await mongoDbUserRepository.create(user3);
     await mongoDbAnswerRepository.create(answer);
     await mongoDbFollowRepository.create(follow);
   });
@@ -146,21 +177,17 @@ describe("Integration - MongoDbUserRepository", () => {
   });
 
   it("should get all users by school", async () => {
-    const user2 = User.create({
-      email: "user@example.com",
-      id: "9999",
-      password: "password",
-      userName: "user Name",
-      age: 15,
-      firstName: "mich",
-      gender: Gender.BOY,
-      lastName: "polllich",
-      schoolId: "456",
-      section: "cp",
-    });
-
-    await mongoDbUserRepository.create(user2);
     const result = await mongoDbUserRepository.getAllUsersBySchool("456");
     expect(result).toHaveLength(2);
   });
+
+  it("should search all users who cotains the keyword in userName", async () => {
+    const result = await mongoDbUserRepository.searchFriends("mick")
+    expect(result).toHaveLength(2)
+  })
+
+  it("should search all users who cotains the keyword in userName in the same school", async () => {
+    const result = await mongoDbUserRepository.searchFriends("mi", "456")
+    expect(result).toHaveLength(2)
+  })
 });

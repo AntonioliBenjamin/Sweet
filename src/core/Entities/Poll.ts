@@ -18,7 +18,7 @@ export class Poll {
     }) {
         return new Poll({
             pollId: props.pollId,
-            createdAt: new Date()
+            createdAt: new Date(),
         })
     }
 

@@ -1,14 +1,12 @@
 import { GetAllSchools } from "../../core/usecases/school/GetAllSchools";
 import express from "express";
 import { SchoolDbRepository } from "../../adapters/repositories/school/SchoolDbRepository";
-import { authorization } from "../middlewares/JwtAuthorizationMiddleware";
 const schoolRouter = express.Router();
 const schoolDbRepository = new SchoolDbRepository();
 const getAllSchools = new GetAllSchools(schoolDbRepository);
 
-schoolRouter.use(authorization);
 
-schoolRouter.get("/all", async (req, res) => {
+schoolRouter.get("/", async (req, res) => {
   try {
     const schools = await getAllSchools.execute();
 
