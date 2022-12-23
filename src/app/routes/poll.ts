@@ -9,6 +9,7 @@ import {ApiPollMapper} from "../dtos/ApiPollMapper";
 import {GetAllPolls} from "../../core/usecases/poll/GetAllPolls";
 import {MongoDbQuestionRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbQuestionRepository";
 import {CreatePollSchema} from "../commands/poll/CreatePollSchema";
+import {GetCurrentPoll} from "../../core/usecases/poll/GetCurrentPoll";
 
 const pollRouter = express.Router();
 const mongoDbPollRepository = new MongoDbPollRepository();
@@ -17,19 +18,14 @@ const v4IdGateway = new V4IdGateway();
 const createPoll = new CreatePoll(mongoDbPollRepository, mongoDbQuestionRepository, v4IdGateway);
 const apiPollMapper = new ApiPollMapper();
 const getAllPolls = new GetAllPolls(mongoDbPollRepository);
+const getCurrentPoll = new GetCurrentPoll(mongoDbPollRepository)
 
 pollRouter.use(authorization);
 
-cron.schedule('* */1 * * *', () => {
+
     pollRouter.post("/create", async (req: AuthentifiedRequest, res) => {
         try {
-            const body = {
-                numberOfQuestions: req.body.numberOfQuestions
-            }
-
-            const values = await CreatePollSchema.validateAsync(body);
-
-            await createPoll.execute(values);
+            await createPoll.execute();
 
             return res.sendStatus(201);
 
@@ -40,13 +36,27 @@ cron.schedule('* */1 * * *', () => {
             })
         }
     })
-})
+
 
 pollRouter.get("/all", async (req: AuthentifiedRequest, res) => {
     try {
         const polls = await getAllPolls.execute();
 
         return res.status(200).send(polls.map(elm => elm.props));
+
+    } catch (err) {
+
+        return res.status(400).send({
+            message: "An error occurred"
+        })
+    }
+})
+
+pollRouter.get("/recent", async (req: AuthentifiedRequest, res) => {
+    try {
+        const currentPoll = await getCurrentPoll.execute();
+
+        return res.status(200).send(currentPoll);
 
     } catch (err) {
 

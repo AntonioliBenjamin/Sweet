@@ -4,6 +4,7 @@ export type PollProperties = {
     pollId: string,
     questions?: Array<QuestionProperties>,
     createdAt: Date,
+    expirationDate: Date,
 };
 
 export class Poll {
@@ -16,9 +17,11 @@ export class Poll {
     static create(props: {
         pollId: string,
     }) {
+
         return new Poll({
             pollId: props.pollId,
-            createdAt: new Date()
+            createdAt: new Date(),
+            expirationDate : new Date(new Date().setHours(new Date().getHours()+1)),
         })
     }
 

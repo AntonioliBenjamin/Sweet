@@ -22,6 +22,7 @@ describe("E2E - Poll Router", () => {
     let question: Question;
     let pollRepository: PollRepository;
     let poll: Poll;
+    let poll2: Poll
 
     beforeAll(async () => {
         questionRepository = new MongoDbQuestionRepository();
@@ -41,6 +42,13 @@ describe("E2E - Poll Router", () => {
         poll = Poll.create({
             pollId: "5678"
         })
+
+        poll2 = new Poll({
+            pollId: "0000",
+            createdAt: new Date(1),
+            expirationDate: new Date(new Date(1).setHours(new Date(1).getHours() + 1)),
+        })
+
 
         question = Question.create({
             questionId: "1234",
@@ -80,8 +88,8 @@ describe("E2E - Poll Router", () => {
             .expect(200);
     });
 
-    it("Should post/poll/create", async () => {
-        await Promise.all( questionMongoFixtures.map( elem =>  questionRepository.create(elem)));
+    it("Should post poll/create", async () => {
+        await Promise.all(questionMongoFixtures.map(elem => questionRepository.create(elem)));
 
         accessKey = sign(
             {
@@ -95,14 +103,34 @@ describe("E2E - Poll Router", () => {
         await supertest(app)
             .post("/poll/create")
             .set("access_key", accessKey)
-            .send({
-                numberOfQuestions : 12
-            })
             .expect((response) => {
                 const responseBody = response.body;
-                expect(responseBody).toBeFalsy();
+                expect(responseBody).resolves
             })
             .expect(201);
+    });
+
+    it("Should get/poll/recent", async () => {
+        await pollRepository.create(poll);
+        await pollRepository.create(poll2);
+
+        accessKey = sign(
+            {
+                id: "1234",
+                schoolId: "5678",
+                email: "blabla@gmail.com"
+            },
+            "maytheforcebewithyou"
+        );
+
+        await supertest(app)
+            .get("/poll/recent")
+            .set("access_key", accessKey)
+            .expect((response) => {
+                const responseBody = response.body;
+                expect(responseBody.props.pollId).toEqual("5678");
+            })
+            .expect(200);
     });
 });
 

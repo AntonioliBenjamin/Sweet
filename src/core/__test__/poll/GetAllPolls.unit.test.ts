@@ -13,12 +13,14 @@ describe("Unit - GetAllPolls", () => {
       pollId: "1234",
       questions: [],
       createdAt: new Date(),
+      expirationDate : new Date(new Date().setHours(new Date().getHours()+1)),
     });
 
     const poll2 = new Poll({
       pollId: "5678",
       questions: [],
       createdAt: new Date(),
+      expirationDate : new Date(new Date().setHours(new Date().getHours()+1)),
     });
 
     db.set("1234", poll1);
