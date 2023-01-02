@@ -10,6 +10,7 @@ export class MongoDbAnswerMapper implements Mapper<AnswerModel, Answer> {
       createdAt: new Date(raw.createdAt),
       question: raw.question,
       response: raw.response,
+      markAsRead : raw.markAsRead
     });
   }
 
@@ -20,6 +21,7 @@ export class MongoDbAnswerMapper implements Mapper<AnswerModel, Answer> {
       createdAt: +data.props.createdAt,
       question: data.props.question,
       response: data.props.response,
+      markAsRead : data.props.markAsRead
     };
   }
 }

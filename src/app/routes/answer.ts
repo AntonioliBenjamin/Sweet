@@ -10,6 +10,7 @@ import {GetFriendAnswers} from "../../core/usecases/answer/GetFriendAnswers";
 import {GetMyAnswers} from "../../core/usecases/answer/GetMyAnswers";
 import {authorization} from "../middlewares/JwtAuthorizationMiddleware";
 import {AuthentifiedRequest} from "../types/AuthentifiedRequest";
+import {AnswerMarkAsRead} from "../../core/usecases/answer/AnswerMarkAsRead";
 
 const answerRouter = express.Router();
 const mongoDbQuestionRepository = new MongoDbQuestionRepository();
@@ -26,6 +27,7 @@ const getAllAnswers = new GetAllAnswers(mongoDbAnswerRepository);
 const getFriendAnswers = new GetFriendAnswers(mongoDbAnswerRepository);
 const getMyAnswers = new GetMyAnswers(mongoDbAnswerRepository);
 const deleteAnswer = new DeleteAnswer(mongoDbAnswerRepository);
+const answerMarkAsRead = new AnswerMarkAsRead(mongoDbAnswerRepository)
 
 answerRouter.use(authorization);
 
@@ -99,13 +101,10 @@ answerRouter.get("/mine", async (req: AuthentifiedRequest, res) => {
     }
 })
 
-answerRouter.delete("/", async (req, res) => {
+answerRouter.delete("/:answerId", async (req, res) => {
     try {
-        const body = {
-            answerId: req.body.answerId
-        }
 
-        await deleteAnswer.execute(body.answerId);
+        await deleteAnswer.execute(req.params.answerId);
 
         return res.sendStatus(200);
 
@@ -117,5 +116,22 @@ answerRouter.delete("/", async (req, res) => {
         });
     }
 })
+
+answerRouter.patch("/:answerId", async (req, res) => {
+    try {
+
+        await answerMarkAsRead.execute(req.params.answerId);
+
+        return res.sendStatus(200);
+
+    } catch (err) {
+        console.error(err);
+
+        return res.status(400).send({
+            message: "An error occurred",
+        });
+    }
+})
+
 
 export {answerRouter};

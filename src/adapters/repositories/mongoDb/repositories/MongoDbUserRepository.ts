@@ -42,10 +42,11 @@ export class MongoDbUserRepository implements UserRepository {
         $set: {
           userName: toUserModel.userName,
           updatedAt: toUserModel.updatedAt,
-          age: toUserModel.age,
+          gender: toUserModel.gender,
           firstName: toUserModel.firstName,
           lastName: toUserModel.lastName,
           section: toUserModel.section,
+          schoolId : toUserModel.schoolId,
           recoveryCode: toUserModel.recoveryCode,
         },
       },

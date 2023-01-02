@@ -8,7 +8,6 @@ import { ApiQuestionMapper } from "../dtos/ApiQuestionMapper";
 import { CreateQuestionSchema } from "../commands/question/CreateQuestionSchema";
 import { AuthentifiedRequest } from "../types/AuthentifiedRequest";
 import { DeleteQuestion } from "../../core/usecases/question/DeleteQuestion";
-import { DeleteQuestionSchema } from "../commands/question/DeleteQuestionschema";
 const questionRouter = express.Router();
 const mongoDbQuestionRepository = new MongoDbQuestionRepository();
 const v4IdGateway = new V4IdGateway();
@@ -56,15 +55,10 @@ questionRouter.get("/all", async (req: AuthentifiedRequest, res) => {
   }
 });
 
-questionRouter.delete("/", async (req, res) => {
+questionRouter.delete("/:questionId", async (req, res) => {
   try {
-    const body = {
-      questionId: req.body.questionId
-    }
-    
-    const values = await DeleteQuestionSchema.validateAsync(body)
 
-    await deleteQuestion.execute(values.questionId)
+    await deleteQuestion.execute(req.params.questionId)
 
     return res.sendStatus(200)
   } catch (err) {

@@ -8,4 +8,6 @@ export interface AnswerRepository {
     delete(userId: string): Promise<void>;
 
     deleteAllByUserId(userId: string): Promise<void>;
+
+    markAsRead(answer: Answer): Promise<Answer>;
 }

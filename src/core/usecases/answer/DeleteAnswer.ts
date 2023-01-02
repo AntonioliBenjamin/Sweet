@@ -7,7 +7,7 @@ export class DeleteAnswer implements UseCase<string, void> {
     ) {}
 
   async execute(id: string): Promise<void> {
-    this.answerRepository.delete(id);
+    await this.answerRepository.delete(id);
 
     return;
   }

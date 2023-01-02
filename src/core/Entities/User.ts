@@ -63,17 +63,16 @@ export class User {
     userName: string;
     firstName: string;
     lastName: string;
-    age: number;
+    gender : Gender;
     section: string;
+    schoolId: string;
   }) {
-    if (props.age < 13) {
-      throw new UserErrors.TooYoung();
-    }
     this.props.userName = props.userName.toLowerCase().trim();
     this.props.firstName = props.firstName;
     this.props.lastName = props.lastName;
-    this.props.age = props.age;
+    this.props.gender = props.gender;
     this.props.section = props.section;
+    this.props.schoolId = props.schoolId;
     this.props.updatedAt = new Date();
   }
 
