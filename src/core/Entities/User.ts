@@ -19,6 +19,7 @@ export type UserProperties = {
   createdAt: Date;
   updatedAt: Date;
   recoveryCode?: string;
+  pushToken?: string;
 };
 
 export class User {
@@ -56,6 +57,7 @@ export class User {
       password: props.password,
       createdAt: new Date(),
       updatedAt: null,
+      pushToken: null
     });
   }
 
@@ -86,5 +88,9 @@ export class User {
     }
     this.props.password = payload.password;
     this.props.updatedAt = new Date();
+  }
+
+  updatePushtoken(pushToken: string) {
+    this.props.pushToken = pushToken
   }
 }

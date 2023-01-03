@@ -83,4 +83,16 @@ export class MongoDbUserRepository implements UserRepository {
     const users = await UserModel.find({ userName: new RegExp(keyword, 'i') });
     return users.map(elm => mongoDbUserMapper.toDomain(elm))
   }
+
+  async updatePushtoken(user: User): Promise<User> {
+    const toUserModel = mongoDbUserMapper.fromDomain(user);
+    await UserModel.findOneAndUpdate(
+      { id: toUserModel.id },
+      {
+        $set: { pushToken: user.props.pushToken}
+      },
+      { new: true }
+    );
+    return user;
+  }
 }

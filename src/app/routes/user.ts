@@ -25,6 +25,7 @@ import { MongoDbFollowRepository } from "../../adapters/repositories/mongoDb/rep
 import { MongoDbAnswerRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbAnswerRepository";
 import { EmailExist } from "../../core/usecases/user/EmailExist";
 import { EmailExistSchema } from "../commands/user/EmailExistSchema";
+import { UpdatePushToken } from "../../core/usecases/user/UpdatePushToken";
 const mailService = new MailService();
 const emailSender = process.env.RECOVERY_EMAIL_SENDER;
 const userRouter = express.Router();
@@ -44,6 +45,7 @@ const emailExist = new EmailExist(mongoDbUserRepository);
 const getAllMyPotentialFriends = new GetAllMyPotentialFriends(mongoDbUserRepository);
 const updateRecoveryCode = new GenerateRecoveryCode(mongoDbUserRepository,v4IdGateway);
 const resetPassword = new ResetPassword(mongoDbUserRepository, bcryptGateway);
+const updatePushtoken = new UpdatePushToken(mongoDbUserRepository);
 const userApiUserMapper = new UserApiUserMapper();
 
 mailService.setApiKey(process.env.SENDGRID_API_KEY);
@@ -237,6 +239,25 @@ userRouter.patch("/", async (req: AuthentifiedRequest, res) => {
     });
   }
 });
+
+userRouter.patch("/push-token", async (req:AuthentifiedRequest, res) => {
+  try {
+    const body = {
+      userId: req.user.id,
+      pushToken: req.body.pushToken
+    }
+
+    const user = await updatePushtoken.execute(body)
+
+    return res.send(userApiUserMapper.fromDomain(user))
+  } catch(err) {
+    console.error(err);
+
+    return res.status(400).send({
+      message: "An error occurred",
+    });
+  }
+})
 
 userRouter.get("/all/:schoolId", async (req: AuthentifiedRequest, res) => {
   try {

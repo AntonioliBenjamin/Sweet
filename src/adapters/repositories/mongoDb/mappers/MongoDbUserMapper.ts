@@ -18,6 +18,7 @@ export class MongoDbUserMapper implements Mapper<userModel, User> {
       userName: data.props.userName,
       recoveryCode: data.props.recoveryCode,
       updatedAt: +data.props.updatedAt,
+      pushToken: data.props.pushToken
     };
   }
 
@@ -36,6 +37,7 @@ export class MongoDbUserMapper implements Mapper<userModel, User> {
       userName: raw.userName,
       recoveryCode: raw.recoveryCode,
       updatedAt: new Date(raw.updatedAt),
+      pushToken: raw.pushToken
     });
   }
 }

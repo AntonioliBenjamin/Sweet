@@ -46,7 +46,8 @@ describe("E2E - User Router", () => {
             section: "dfsdfs",
             createdAt: new Date(),
             updatedAt: null,
-            recoveryCode: null
+            recoveryCode: null,
+            pushToken: null
         });
     });
 
@@ -190,9 +191,9 @@ describe("E2E - User Router", () => {
         expect(responseBody).toHaveLength(1);
       })
       .expect(200);
-  });
+    });
 
-  it("should post/user/exist", async () => {
+    it("should post/user/exist", async () => {
     await userRepository.create(user);
     await supertest(app)
       .post("/user/exist")
@@ -205,5 +206,30 @@ describe("E2E - User Router", () => {
         expect(responseBody.exists).toBeTruthy()
       })
       .expect(200);
-  })
+    })
+
+    it("Should patch/user/push-token", async () => {
+    await userRepository.create(user);
+
+    accessKey = sign(
+        {
+            id: user.props.id,
+            schoolId: user.props.schoolId,
+        },
+        "maytheforcebewithyou"
+    );
+
+    await supertest(app)
+        .patch("/user/push-token")
+        .set("access_key", accessKey)
+        .send({
+            id: user.props.id,
+            pushToken: "3f5f3ce518a5fd5873ce5b543f560e9bf759a5db"
+        })
+        .expect((response) => {
+            const responseBody = response.body;
+            expect(responseBody.pushToken).toEqual("3f5f3ce518a5fd5873ce5b543f560e9bf759a5db");
+        })
+        .expect(200);
+    });
 });
