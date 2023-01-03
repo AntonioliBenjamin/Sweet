@@ -9,5 +9,6 @@ export interface AnswerRepository {
 
     deleteAllByUserId(userId: string): Promise<void>;
 
+    getById(answerId: string): Promise<Answer>;
     markAsRead(answer: Answer): Promise<Answer>;
 }
