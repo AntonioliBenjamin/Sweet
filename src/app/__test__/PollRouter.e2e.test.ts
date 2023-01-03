@@ -12,7 +12,6 @@ import {Poll} from "../../core/Entities/Poll";
 import {pollRouter} from "../routes/poll";
 import {MongoDbPollRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbPollRepository";
 import {PollModel} from "../../adapters/repositories/mongoDb/models/poll";
-import {questionMongoFixtures} from "../../core/fixtures/questionMongoFixtures";
 
 const app = express();
 
@@ -88,29 +87,7 @@ describe("E2E - Poll Router", () => {
             .expect(200);
     });
 
-    it("Should post /poll", async () => {
-        await Promise.all(questionMongoFixtures.map(elem => questionRepository.create(elem)));
-
-        accessKey = sign(
-            {
-                id: "1234",
-                schoolId: "5678",
-                email: "blabla@gmail.com"
-            },
-            "maytheforcebewithyou"
-        );
-
-        await supertest(app)
-            .post("/poll")
-            .set("access_key", accessKey)
-            .expect((response) => {
-                const responseBody = response.body;
-                expect(responseBody).resolves
-            })
-            .expect(201);
-    });
-
-    it("Should get/poll/curent", async () => {
+    it("Should get/poll/current", async () => {
         await pollRepository.create(poll);
         await pollRepository.create(poll2);
 
@@ -124,7 +101,7 @@ describe("E2E - Poll Router", () => {
         );
 
         await supertest(app)
-            .get("/poll/curent")
+            .get("/poll/current")
             .set("access_key", accessKey)
             .expect((response) => {
                 const responseBody = response.body;

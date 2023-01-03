@@ -30,6 +30,10 @@ export class InMemoryAnswerRepository implements AnswerRepository {
         return;
     }
 
+    async getById(answerId: string): Promise<Answer> {
+        return this.db.get(answerId);
+    }
+
     async markAsRead(answer: Answer): Promise<Answer> {
         this.db.set(answer.props.answerId, answer);
 

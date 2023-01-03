@@ -49,7 +49,6 @@ describe('Integration - MongoDbPollRepository', () => {
         await mongoose.connection.close();
     });
 
-
     it("Should get all polls", async () => {
         const array = await mongoDbPollRepository.getAllPolls();
         expect(array).toHaveLength(2);
@@ -58,11 +57,6 @@ describe('Integration - MongoDbPollRepository', () => {
     it("Should get most recent poll", async () => {
         const result = await mongoDbPollRepository.getCurrentPoll()
         expect(result.props.pollId).toEqual("5678");
-    });
-
-    it("Should save a poll", () => {
-        expect(result.props.createdAt).toBeTruthy();
-        expect(result.props.expirationDate).toBeTruthy();
     });
 
     it("Should save a poll", () => {
