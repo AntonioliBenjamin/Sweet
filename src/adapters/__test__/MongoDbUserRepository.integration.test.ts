@@ -201,4 +201,9 @@ describe("Integration - MongoDbUserRepository", () => {
     expect(result.props.pushToken).toEqual("new push token")
   })
 
+  it("should get by userId Array", async () => {
+    const result = await mongoDbUserRepository.getByIdArray(["12345", "9999", "sdfsdf"])
+    expect(result).toHaveLength(3)
+  })
+
 });

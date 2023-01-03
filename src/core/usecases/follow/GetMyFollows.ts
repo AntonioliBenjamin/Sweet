@@ -20,10 +20,8 @@ export class GetMyFollows implements UseCase<string, Promise<User[]>> {
         const usersIds = arr.filter((elm, index ) => {
             return elm !== myUserId && arr.indexOf(elm) == index
         })
-        console.log(usersIds)
-        const users = usersIds.map(elm => {
-            return this.userRepository.getById(elm)
-        })
+
+        const users = await this.userRepository.getByIdArray(usersIds)
         
         return Promise.all(users)
     }

@@ -54,7 +54,7 @@ export class MongoDbFollowRepository implements FollowedRepository {
         return;
     }
 
-  async exists(userId: string, addedBy: string): Promise<Followed> {
+    async exists(userId: string, addedBy: string): Promise<Followed> {
     const follow = await FollowModel.findOne({
       userId: userId,
       addedBy: addedBy
@@ -64,13 +64,13 @@ export class MongoDbFollowRepository implements FollowedRepository {
       return null;
     }
     return followMapper.toDomain(follow);
-  }
+    }
 
-  async getMyFollows(userId: string): Promise<Followed[]> {
+    async getMyFollows(userId: string): Promise<Followed[]> {
     const followsModels = await FollowModel.find({ addedBy: userId });
     if (!followsModels) {
       return null;
     }
     return followsModels.map((elm) => followMapper.toDomain(elm));
-  }
+    }
 }

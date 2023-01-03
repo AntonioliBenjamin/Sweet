@@ -11,18 +11,15 @@ import {GetMyAnswers} from "../../core/usecases/answer/GetMyAnswers";
 import {authorization} from "../middlewares/JwtAuthorizationMiddleware";
 import {AuthentifiedRequest} from "../types/AuthentifiedRequest";
 import {AnswerMarkAsRead} from "../../core/usecases/answer/AnswerMarkAsRead";
-
+import { AnswerToQuestionCommands } from "../commands/answer/AnswerToQuestionCommands";
+import { validateOrReject, validate } from 'class-validator';
+import { commandsValidation } from "../commands/CommandsValidation";
 const answerRouter = express.Router();
 const mongoDbQuestionRepository = new MongoDbQuestionRepository();
 const mongoDbUserRepository = new MongoDbUserRepository();
 const v4IdGateway = new V4IdGateway();
 const mongoDbAnswerRepository = new MongoDbAnswerRepository();
-const answerToQuestion = new AnswerToQuestion(
-    mongoDbAnswerRepository,
-    mongoDbUserRepository,
-    mongoDbQuestionRepository,
-    v4IdGateway
-);
+const answerToQuestion = new AnswerToQuestion(mongoDbAnswerRepository,mongoDbUserRepository,mongoDbQuestionRepository,v4IdGateway);
 const getAllAnswers = new GetAllAnswers(mongoDbAnswerRepository);
 const getFriendAnswers = new GetFriendAnswers(mongoDbAnswerRepository);
 const getMyAnswers = new GetMyAnswers(mongoDbAnswerRepository);
@@ -33,17 +30,15 @@ answerRouter.use(authorization);
 
 answerRouter.post("/:questionId", async (req: AuthentifiedRequest, res) => {
     try {
-        const body = {
-            questionId: req.params.questionId,
-            answerUserId: req.body.answerUserId,
-            userId: req.user.id
-        }
+        const body = new AnswerToQuestionCommands()
+        body.questionId = req.params.questionId,
+        body.answerUserId = req.body.answerUserId,
+        body.userId = req.user.id
+        
+        await commandsValidation(body)
 
-        const answer = await answerToQuestion.execute({
-            answerUserId: body.answerUserId,
-            questionId: body.questionId,
-            userId: body.userId
-        })
+        const answer = await answerToQuestion.execute(body)
+         
 
         return res.status(201).send(answer.props);
 
@@ -119,7 +114,6 @@ answerRouter.delete("/:answerId", async (req, res) => {
 
 answerRouter.patch("/:answerId", async (req, res) => {
     try {
-
         await answerMarkAsRead.execute(req.params.answerId);
 
         return res.sendStatus(200);

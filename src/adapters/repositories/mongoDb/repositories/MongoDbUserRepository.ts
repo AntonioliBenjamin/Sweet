@@ -95,4 +95,9 @@ export class MongoDbUserRepository implements UserRepository {
     );
     return user;
   }
+
+  async getByIdArray(array: string[]): Promise<User[]> {
+    const users = await UserModel.find({ id: { $in : array } })
+    return users.map(elm => mongoDbUserMapper.toDomain(elm))
+  }
 }

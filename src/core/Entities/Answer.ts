@@ -1,6 +1,5 @@
 import {QuestionProperties} from "./Question";
 import {Gender} from "./User";
-import {UserErrors} from "../errors/UserErrors";
 
 export type ResponseProperties = {
     userId: string;
