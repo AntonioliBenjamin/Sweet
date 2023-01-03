@@ -182,4 +182,19 @@ describe("E2E - User Router", () => {
       })
       .expect(200);
   });
+
+  it("should post/user/exist", async () => {
+    await userRepository.create(user);
+    await supertest(app)
+      .post("/user/exist")
+      .send({
+        email: "jojolapin@gmail.com"
+      })
+
+      .expect((response) => {
+        const responseBody = response.body;
+        expect(responseBody.exists).toBeTruthy()
+      })
+      .expect(200);
+  })
 });

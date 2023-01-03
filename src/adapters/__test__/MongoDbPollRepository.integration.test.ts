@@ -22,13 +22,13 @@ describe('Integration - MongoDbPollRepository', () => {
 
         mongoDbPollRepository = new MongoDbPollRepository();
 
-        poll =new Poll({
+        poll = new Poll({
             pollId: "1234",
             createdAt : new Date(1),
             expirationDate : new Date(new Date(1).setHours(new Date(1).getHours()+1)),
         });
 
-        poll2 =new Poll({
+        poll2 = new Poll({
             pollId: "5678",
             createdAt : new Date(),
             expirationDate : new Date(new Date().setHours(new Date().getHours()+1)),
@@ -37,6 +37,7 @@ describe('Integration - MongoDbPollRepository', () => {
 
     beforeEach(async () => {
         result = await mongoDbPollRepository.create(poll);
+        await mongoDbPollRepository.create(poll2);
     });
 
     afterEach(async () => {
@@ -49,21 +50,18 @@ describe('Integration - MongoDbPollRepository', () => {
     });
 
     it("Should get all polls", async () => {
-        await mongoDbPollRepository.create(poll2);
         const array = await mongoDbPollRepository.getAllPolls();
-
         expect(array).toHaveLength(2);
+    });
+
+    it("Should get most recent poll", async () => {
+        const result = await mongoDbPollRepository.getCurrentPoll()
+        expect(result.props.pollId).toEqual("5678");
     });
 
     it("Should save a poll", () => {
         expect(result.props.createdAt).toBeTruthy();
         expect(result.props.expirationDate).toBeTruthy();
-    });
-
-    it("Should get most recent poll", async () => {
-        await mongoDbPollRepository.create(poll2);
-        const result = await mongoDbPollRepository.getCurrentPoll()
-        expect(result.props.pollId).toEqual("5678");
     });
 
     it("should delete a poll", async () => {

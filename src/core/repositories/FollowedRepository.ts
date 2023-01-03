@@ -7,6 +7,8 @@ export interface FollowedRepository {
 
     getFollowersByUserId(userId: string): Promise<string[]>;
 
+    getMyFollows(userId: string): Promise<Followed[]>
+
     getById(id: string): Promise<Followed>;
 
     delete(id: string): Promise<void>;

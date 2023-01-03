@@ -23,6 +23,8 @@ import { ResetPasswordSchema } from "../commands/user/ResetPasswordSchema";
 import { UpdateUserSchema } from "../commands/user/UpdateUserSchema";
 import { MongoDbFollowRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
 import { MongoDbAnswerRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbAnswerRepository";
+import { EmailExist } from "../../core/usecases/user/EmailExist";
+import { EmailExistSchema } from "../commands/user/EmailExistSchema";
 const mailService = new MailService();
 const emailSender = process.env.RECOVERY_EMAIL_SENDER;
 const userRouter = express.Router();
@@ -34,14 +36,16 @@ const mongoDbFollowRepository = new MongoDbFollowRepository();
 const bcryptGateway = new BcryptGateway();
 const v4IdGateway = new V4IdGateway();
 const sendGridGateway = new SendGridGateway(mailService, emailSender);
-const signUp = new SignUp(mongoDbUserRepository, schoolDbRepository, v4IdGateway, bcryptGateway);
+const signUp = new SignUp(mongoDbUserRepository, schoolDbRepository, v4IdGateway,bcryptGateway);
 const signIn = new SignIn(mongoDbUserRepository, bcryptGateway);
 const updateUser = new UpdateUser(mongoDbUserRepository);
-const deleteUser = new DeleteUser(mongoDbUserRepository, mongoDbFollowRepository, mongoDbAnswerRepository);
+const deleteUser = new DeleteUser(mongoDbUserRepository,mongoDbFollowRepository,mongoDbAnswerRepository);
+const emailExist = new EmailExist(mongoDbUserRepository);
 const getAllMyPotentialFriends = new GetAllMyPotentialFriends(mongoDbUserRepository);
 const updateRecoveryCode = new GenerateRecoveryCode(mongoDbUserRepository,v4IdGateway);
 const resetPassword = new ResetPassword(mongoDbUserRepository, bcryptGateway);
 const userApiUserMapper = new UserApiUserMapper();
+
 mailService.setApiKey(process.env.SENDGRID_API_KEY);
 
 userRouter.post("/", async (req, res) => {
@@ -75,7 +79,6 @@ userRouter.post("/", async (req, res) => {
       ...userApiUserMapper.fromDomain(user),
       accessKey,
     });
-
   } catch (err) {
     console.error(err);
 
@@ -109,7 +112,6 @@ userRouter.post("/sign-in", async (req, res) => {
       ...userApiUserMapper.fromDomain(user),
       accessKey,
     });
-
   } catch (err) {
     console.error(err);
 
@@ -145,7 +147,6 @@ userRouter.post("/password/recovery", async (req, res) => {
     });
 
     return res.status(200).send(userApiUserMapper.fromDomain(user));
-
   } catch (err) {
     console.error(err);
 
@@ -173,7 +174,26 @@ userRouter.post("/password/reset", async (req, res) => {
     });
 
     return res.sendStatus(200);
+  } catch (err) {
+    console.error(err);
 
+    return res.status(400).send({
+      message: "An error occurred",
+    });
+  }
+});
+
+userRouter.post("/exist", async (req, res) => {
+  try {
+    const body = {
+      email: req.body.email.toLowerCase().trim(),
+    };
+    // const values = await EmailExistSchema.validateAsync(body);
+    const exist = await emailExist.execute(body.email)
+
+    return res.send({
+      exists: exist,
+    });
   } catch (err) {
     console.error(err);
 
@@ -207,10 +227,9 @@ userRouter.patch("/", async (req: AuthentifiedRequest, res) => {
     });
 
     return res.status(200).send(userApiUserMapper.fromDomain(updatedUser));
-
   } catch (err) {
     console.error(err);
-    
+
     return res.status(400).send({
       message: "An error occurred",
     });
@@ -221,12 +240,15 @@ userRouter.get("/all", async (req: AuthentifiedRequest, res) => {
   try {
     const users = await getAllMyPotentialFriends.execute(req.user.schoolId);
 
-    const userApiResponse = users.map((elm) => userApiUserMapper.fromDomain(elm));
+    const userApiResponse = users.map((elm) =>
+      userApiUserMapper.fromDomain(elm)
+    );
 
-    const ArrayWithoutCurrentUser = userApiResponse.filter((elm) => elm.id !== req.user.id);
+    const ArrayWithoutCurrentUser = userApiResponse.filter(
+      (elm) => elm.id !== req.user.id
+    );
 
     return res.status(200).send(ArrayWithoutCurrentUser);
-
   } catch (err) {
     console.error(err);
 
@@ -243,10 +265,9 @@ userRouter.delete("/", async (req: AuthentifiedRequest, res) => {
     });
 
     return res.sendStatus(200);
-
   } catch (err) {
     console.error(err);
-    
+
     return res.status(400).send({
       message: "An error occurred",
     });

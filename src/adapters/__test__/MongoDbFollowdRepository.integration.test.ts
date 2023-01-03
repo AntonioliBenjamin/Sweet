@@ -53,39 +53,29 @@ describe("Integration - MongoDbFriendShipRepository", () => {
             userId: "5555",
             addedBy: "1111"
         }))
-
         expect(result.props.id).toEqual("99999");
         expect(result.props.userId).toEqual("5555");
     })
 
-    it("should get follow by users Id", async () => {
-        const result = await mongoDbFollowRepository.getFollowByUsersId(follow.props.addedBy, follow.props.userId);
-
-        expect(result.props.id).toEqual("12345");
-    })
-
-    it("should get followers by userId", async () => {
-        const result = await mongoDbFollowRepository.getFollowersByUserId("cedric");
-
+    it("should get my follows", async () => {
+        const result = await mongoDbFollowRepository.getMyFollows("cedric");
         expect(result).toHaveLength(2);
-    })
-
-    it("should get followings by userId", async () => {
-        const result = await mongoDbFollowRepository.getFollowingsByUserId("ben");
-
-        expect(result).toHaveLength(1);
     })
 
     it("should get follow by id", async () => {
         const result = await mongoDbFollowRepository.getById("12345");
-
         expect(result.props.userId).toEqual("cedric");
     })
 
     it("should delete follow by Id", async () => {
         await mongoDbFollowRepository.delete("12345");
         const result = await mongoDbFollowRepository.getById("12345");
-
         expect(result).toBeFalsy();
+    })
+
+    it("should return followed if exist", async () => {
+        const result = await mongoDbFollowRepository.exists("cedric", "ben")
+        console.log(result)
+        expect(result).toBeTruthy()
     })
 })
