@@ -1,16 +1,16 @@
 import "dotenv/config";
 import express from "express";
 import * as mongoose from "mongoose";
-import { answerRouter } from "./app/routes/answer";
-import { followRouter } from "./app/routes/follow";
-import { schoolRouter } from "./app/routes/school";
+import {answerRouter} from "./app/routes/answer";
+import {followRouter} from "./app/routes/follow";
+import {schoolRouter} from "./app/routes/school";
 import {userRouter} from "./app/routes/user";
 import {questionRouter} from "./app/routes/question";
 import {pollRouter} from "./app/routes/poll";
 import morgan from "morgan";
 import * as path from "path";
-import { friendsRouter } from "./app/routes/friends";
-import {creatPollTimer} from "./app/jobs";
+import {friendsRouter} from "./app/routes/friends";
+import {createPollTimer} from "./app/jobs";
 
 const port = +process.env.PORT;
 
@@ -49,7 +49,7 @@ app.use("/answer", answerRouter);
 
 app.use("/friends", friendsRouter);
 
-creatPollTimer.start();
+createPollTimer.start();
 
 app.listen(port, () => {
     console.log(`listening on port ${port}`);
