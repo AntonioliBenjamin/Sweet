@@ -2,11 +2,11 @@ import express from "express";
 import {V4IdGateway} from "../../adapters/gateways/V4IdGateway";
 import {MongoDbFollowRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
 import {MongoDbUserRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
-import {Followed} from "../../core/Entities/Followed";
 import {FollowUser} from "../../core/usecases/follow/FollowUser";
 import { GetMyFollows } from "../../core/usecases/follow/GetMyFollows";
 import {UnfollowUser} from "../../core/usecases/follow/UnfollowUser";
-import {AddFollowCommand} from "../commands/follow/AddFollowCommand";
+import { commandsValidation } from "../commands/CommandsValidation";
+import { AddFollowCommands } from "../commands/follow/AddFollowCommands";
 import {UserApiUserMapper} from "../dtos/UserApiUserMapper";
 import {authorization} from "../middlewares/JwtAuthorizationMiddleware";
 import {AuthentifiedRequest} from "../types/AuthentifiedRequest";
@@ -23,14 +23,13 @@ followRouter.use(authorization);
 
 followRouter.post("/", async (req: AuthentifiedRequest, res) => {
   try {
-    const body = {
-      addedBy: req.user.id,
-      userId: req.body.userId,
-    };
+    const body = new AddFollowCommands()
+    body.addedBy = req.user.id;
+    body.userId = req.body.userId;
+    
+    await commandsValidation(body)
 
-    const values = await AddFollowCommand.validateAsync(body);
-
-    const follow = await followUser.execute(values);
+    const follow = await followUser.execute(body);
 
     return res.status(201).send(follow.props);
   } catch (err) {

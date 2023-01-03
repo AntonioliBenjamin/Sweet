@@ -18,4 +18,6 @@ export interface UserRepository {
   searchFriends(keyword: string, schoolId?: string): Promise<User[]>
 
   updatePushtoken(user: User): Promise<User>
+
+  getByIdArray(array: string[]): Promise<User[]>
 }

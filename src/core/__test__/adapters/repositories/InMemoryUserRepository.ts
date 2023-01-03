@@ -64,4 +64,9 @@ export class InMemoryUserRepository implements UserRepository {
     this.db.set(user.props.id, user)
     return user
   }
+
+  async getByIdArray(array: string[]): Promise<User[]> {
+    const users = array.map(elm => this.db.get(elm))
+    return users
+  }
 }

@@ -55,22 +55,22 @@ export class MongoDbFollowRepository implements FollowedRepository {
     }
 
     async exists(userId: string, addedBy: string): Promise<Followed> {
-        const follow = await FollowModel.findOne({
-            userId: userId,
-            addedBy: addedBy
-        });
-
-        if (!follow) {
-            return null;
-        }
-        return followMapper.toDomain(follow);
+    const follow = await FollowModel.findOne({
+      userId: userId,
+      addedBy: addedBy
+    });
+    
+    if (!follow) {
+      return null;
+    }
+    return followMapper.toDomain(follow);
     }
 
     async getMyFollows(userId: string): Promise<Followed[]> {
-        const followsModels = await FollowModel.find({ addedBy: userId });
-        if (!followsModels) {
-            return null;
-        }
-        return followsModels.map((elm) => followMapper.toDomain(elm));
+    const followsModels = await FollowModel.find({ addedBy: userId });
+    if (!followsModels) {
+      return null;
+    }
+    return followsModels.map((elm) => followMapper.toDomain(elm));
     }
 }
