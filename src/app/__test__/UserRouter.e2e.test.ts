@@ -33,7 +33,7 @@ describe("E2E - User Router", () => {
         const bcryptGateway = new BcryptGateway();
         userRepository = new MongoDbUserRepository();
 
-        user = User.create({
+        user = new User({
             userName: "jojolapin",
             email: "jojolapin@gmail.com",
             password: bcryptGateway.encrypt("1234"),
@@ -44,6 +44,9 @@ describe("E2E - User Router", () => {
             lastName: "popo",
             schoolId: "5678",
             section: "dfsdfs",
+            createdAt: new Date(),
+            updatedAt: null,
+            recoveryCode: null
         });
     });
 
@@ -152,7 +155,7 @@ describe("E2E - User Router", () => {
     });
 
     it("Should get/all/:schoolId", async () => {
-        const currentUser = User.create({
+        const currentUser = new User({
             userName: "jojolapin",
             email: "jojolapin@gmail.com",
             password: "1234",
@@ -163,6 +166,9 @@ describe("E2E - User Router", () => {
             lastName: "popo",
             schoolId: "5678",
             section: "dfsdfs",
+            createdAt: new Date(),
+            updatedAt: null,
+            recoveryCode: null
         });
         await userRepository.create(currentUser);
         await userRepository.create(user);
@@ -177,7 +183,7 @@ describe("E2E - User Router", () => {
         );
 
     await supertest(app)
-      .get(`/user/all`)
+      .get(`/user/all/5678`)
       .set("access_key", accessKey)
       .expect((response) => {
         const responseBody = response.body;

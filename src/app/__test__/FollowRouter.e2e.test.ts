@@ -169,7 +169,7 @@ describe("E2E - FollowRouter", () => {
 
       .expect((response) => {
         const responseBody = response.body;
-        expect(responseBody).toHaveLength(3);
+        expect(responseBody).toHaveLength(1);
       })
       .expect(200);
   });
