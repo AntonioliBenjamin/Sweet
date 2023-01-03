@@ -4,6 +4,7 @@ import {Answer} from "../../core/Entities/Answer";
 import {Gender} from "../../core/Entities/User";
 import {AnswerModel} from "../repositories/mongoDb/models/answer";
 import {MongoDbAnswerRepository} from "../repositories/mongoDb/repositories/MongoDbAnswerRepository";
+import {AnswerErrors} from "../../core/errors/AnswerErrors";
 
 describe("Integration - MongoDbAnswerRepository", () => {
     let mongoDbAnswerRepository: MongoDbAnswerRepository;
@@ -111,9 +112,19 @@ describe("Integration - MongoDbAnswerRepository", () => {
     })
 
     it("should delete answer", async () => {
-        await mongoDbAnswerRepository.delete(answer.props.answerId)
-        const result = await AnswerModel.findOne({answerId: answer.props.answerId})
-        expect(result).toBeFalsy()
+        await mongoDbAnswerRepository.delete(answer.props.answerId);
+        const result = await AnswerModel.findOne({answerId: answer.props.answerId});
+        expect(result).toBeFalsy();
+    })
+
+    it("should get answer by id", async () => {
+        const result = await mongoDbAnswerRepository.getById(answer.props.answerId);
+        expect(result.props.markAsRead).toEqual(true);
+    })
+
+    it("should throw an error because answer not found", async () => {
+        const result = ()=>  mongoDbAnswerRepository.getById("wrong id");
+        await expect(()=>result()).rejects.toThrow(AnswerErrors.NotFound);
     })
 
     it("should mark answer mark read", async () => {
