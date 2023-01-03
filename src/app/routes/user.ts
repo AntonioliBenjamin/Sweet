@@ -188,8 +188,8 @@ userRouter.post("/exist", async (req, res) => {
     const body = {
       email: req.body.email.toLowerCase().trim(),
     };
-    // const values = await EmailExistSchema.validateAsync(body);
-    const exist = await emailExist.execute(body.email)
+    const values = await EmailExistSchema.validateAsync(body);
+    const exist = await emailExist.execute(values.email);
 
     return res.send({
       exists: exist,
