@@ -30,6 +30,7 @@ describe("Unit - deleteUser", () => {
 
     const answer = new Answer({
       answerId: "1234",
+      markAsRead : true,
       question: {
         questionId: "9999",
         description: "this is a desc",

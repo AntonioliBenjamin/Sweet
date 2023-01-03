@@ -19,7 +19,7 @@ import { Question } from "../../core/Entities/Question";
 
 const app = express();
 
-describe("E2E - FollowRouter", () => {
+describe("E2E - AnswerRouter", () => {
   let accessKey;
   let answerRepository: AnswerRepository;
   let userRepository: UserRepository;
@@ -53,6 +53,7 @@ describe("E2E - FollowRouter", () => {
 
     answer = new Answer({
       answerId: "1234",
+      markAsRead : false,
       question: {
         questionId: "9999",
         description: "this is a desc",
@@ -73,6 +74,7 @@ describe("E2E - FollowRouter", () => {
 
     answer2 = new Answer({
       answerId: "4321",
+      markAsRead : false,
       question: {
         questionId: "1111",
         description: "this is a desc",
@@ -217,11 +219,23 @@ describe("E2E - FollowRouter", () => {
     );
 
     await supertest(app)
-      .delete("/answer")
+      .delete(`/answer/${answer.props.answerId}`)
       .set("access_key", accessKey)
-      .send({
-        answerId: "1234",
-      })
       .expect(200);
+  });
+
+  it("should patch/answer", async () => {
+    accessKey = sign(
+        {
+          id: "9999",
+          schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
+        },
+        "maytheforcebewithyou"
+    );
+
+    await supertest(app)
+        .patch(`/answer/${answer.props.answerId}`)
+        .set("access_key", accessKey)
+        .expect(200);
   });
 });

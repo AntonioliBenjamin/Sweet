@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
-import { v4 } from "uuid";
-import { UserModel } from "./../repositories/mongoDb/models/user";
-import { Gender, User } from "./../../core/Entities/User";
-import { MongoDbUserRepository } from "../repositories/mongoDb/repositories/MongoDbUserRepository";
-import { Answer } from "../../core/Entities/Answer";
-import { Followed } from "../../core/Entities/Followed";
-import { AnswerModel } from "../repositories/mongoDb/models/answer";
-import { FollowModel } from "../repositories/mongoDb/models/follow";
-import { MongoDbAnswerRepository } from "../repositories/mongoDb/repositories/MongoDbAnswerRepository";
-import { MongoDbFollowRepository } from "../repositories/mongoDb/repositories/MongoDbFollowRepository";
+import {v4} from "uuid";
+import {UserModel} from "./../repositories/mongoDb/models/user";
+import {Gender, User} from "./../../core/Entities/User";
+import {MongoDbUserRepository} from "../repositories/mongoDb/repositories/MongoDbUserRepository";
+import {Answer} from "../../core/Entities/Answer";
+import {Followed} from "../../core/Entities/Followed";
+import {AnswerModel} from "../repositories/mongoDb/models/answer";
+import {FollowModel} from "../repositories/mongoDb/models/follow";
+import {MongoDbAnswerRepository} from "../repositories/mongoDb/repositories/MongoDbAnswerRepository";
+import {MongoDbFollowRepository} from "../repositories/mongoDb/repositories/MongoDbFollowRepository";
 
 describe("Integration - MongoDbUserRepository", () => {
   let mongoDbUserRepository: MongoDbUserRepository;
@@ -77,6 +77,7 @@ describe("Integration - MongoDbUserRepository", () => {
 
     answer = new Answer({
       answerId: "1234",
+      markAsRead : true,
       question: {
         questionId: "9999",
         description: "this is a desc",
@@ -119,6 +120,11 @@ describe("Integration - MongoDbUserRepository", () => {
   afterAll(async () => {
     await mongoose.connection.dropDatabase();
     await mongoose.connection.close();
+  });
+
+  it("should get all users by school", async () => {
+    const result = await mongoDbUserRepository.getAllUsersBySchool("456");
+    expect(result).toHaveLength(2);
   });
 
   it("Should save a user", () => {
@@ -164,16 +170,19 @@ describe("Integration - MongoDbUserRepository", () => {
   it("should update a user", async () => {
     user.update({
       userName: "newusername",
-      age: 13,
+      gender : Gender.GIRL,
       firstName: "gdfgdfg",
       lastName: "dfgdrfg",
       section: "dfgdfg",
+      schoolId : "3333"
     });
 
     const result = await mongoDbUserRepository.update(user);
 
     expect(result.props.id).toEqual("12345");
     expect(result.props.userName).toEqual("newusername");
+    expect(result.props.gender).toEqual("girl");
+    expect(result.props.schoolId).toEqual("3333");
   });
 
   it("should delete a user", async () => {
@@ -186,8 +195,4 @@ describe("Integration - MongoDbUserRepository", () => {
     await expect(FollowModel.findOne({ id: user.props.id })).resolves.toEqual(null);
   });
 
-  it("should get all users by school", async () => {
-    const result = await mongoDbUserRepository.getAllUsersBySchool("456");
-    expect(result).toHaveLength(2);
-  });
 });

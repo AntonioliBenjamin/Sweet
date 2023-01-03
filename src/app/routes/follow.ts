@@ -1,13 +1,18 @@
 import express from "express";
-import { V4IdGateway } from "../../adapters/gateways/V4IdGateway";
-import { MongoDbFollowRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
-import { FollowUser } from "../../core/usecases/follow/FollowUser";
-import { UnfollowUser } from "../../core/usecases/follow/UnfollowUser";
-import { AddFollowCommand } from "../commands/follow/AddFollowCommand";
-import { DeleteFollowCommand } from "../commands/follow/DeleteFollowCommand";
-import { authorization } from "../middlewares/JwtAuthorizationMiddleware";
-import { AuthentifiedRequest } from "../types/AuthentifiedRequest";
+import {V4IdGateway} from "../../adapters/gateways/V4IdGateway";
+import {MongoDbFollowRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
+import {MongoDbUserRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
+import {Followed} from "../../core/Entities/Followed";
+import {FollowUser} from "../../core/usecases/follow/FollowUser";
+import {GetFollowersByUsersId} from "../../core/usecases/follow/GetFollowersByUsersId";
+import {GetFollowingsByUserId} from "../../core/usecases/follow/GetFollowingsByUserId";
+import {UnfollowUser} from "../../core/usecases/follow/UnfollowUser";
+import {AddFollowCommand} from "../commands/follow/AddFollowCommand";
+import {UserApiUserMapper} from "../dtos/UserApiUserMapper";
+import {authorization} from "../middlewares/JwtAuthorizationMiddleware";
+import {AuthentifiedRequest} from "../types/AuthentifiedRequest";
 
+const userApiUserMapper = new UserApiUserMapper();
 const followRouter = express.Router();
 const mongoDbFollowRepository = new MongoDbFollowRepository();
 const v4IdGateway = new V4IdGateway();
@@ -51,15 +56,9 @@ followRouter.get("/", async (req: AuthentifiedRequest, res) => {
   }
 });
 
-followRouter.delete("/", async (req, res) => {
-  try {
-    const body = {
-      id: req.body.id,
-    };
-
-    const values = await DeleteFollowCommand.validateAsync(body);
-
-    await unfollowUser.execute(values.id);
+followRouter.delete("/:followId", async (req, res) => {
+    try {
+        await unfollowUser.execute(req.params.followId);
 
     return res.sendStatus(200);
   } catch (err) {

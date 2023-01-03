@@ -12,6 +12,7 @@ describe("Unit - AnswerToQuestion", () => {
 
         const answer = new Answer({
             answerId: "1234",
+            markAsRead: false,
             question: {
                 questionId: "9999",
                 description: "this is a desc",
@@ -33,6 +34,7 @@ describe("Unit - AnswerToQuestion", () => {
 
         const answer2 = new Answer({
             answerId: "4321",
+            markAsRead: false,
             question: {
                 questionId: "1111",
                 description: "this is a desc",

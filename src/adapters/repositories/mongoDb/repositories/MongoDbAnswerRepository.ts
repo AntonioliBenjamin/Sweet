@@ -29,4 +29,18 @@ export class MongoDbAnswerRepository implements AnswerRepository {
     await AnswerModel.deleteMany({ answer: userId });
     return;
   }
+
+  async markAsRead(answer: Answer): Promise<Answer> {
+    const toAnswerModel = answerMapper.fromDomain(answer);
+    await AnswerModel.findOneAndUpdate(
+        { id: toAnswerModel.answerId },
+        {
+          $set: {
+            markAsRead: toAnswerModel.markAsRead,
+          },
+        },
+        { new: true }
+    );
+    return answer;
+  }
 }

@@ -38,7 +38,7 @@ const v4IdGateway = new V4IdGateway();
 const sendGridGateway = new SendGridGateway(mailService, emailSender);
 const signUp = new SignUp(mongoDbUserRepository, schoolDbRepository, v4IdGateway,bcryptGateway);
 const signIn = new SignIn(mongoDbUserRepository, bcryptGateway);
-const updateUser = new UpdateUser(mongoDbUserRepository);
+const updateUser = new UpdateUser(mongoDbUserRepository, schoolDbRepository);
 const deleteUser = new DeleteUser(mongoDbUserRepository,mongoDbFollowRepository,mongoDbAnswerRepository);
 const emailExist = new EmailExist(mongoDbUserRepository);
 const getAllMyPotentialFriends = new GetAllMyPotentialFriends(mongoDbUserRepository);
@@ -211,19 +211,21 @@ userRouter.patch("/", async (req: AuthentifiedRequest, res) => {
       userName: req.body.userName.trim(),
       firstName: req.body.firstName,
       lastName: req.body.lastName,
-      age: req.body.age,
+      gender: req.body.gender,
       section: req.body.section,
+      schoolId: req.body.schoolId
     };
 
     const values = await UpdateUserSchema.validateAsync(body);
 
     const updatedUser = await updateUser.execute({
       userName: values.userName,
-      age: values.age,
+      gender: values.gender,
       firstName: values.firstName,
       lastName: values.lastName,
       section: values.section,
       id: req.user.id,
+      schoolId: values.schoolId
     });
 
     return res.status(200).send(userApiUserMapper.fromDomain(updatedUser));
@@ -236,9 +238,9 @@ userRouter.patch("/", async (req: AuthentifiedRequest, res) => {
   }
 });
 
-userRouter.get("/all", async (req: AuthentifiedRequest, res) => {
+userRouter.get("/all/:schoolId", async (req: AuthentifiedRequest, res) => {
   try {
-    const users = await getAllMyPotentialFriends.execute(req.user.schoolId);
+    const users = await getAllMyPotentialFriends.execute(req.params.schoolId);
 
     const userApiResponse = users.map((elm) =>
       userApiUserMapper.fromDomain(elm)
