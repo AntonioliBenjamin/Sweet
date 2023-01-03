@@ -16,4 +16,6 @@ export interface UserRepository {
   updatePassword(user: User): Promise<void>;
 
   searchFriends(keyword: string, schoolId?: string): Promise<User[]>
+
+  updatePushtoken(user: User): Promise<User>
 }

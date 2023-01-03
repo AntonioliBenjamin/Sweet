@@ -47,6 +47,7 @@ describe("Integration - MongoDbUserRepository", () => {
       section: "cp",
       createdAt: new Date(),
       updatedAt: null,
+      pushToken: null
     });
 
     user2 = User.create({
@@ -194,5 +195,10 @@ describe("Integration - MongoDbUserRepository", () => {
     await expect(AnswerModel.findOne({ answerId: user.props.id })).resolves.toEqual(null);
     await expect(FollowModel.findOne({ id: user.props.id })).resolves.toEqual(null);
   });
+
+  it("should update pushToken", async () => {
+    user.updatePushtoken("new push token");
+    expect(result.props.pushToken).toEqual("new push token")
+  })
 
 });

@@ -57,7 +57,7 @@ export class MongoDbFollowRepository implements FollowedRepository {
   async exists(userId: string, addedBy: string): Promise<Followed> {
     const follow = await FollowModel.findOne({
       userId: userId,
-      addedBy: addedBy,
+      addedBy: addedBy
     });
     
     if (!follow) {
@@ -67,9 +67,7 @@ export class MongoDbFollowRepository implements FollowedRepository {
   }
 
   async getMyFollows(userId: string): Promise<Followed[]> {
-    const followsModels = await FollowModel.find({
-          addedBy: userId,
-        });
+    const followsModels = await FollowModel.find({ addedBy: userId });
     if (!followsModels) {
       return null;
     }

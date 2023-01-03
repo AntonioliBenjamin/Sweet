@@ -13,6 +13,7 @@ export type UserApiResponse = {
   age: number;
   schoolId: string;
   section: string;
+  pushToken: string;
 };
 
 export class UserApiUserMapper implements Mapper<UserApiResponse, User> {
@@ -28,7 +29,8 @@ export class UserApiUserMapper implements Mapper<UserApiResponse, User> {
       firstName: data.props.firstName,
       age: data.props.age,
       schoolId: data.props.schoolId,
-      section: data.props.section
+      section: data.props.section,
+      pushToken: data.props.pushToken
     };
   }
 }
