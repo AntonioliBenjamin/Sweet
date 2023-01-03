@@ -59,4 +59,9 @@ export class InMemoryUserRepository implements UserRepository {
     }
     return values.filter((elm) => elm.props.userName.includes(keyword));
   }
+
+  async updatePushtoken(user: User): Promise<User> {
+    this.db.set(user.props.id, user)
+    return user
+  }
 }

@@ -2,6 +2,8 @@ import { Answer } from "../../../../core/Entities/Answer";
 import { AnswerRepository } from "../../../../core/repositories/AnswerRepository";
 import { MongoDbAnswerMapper } from "../mappers/MongoDbAnswerMapper";
 import { AnswerModel } from "../models/answer";
+import {UserModel} from "../models/user";
+import {AnswerErrors} from "../../../../core/errors/AnswerErrors";
 const answerMapper = new MongoDbAnswerMapper();
 
 export class MongoDbAnswerRepository implements AnswerRepository {
@@ -28,6 +30,14 @@ export class MongoDbAnswerRepository implements AnswerRepository {
   async deleteAllByUserId(userId: string): Promise<void> {
     await AnswerModel.deleteMany({ answer: userId });
     return;
+  }
+
+  async getById(answerId: string): Promise<Answer> {
+    const answer = await AnswerModel.findOne({ answerId: answerId });
+    if (!answer) {
+      throw new AnswerErrors.NotFound();
+    }
+    return answerMapper.toDomain(answer);
   }
 
   async markAsRead(answer: Answer): Promise<Answer> {

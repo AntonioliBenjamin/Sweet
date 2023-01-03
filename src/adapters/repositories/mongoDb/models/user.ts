@@ -15,6 +15,7 @@ export type userModel = {
   createdAt: number;
   updatedAt?: number;
   recoveryCode?: string;
+  pushToken?: string;
 };
 
 const userSchema = new Schema({
@@ -78,6 +79,10 @@ const userSchema = new Schema({
     type: String,
     required: false,
   },
+  pushToken: {
+    type: String,
+    required: false
+  }
 });
 
 export const UserModel = model("users", userSchema);

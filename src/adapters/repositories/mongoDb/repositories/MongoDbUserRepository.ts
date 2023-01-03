@@ -2,6 +2,7 @@ import { MongoDbUserMapper } from "../mappers/MongoDbUserMapper";
 import { UserRepository } from "../../../../core/repositories/UserRepository";
 import { User } from "../../../../core/Entities/User";
 import { UserModel } from "../models/user";
+import {UserErrors} from "../../../../core/errors/UserErrors";
 
 const mongoDbUserMapper = new MongoDbUserMapper();
 
@@ -29,7 +30,7 @@ export class MongoDbUserRepository implements UserRepository {
   async getById(id: string): Promise<User> {
     const user = await UserModel.findOne({ id: id });
     if (!user) {
-      throw new Error("user not found");
+      throw new UserErrors.NotFound();
     }
     return mongoDbUserMapper.toDomain(user);
   }
@@ -81,5 +82,17 @@ export class MongoDbUserRepository implements UserRepository {
    
     const users = await UserModel.find({ userName: new RegExp(keyword, 'i') });
     return users.map(elm => mongoDbUserMapper.toDomain(elm))
+  }
+
+  async updatePushtoken(user: User): Promise<User> {
+    const toUserModel = mongoDbUserMapper.fromDomain(user);
+    await UserModel.findOneAndUpdate(
+      { id: toUserModel.id },
+      {
+        $set: { pushToken: user.props.pushToken}
+      },
+      { new: true }
+    );
+    return user;
   }
 }
