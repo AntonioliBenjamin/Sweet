@@ -58,8 +58,8 @@ describe("Integration - MongoDbFriendShipRepository", () => {
     })
 
     it("should get my follows", async () => {
-        const result = await mongoDbFollowRepository.getMyFollows("cedric");
-        expect(result).toHaveLength(2);
+        const result = await mongoDbFollowRepository.getMyFollows("ben");
+        expect(result).toHaveLength(1);
     })
 
     it("should get follow by id", async () => {

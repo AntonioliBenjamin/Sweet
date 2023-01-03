@@ -2,6 +2,7 @@ import { Followed } from "../../../../core/Entities/Followed";
 import { FollowedRepository } from "../../../../core/repositories/FollowedRepository";
 import { MongoDbFollowMapper } from "../mappers/MongoDbFollowMapper";
 import { FollowModel } from "../models/follow";
+
 const followMapper = new MongoDbFollowMapper();
 
 export class MongoDbFollowRepository implements FollowedRepository {
@@ -67,15 +68,8 @@ export class MongoDbFollowRepository implements FollowedRepository {
 
   async getMyFollows(userId: string): Promise<Followed[]> {
     const followsModels = await FollowModel.find({
-      $or: [
-        {
           addedBy: userId,
-        },
-        {
-          userId: userId,
-        },
-      ],
-    });
+        });
     if (!followsModels) {
       return null;
     }
