@@ -9,6 +9,7 @@ export type AnswerModel = {
   response: ResponseProperties;
   answer: string;
   createdAt: number;
+  markAsRead: boolean;
 };
 
 const answerSchema = new Schema({
@@ -80,6 +81,10 @@ const answerSchema = new Schema({
     type: Number,
     required: true,
   },
+  markAsRead: {
+    type : Boolean,
+    required: true,
+  }
 });
 
 export const AnswerModel = model("answer", answerSchema);

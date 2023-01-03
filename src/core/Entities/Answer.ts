@@ -1,5 +1,6 @@
 import {QuestionProperties} from "./Question";
 import {Gender} from "./User";
+import {UserErrors} from "../errors/UserErrors";
 
 export type ResponseProperties = {
     userId: string;
@@ -17,6 +18,7 @@ export type AnswerProperties = {
     response: ResponseProperties;
     answer: string;
     createdAt: Date;
+    markAsRead: boolean;
 };
 
 export class Answer {
@@ -38,6 +40,11 @@ export class Answer {
             response: props.response,
             answer: props.answer,
             createdAt: new Date(),
+            markAsRead : false
         });
+    }
+
+    markAsRead() {
+        this.props.markAsRead = true;
     }
 }

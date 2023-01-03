@@ -8,10 +8,10 @@ import {GetFollowersByUsersId} from "../../core/usecases/follow/GetFollowersByUs
 import {GetFollowingsByUserId} from "../../core/usecases/follow/GetFollowingsByUserId";
 import {UnfollowUser} from "../../core/usecases/follow/UnfollowUser";
 import {AddFollowCommand} from "../commands/follow/AddFollowCommand";
-import {DeleteFollowCommand} from "../commands/follow/DeleteFollowCommand";
 import {UserApiUserMapper} from "../dtos/UserApiUserMapper";
 import {authorization} from "../middlewares/JwtAuthorizationMiddleware";
 import {AuthentifiedRequest} from "../types/AuthentifiedRequest";
+
 const userApiUserMapper = new UserApiUserMapper();
 const followRouter = express.Router();
 const mongoDbFollowRepository = new MongoDbFollowRepository();
@@ -96,15 +96,9 @@ followRouter.get("/theirs", async (req: AuthentifiedRequest, res) => { // les ge
     }
 })
 
-followRouter.delete("/", async (req, res) => {
+followRouter.delete("/:followId", async (req, res) => {
     try {
-        const body = {
-            id: req.body.id,
-        };
-
-        const values = await DeleteFollowCommand.validateAsync(body);
-
-        await unfollowUser.execute(values.id);
+        await unfollowUser.execute(req.params.followId);
 
         return res.sendStatus(200);
 

@@ -12,6 +12,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
 
     beforeAll(async () => {
         const databaseId = v4();
+        mongoose.set('strictQuery', true);
         mongoose.connect(`mongodb://127.0.0.1:27017/${databaseId}`, (err) => {
             if (err) {
                 throw err;
@@ -23,6 +24,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
 
         answer = new Answer({
             answerId: "1234",
+            markAsRead : true,
             question: {
                 questionId: "9999",
                 description: "this is a desc",
@@ -43,6 +45,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
 
         answer2 = new Answer({
             answerId: "4321",
+            markAsRead : true,
             question: {
                 questionId: "1111",
                 description: "this is a desc",
@@ -79,6 +82,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
     it("should save answer", async () => {
         const result = await mongoDbAnswerRepository.create(new Answer({
             answerId: "7894564123",
+            markAsRead : false,
             question: {
                 questionId: "1111",
                 description: "this is a desc",
@@ -111,4 +115,12 @@ describe("Integration - MongoDbAnswerRepository", () => {
         const result = await AnswerModel.findOne({answerId: answer.props.answerId})
         expect(result).toBeFalsy()
     })
+
+    it("should mark answer mark read", async () => {
+        answer.markAsRead();
+
+        const result = await mongoDbAnswerRepository.markAsRead(answer);
+
+        expect(result.props.markAsRead).toEqual(true);
+    });
 });

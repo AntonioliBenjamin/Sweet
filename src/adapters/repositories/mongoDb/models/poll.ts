@@ -20,7 +20,6 @@ const pollSchema = new Schema({
       questionId: {
         type: String,
         required: true,
-        unique: true,
         index: true,
       },
       description: {
