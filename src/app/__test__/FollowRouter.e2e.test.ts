@@ -139,18 +139,18 @@ describe("E2E - FollowRouter", () => {
       .post("/follow")
       .set("access_key", accessKey)
       .send({
-        userIdArray: ["cedric", "mazen"],
+        userId: "cedric",
         addedBy: "chalom",
       })
 
       .expect((response) => {
         const responseBody = response.body;
-        expect(responseBody).toHaveLength(2);
+        expect(responseBody.addedBy).toEqual("chalom");
       })
       .expect(201);
   });
 
-  it("should get/follow/mine", async () => {
+  it("should get follow/", async () => {
     await followRepository.create(follow);
     await followRepository.create(follow2);
     await followRepository.create(follow3);
@@ -164,36 +164,12 @@ describe("E2E - FollowRouter", () => {
     );
 
     await supertest(app)
-      .get(`/follow/mine`)
+      .get("/follow")
       .set("access_key", accessKey)
 
       .expect((response) => {
         const responseBody = response.body;
-        expect(responseBody).toHaveLength(1);
-      })
-      .expect(200);
-  });
-
-  it("should get/follow/theirs", async () => {
-    await followRepository.create(follow);
-    await followRepository.create(follow2);
-    await followRepository.create(follow3);
-
-    accessKey = sign(
-      {
-        id: user2.props.id,
-        schoolId: user2.props.schoolId,
-      },
-      "maytheforcebewithyou"
-    );
-
-    await supertest(app)
-      .get(`/follow/theirs`)
-      .set("access_key", accessKey)
-
-      .expect((response) => {
-        const responseBody = response.body;
-        expect(responseBody).toHaveLength(2);
+        expect(responseBody).toHaveLength(3);
       })
       .expect(200);
   });

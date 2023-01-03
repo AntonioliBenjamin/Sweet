@@ -62,4 +62,10 @@ export class InMemoryFollowRepository implements FollowedRepository {
                 || elm.props.addedBy === addedBy && elm.props.userId === userId
         )
     }
+
+    async getMyFollows(userId: string): Promise<Followed[]> {
+        const values = Array.from(this.db.values());
+        const follows = values.filter(elm => elm.props.addedBy === userId || elm.props.userId === userId) 
+        return follows
+    }
 }

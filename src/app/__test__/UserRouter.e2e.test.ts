@@ -176,13 +176,28 @@ describe("E2E - User Router", () => {
             "maytheforcebewithyou"
         );
 
-        await supertest(app)
-            .get(`/user/all/${currentUser.props.schoolId}`)
-            .set("access_key", accessKey)
-            .expect((response) => {
-                const responseBody = response.body;
-                expect(responseBody).toHaveLength(1);
-            })
-            .expect(200);
-    });
+    await supertest(app)
+      .get(`/user/all`)
+      .set("access_key", accessKey)
+      .expect((response) => {
+        const responseBody = response.body;
+        expect(responseBody).toHaveLength(1);
+      })
+      .expect(200);
+  });
+
+  it("should post/user/exist", async () => {
+    await userRepository.create(user);
+    await supertest(app)
+      .post("/user/exist")
+      .send({
+        email: "jojolapin@gmail.com"
+      })
+
+      .expect((response) => {
+        const responseBody = response.body;
+        expect(responseBody.exists).toBeTruthy()
+      })
+      .expect(200);
+  })
 });

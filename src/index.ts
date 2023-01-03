@@ -8,7 +8,6 @@ import {userRouter} from "./app/routes/user";
 import {questionRouter} from "./app/routes/question";
 import {pollRouter} from "./app/routes/poll";
 import morgan from "morgan";
-import ejs from "ejs";
 import * as path from "path";
 import { friendsRouter } from "./app/routes/friends";
 import {creatPollTimer} from "./app/jobs";
@@ -32,7 +31,7 @@ app.get('/views/reset', (req, res) => {
     return res.render('index')
 })
 
-app.use(morgan('combined'))
+app.use(morgan('combined'));
 
 app.use(express.json());
 
@@ -40,7 +39,7 @@ app.use("/user", userRouter);
 
 app.use("/school", schoolRouter);
 
-app.use("/follow", followRouter)
+app.use("/follow", followRouter);
 
 app.use("/question", questionRouter);
 
