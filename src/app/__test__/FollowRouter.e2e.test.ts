@@ -126,7 +126,7 @@ describe("E2E - FollowRouter", () => {
     await mongoose.connection.close();
   });
 
-  it("should post/follow", async () => {
+  it("should post /follow", async () => {
     accessKey = sign(
       {
         id: user.props.id,
@@ -140,7 +140,6 @@ describe("E2E - FollowRouter", () => {
       .set("access_key", accessKey)
       .send({
         userId: "cedric",
-        addedBy: "chalom",
       })
 
       .expect((response) => {
