@@ -27,6 +27,8 @@
     "joi": "^17.7.0",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.11.0",
+    "mongodb-memory-server": "^8.10.2",
+    "mongodb-memory-server-global": "^8.10.2",
     "mongoose": "^6.8.0",
     "morgan": "^1.10.0",
     "node-cron": "^3.0.2",

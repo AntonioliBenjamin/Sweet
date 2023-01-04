@@ -1,6 +1,3 @@
-import mongoose from "mongoose";
-import {v4} from "uuid";
-import {UserModel} from "./../repositories/mongoDb/models/user";
 import {Gender, User} from "./../../core/Entities/User";
 import {MongoDbUserRepository} from "../repositories/mongoDb/repositories/MongoDbUserRepository";
 import {Answer} from "../../core/Entities/Answer";
@@ -9,6 +6,7 @@ import {AnswerModel} from "../repositories/mongoDb/models/answer";
 import {FollowModel} from "../repositories/mongoDb/models/follow";
 import {MongoDbAnswerRepository} from "../repositories/mongoDb/repositories/MongoDbAnswerRepository";
 import {MongoDbFollowRepository} from "../repositories/mongoDb/repositories/MongoDbFollowRepository";
+import {connectDB, dropCollections, dropDB} from "./setupTestDb";
 
 describe("Integration - MongoDbUserRepository", () => {
   let mongoDbUserRepository: MongoDbUserRepository;
@@ -22,14 +20,8 @@ describe("Integration - MongoDbUserRepository", () => {
   let follow: Followed;
 
   beforeAll(async () => {
-    const databaseId = v4();
-    mongoose.set('strictQuery', false);
-    mongoose.connect(`mongodb://127.0.0.1:27017/${databaseId}`, (err) => {
-      if (err) {
-        throw err;
-      }
-      console.info("Connected to mongodb");
-    });
+    await connectDB();
+
     mongoDbUserRepository = new MongoDbUserRepository();
     mongoDbAnswerRepository = new MongoDbAnswerRepository();
     mongoDbFollowRepository = new MongoDbFollowRepository();
@@ -113,14 +105,11 @@ describe("Integration - MongoDbUserRepository", () => {
   });
 
   afterEach(async () => {
-    await UserModel.collection.drop();
-    await AnswerModel.collection.drop();
-    await FollowModel.collection.drop();
+    await dropCollections();
   });
 
   afterAll(async () => {
-    await mongoose.connection.dropDatabase();
-    await mongoose.connection.close();
+    await dropDB();
   });
 
   it("should get all users by school", async () => {
@@ -132,7 +121,7 @@ describe("Integration - MongoDbUserRepository", () => {
     expect(result.props.userName).toEqual("mickey");
   });
 
-  it("should search all users who cotains the keyword in userName", async () => {
+  it("should search all users who contains the keyword in userName", async () => {
     const result = await mongoDbUserRepository.searchFriends("mick")
     expect(result).toHaveLength(2)
   })

@@ -5,7 +5,6 @@ import {MongoDbUserRepository} from "../../adapters/repositories/mongoDb/reposit
 import {FollowUser} from "../../core/usecases/follow/FollowUser";
 import {GetMyFollows} from "../../core/usecases/follow/GetMyFollows";
 import {UnfollowUser} from "../../core/usecases/follow/UnfollowUser";
-import {commandsValidation} from "../commands/CommandsValidation";
 import {AddFollowCommands} from "../commands/follow/AddFollowCommands";
 import {UserApiUserMapper} from "../dtos/UserApiUserMapper";
 import {authorization} from "../middlewares/JwtAuthorizationMiddleware";
