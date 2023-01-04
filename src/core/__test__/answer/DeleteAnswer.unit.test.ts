@@ -13,6 +13,7 @@ describe("Unit - AnswerToQuestion", () => {
         const answer = new Answer({
             answerId: "1234",
             markAsRead : true,
+            pollId:"123",
             question: {
                 questionId: "9999",
                 description: "this is a desc",
@@ -27,7 +28,7 @@ describe("Unit - AnswerToQuestion", () => {
                 section: "1er L",
                 gender: Gender.GIRL,
             },
-            answer: "8888",
+            userId: "8888",
             createdAt: new Date()
         });
         db.set(answer.props.answerId, answer);

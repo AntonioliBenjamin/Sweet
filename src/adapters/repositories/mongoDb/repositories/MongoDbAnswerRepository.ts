@@ -2,8 +2,7 @@ import { Answer } from "../../../../core/Entities/Answer";
 import { AnswerRepository } from "../../../../core/repositories/AnswerRepository";
 import { MongoDbAnswerMapper } from "../mappers/MongoDbAnswerMapper";
 import { AnswerModel } from "../models/answer";
-import {UserModel} from "../models/user";
-import {AnswerErrors} from "../../../../core/errors/AnswerErrors";
+import { AnswerErrors } from "../../../../core/errors/AnswerErrors";
 const answerMapper = new MongoDbAnswerMapper();
 
 export class MongoDbAnswerRepository implements AnswerRepository {
@@ -14,16 +13,22 @@ export class MongoDbAnswerRepository implements AnswerRepository {
     return answer;
   }
 
-  async getAllAnswers(): Promise<Answer[]> {
-    const answers = await AnswerModel.find({});
+  async getAllBySchoolId(schoolId: string, userId: string): Promise<Answer[]> {
+    const answers = await AnswerModel.find({
+      "response.schoolId": schoolId,
+      "response.userId": {
+        $ne : userId
+      }
+    });
     if (!answers) {
       return null;
     }
+
     return answers.map((elm) => answerMapper.toDomain(elm));
   }
 
   async delete(answerId: string): Promise<void> {
-    await AnswerModel.deleteOne({ answerId: answerId });
+    await AnswerModel.deleteOne({ friendId: answerId });
     return;
   }
 
@@ -33,7 +38,7 @@ export class MongoDbAnswerRepository implements AnswerRepository {
   }
 
   async getById(answerId: string): Promise<Answer> {
-    const answer = await AnswerModel.findOne({ answerId: answerId });
+    const answer = await AnswerModel.findOne({ answerId : answerId });
     if (!answer) {
       throw new AnswerErrors.NotFound();
     }
@@ -43,14 +48,23 @@ export class MongoDbAnswerRepository implements AnswerRepository {
   async markAsRead(answer: Answer): Promise<Answer> {
     const toAnswerModel = answerMapper.fromDomain(answer);
     await AnswerModel.findOneAndUpdate(
-        { id: toAnswerModel.answerId },
-        {
-          $set: {
-            markAsRead: toAnswerModel.markAsRead,
-          },
+      { id: toAnswerModel.answerId },
+      {
+        $set: {
+          markAsRead: toAnswerModel.markAsRead,
         },
-        { new: true }
+      },
+      { new: true }
     );
     return answer;
+  }
+
+  async getLastQuestionAnswered(pollId: string, userId: string): Promise<Answer> {
+    const answersModel = await AnswerModel.find({ pollId: pollId, userId : userId }).sort({ _id : -1});
+    if(answersModel[0] == null) {
+      return null;
+    }
+
+    return answerMapper.toDomain(answersModel[0])
   }
 }

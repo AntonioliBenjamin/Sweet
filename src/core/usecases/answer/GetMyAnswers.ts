@@ -9,7 +9,7 @@ export class GetMyAnswers implements UseCase<string, Answer[]> {
     }
 
     async execute(userId: string): Promise<Answer[]> {
-        return (await this.answerRepository.getAllAnswers()).filter((elm) => elm.props.answer === userId
+        return (await this.answerRepository.getAllBySchoolId()).filter((elm) => elm.props.userId === userId
         );
     }
 }

@@ -28,12 +28,13 @@ const answerMarkAsRead = new AnswerMarkAsRead(mongoDbAnswerRepository)
 
 answerRouter.use(authorization);
 
-answerRouter.post("/:questionId", async (req: AuthentifiedRequest, res) => {
+answerRouter.post("/", async (req: AuthentifiedRequest, res) => {
     try {
         const body = new AnswerToQuestionCommands()
-        body.questionId = req.params.questionId,
-        body.answerUserId = req.body.answerUserId,
-        body.userId = req.user.id
+        body.questionId = req.body.questionId;
+        body.friendId = req.body.friendId;
+        body.userId = req.user.id;
+        body.pollId = req.body.pollId;
         
         await commandsValidation(body)
 

@@ -8,6 +8,6 @@ export class GetAllAnswers implements UseCase<void, Answer[]> {
     ) {}
 
   execute(): Promise<Answer[]> {
-    return this.answerRepository.getAllAnswers();
+    return this.answerRepository.getAllBySchoolId();
   }
 }

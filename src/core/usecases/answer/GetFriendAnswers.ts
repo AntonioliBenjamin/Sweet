@@ -8,6 +8,6 @@ export class GetFriendAnswers implements UseCase<string, Answer[]> {
     ) {}
 
   async execute(friendId: string): Promise<Answer[]> {
-    return (await this.answerRepository.getAllAnswers()).filter((elm) => elm.props.answer === friendId);
+    return (await this.answerRepository.getAllBySchoolId()).filter((elm) => elm.props.userId === friendId);
   }
 }

@@ -5,23 +5,25 @@ import { AnswerModel } from "../models/answer";
 export class MongoDbAnswerMapper implements Mapper<AnswerModel, Answer> {
   toDomain(raw: AnswerModel): Answer {
     return new Answer({
-      answer: raw.answer,
+      userId: raw.userId,
       answerId: raw.answerId,
       createdAt: new Date(raw.createdAt),
       question: raw.question,
       response: raw.response,
-      markAsRead : raw.markAsRead
+      markAsRead : raw.markAsRead,
+      pollId: raw.pollId
     });
   }
 
   fromDomain(data: Answer): AnswerModel {
     return {
-      answer: data.props.answer,
+      userId: data.props.userId,
       answerId: data.props.answerId,
       createdAt: +data.props.createdAt,
       question: data.props.question,
       response: data.props.response,
-      markAsRead : data.props.markAsRead
+      markAsRead : data.props.markAsRead,
+      pollId: data.props.pollId
     };
   }
 }
