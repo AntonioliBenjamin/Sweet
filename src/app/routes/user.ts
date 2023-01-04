@@ -55,7 +55,7 @@ mailService.setApiKey(process.env.SENDGRID_API_KEY);
 userRouter.post("/", async (req, res) => {
     try {
 
-        const body = SignUpCommands.setProperties({
+        const body = {
             userName: req.body.userName,
             email: req.body.email,
             password: req.body.password,
@@ -65,8 +65,8 @@ userRouter.post("/", async (req, res) => {
             schoolId: req.body.schoolId,
             section: req.body.section,
             gender: req.body.gender,
-        })
-        await transformAndValidate(SignUpCommands, body);
+        }
+       // await transformAndValidate(SignUpCommands, body);
 
         const user = await signUp.execute(body);
 
