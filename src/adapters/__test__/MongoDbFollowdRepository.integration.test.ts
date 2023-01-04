@@ -1,8 +1,6 @@
-import mongoose from "mongoose";
-import {v4} from "uuid";
 import {Followed} from "../../core/Entities/Followed";
-import {FollowModel} from "../repositories/mongoDb/models/follow";
 import {MongoDbFollowRepository} from "../repositories/mongoDb/repositories/MongoDbFollowRepository";
+import {connectDB, dropCollections, dropDB} from "./setupTestDb";
 
 describe("Integration - MongoDbFriendShipRepository", () => {
     let mongoDbFollowRepository: MongoDbFollowRepository;
@@ -10,13 +8,7 @@ describe("Integration - MongoDbFriendShipRepository", () => {
     let friendShip2: Followed;
 
     beforeAll(async () => {
-        const databaseId = v4();
-        mongoose.connect(`mongodb://127.0.0.1:27017/${databaseId}`, (err) => {
-            if (err) {
-                throw err;
-            }
-            console.info("Connected to mongodb");
-        });
+        await connectDB();
 
         mongoDbFollowRepository = new MongoDbFollowRepository();
 
@@ -39,12 +31,11 @@ describe("Integration - MongoDbFriendShipRepository", () => {
     });
 
     afterEach(async () => {
-        await FollowModel.collection.drop();
+        await dropCollections();
     });
 
     afterAll(async () => {
-        await mongoose.connection.dropDatabase();
-        await mongoose.connection.close();
+        await dropDB();
     });
 
     it("should save a follow", async () => {
@@ -67,8 +58,9 @@ describe("Integration - MongoDbFriendShipRepository", () => {
         expect(result.props.userId).toEqual("cedric");
     })
 
-    it("should delete follow by Id", async () => {
-        await mongoDbFollowRepository.delete("12345");
+    it("should delete follow by userId and addedBy", async () => {
+        await mongoDbFollowRepository.delete( {userId: "cedric",
+            addedBy: "chalom"});
         const result = await mongoDbFollowRepository.getById("12345");
         expect(result).toBeFalsy();
     })

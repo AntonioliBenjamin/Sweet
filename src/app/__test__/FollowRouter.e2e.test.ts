@@ -173,7 +173,7 @@ describe("E2E - FollowRouter", () => {
       .expect(200);
   });
 
-  it("should delete/:followId", async () => {
+  it("should delete /:userId", async () => {
     await followRepository.create(follow2);
 
     accessKey = sign(
@@ -185,7 +185,7 @@ describe("E2E - FollowRouter", () => {
     );
 
     await supertest(app)
-      .delete(`/follow/${follow2.props.id}`)
+      .delete(`/follow/${follow2.props.userId}`)
       .set("access_key", accessKey)
       .expect(200);
   });

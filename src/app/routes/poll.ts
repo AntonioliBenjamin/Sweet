@@ -1,9 +1,10 @@
-import express from "express";
+import express, {ErrorRequestHandler} from "express";
 import {authorization} from '../middlewares/JwtAuthorizationMiddleware';
 import {AuthentifiedRequest} from "../types/AuthentifiedRequest";
 import {MongoDbPollRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbPollRepository";
 import {GetAllPolls} from "../../core/usecases/poll/GetAllPolls";
 import {GetCurrentPoll} from "../../core/usecases/poll/GetCurrentPoll";
+import {schoolRouter} from "./school";
 const pollRouter = express.Router();
 const mongoDbPollRepository = new MongoDbPollRepository();
 const getAllPolls = new GetAllPolls(mongoDbPollRepository);
@@ -38,5 +39,9 @@ pollRouter.get("/current", async (req: AuthentifiedRequest, res) => {
         })
     }
 })
+
+const errorHandler: ErrorRequestHandler = (err, req, res, next) => {};
+
+schoolRouter.use(errorHandler);
 
 export {pollRouter};

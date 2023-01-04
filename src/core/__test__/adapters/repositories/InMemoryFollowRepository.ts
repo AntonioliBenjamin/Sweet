@@ -1,5 +1,6 @@
 import {Followed} from "../../../Entities/Followed";
 import {FollowedRepository} from "../../../repositories/FollowedRepository";
+import {DeleteFollowProperties} from "../../../usecases/follow/UnfollowUser";
 
 export class InMemoryFollowRepository implements FollowedRepository {
     constructor(
@@ -37,8 +38,8 @@ export class InMemoryFollowRepository implements FollowedRepository {
         return this.db.get(id);
     }
 
-    async delete(id: string): Promise<void> {
-        this.db.delete(id);
+    async delete(deleteProperties:DeleteFollowProperties): Promise<void> {
+        this.db.delete("0000");
 
         return;
     }

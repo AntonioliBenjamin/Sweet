@@ -1,8 +1,7 @@
-import mongoose from "mongoose";
-import {v4} from "uuid";
 import {Poll} from "../../core/Entities/Poll";
 import {MongoDbPollRepository} from "../repositories/mongoDb/repositories/MongoDbPollRepository";
 import {PollModel} from "../repositories/mongoDb/models/poll";
+import {connectDB, dropCollections, dropDB} from "./setupTestDb";
 
 describe('Integration - MongoDbPollRepository', () => {
     let mongoDbPollRepository: MongoDbPollRepository;
@@ -11,14 +10,7 @@ describe('Integration - MongoDbPollRepository', () => {
     let result: Poll;
 
     beforeAll(async () => {
-        const databaseId = v4();
-        mongoose.set('strictQuery', false)
-        mongoose.connect(`mongodb://127.0.0.1:27017/${databaseId}`, (err) => {
-            if (err) {
-                throw err;
-            }
-            console.info("Connected to mongodb");
-        });
+        await connectDB();
 
         mongoDbPollRepository = new MongoDbPollRepository();
 
@@ -41,12 +33,11 @@ describe('Integration - MongoDbPollRepository', () => {
     });
 
     afterEach(async () => {
-        await PollModel.collection.drop();
+        await dropCollections();
     });
 
     afterAll(async () => {
-        await mongoose.connection.dropDatabase();
-        await mongoose.connection.close();
+        await dropDB();
     });
 
     it("Should get all polls", async () => {

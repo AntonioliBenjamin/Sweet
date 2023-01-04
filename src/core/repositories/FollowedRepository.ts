@@ -1,5 +1,10 @@
 import {Followed} from "../Entities/Followed";
 
+type DeleteProperties = {
+    addedBy: string
+    userId: string
+}
+
 export interface FollowedRepository {
     create(followed: Followed): Promise<Followed>;
 
@@ -11,7 +16,7 @@ export interface FollowedRepository {
 
     getById(id: string): Promise<Followed>;
 
-    delete(id: string): Promise<void>;
+    delete(deleteProperties: DeleteProperties): Promise<void>;
 
     deleteAllByUserId(id: string): Promise<void>;
 

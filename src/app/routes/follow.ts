@@ -54,18 +54,11 @@ followRouter.get("/", async (req: AuthentifiedRequest, res) => {
     }
 });
 
-followRouter.delete("/:followId", async (req, res) => {
-    try {
-        await unfollowUser.execute(req.params.followId);
+followRouter.delete("/:userId", async (req: AuthentifiedRequest, res) => {
 
-        return res.sendStatus(200);
-    } catch (err) {
-        console.error(err);
+    await unfollowUser.execute({userId: req.params.userId, addedBy: req.user.id});
 
-        return res.status(400).send({
-            message: "An error occurred",
-        });
-    }
+    return res.sendStatus(200);
 });
 
 export {followRouter};

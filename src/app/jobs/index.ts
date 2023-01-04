@@ -9,7 +9,7 @@ const mongoDbQuestionRepository = new MongoDbQuestionRepository();
 const v4IdGateway = new V4IdGateway();
 const createPoll = new CreatePoll(mongoDbPollRepository, mongoDbQuestionRepository, v4IdGateway)
 
-export const createPollTimer = cron.schedule("0 7-22 * * *", async () => {
+export const createPollTimer = cron.schedule("*/50 7-22 * * *", async () => {
     await createPoll.execute();
     console.log("Poll created (running every hour)")
 })
