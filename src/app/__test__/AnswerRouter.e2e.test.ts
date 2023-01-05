@@ -1,21 +1,19 @@
 import "dotenv/config";
 import { sign } from "jsonwebtoken";
 import express from "express";
-import mongoose from "mongoose";
 import supertest from "supertest";
-import { AnswerModel } from "../../adapters/repositories/mongoDb/models/answer";
 import { MongoDbAnswerRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbAnswerRepository";
 import { Answer } from "../../core/Entities/Answer";
 import { AnswerRepository } from "../../core/repositories/AnswerRepository";
 import { answerRouter } from "../routes/answer";
 import { Gender, User } from "../../core/Entities/User";
-import { v4 } from "uuid";
 import { UserRepository } from "../../core/repositories/UserRepository";
 import { MongoDbUserRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
 import { UserModel } from "../../adapters/repositories/mongoDb/models/user";
 import { MongoDbQuestionRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbQuestionRepository";
 import { QuestionRepository } from "../../core/repositories/QuestionRepository";
 import { Question } from "../../core/Entities/Question";
+import {connectDB, dropCollections, dropDB} from "../../adapters/__test__/setupTestDb";
 
 const app = express();
 
@@ -35,14 +33,7 @@ describe("E2E - AnswerRouter", () => {
     app.use(express.json());
     app.use("/answer", answerRouter);
 
-    const databaseId = v4();
-    mongoose.set("strictQuery", false);
-    mongoose.connect(`mongodb://127.0.0.1:27017/${databaseId}`, (err) => {
-      if (err) {
-        throw err;
-      }
-      console.info("Connected to mongodb");
-    });
+    await connectDB();
 
     questionRepository = new MongoDbQuestionRepository();
     question = Question.create({
@@ -119,12 +110,11 @@ describe("E2E - AnswerRouter", () => {
   });
 
   afterEach(async () => {
-    await AnswerModel.collection.drop();
+    await dropCollections();
   });
 
   afterAll(async () => {
-    await mongoose.connection.dropDatabase();
-    await mongoose.connection.close();
+    await dropDB();
   });
 
   it("should post/answer", async () => {

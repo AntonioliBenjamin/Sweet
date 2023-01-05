@@ -26,6 +26,7 @@ import {UpdateUserCommands} from "../commands/user/UpdateUserCommands";
 import {RecoveryCommands} from "../commands/user/RecoveryCommands";
 import {ResetPasswordCommands} from "../commands/user/ResetPasswordCommands";
 import {EmailExistCommands} from "../commands/user/EmailExistCommands";
+import {GetUserById} from "../../core/usecases/user/GetUserById";
 import { SendFeedbackCommands } from "../commands/user/SendFeedbackCommands";
 
 const mailService = new MailService();
@@ -43,6 +44,7 @@ const signUp = new SignUp(mongoDbUserRepository, schoolDbRepository, v4IdGateway
 const signIn = new SignIn(mongoDbUserRepository, bcryptGateway);
 const updateUser = new UpdateUser(mongoDbUserRepository, schoolDbRepository);
 const deleteUser = new DeleteUser(mongoDbUserRepository, mongoDbFollowRepository, mongoDbAnswerRepository);
+const getUserById = new GetUserById(mongoDbUserRepository)
 const emailExist = new EmailExist(mongoDbUserRepository);
 const getAllMyPotentialFriends = new GetAllMyPotentialFriends(mongoDbUserRepository);
 const updateRecoveryCode = new GenerateRecoveryCode(mongoDbUserRepository, v4IdGateway);
@@ -52,9 +54,7 @@ const userApiUserMapper = new UserApiUserMapper();
 
 mailService.setApiKey(process.env.SENDGRID_API_KEY);
 
-userRouter.post("/",  async (req, res) => {
-  
-
+userRouter.post("/", async (req, res ) => {
         const body = await SignUpCommands.setProperties({
             userName: req.body.userName,
             email: req.body.email,
@@ -288,6 +288,23 @@ userRouter.delete("/", async (req: AuthentifiedRequest, res) => {
         });
 
         return res.sendStatus(200);
+    } catch (err) {
+        console.error(err);
+
+        return res.status(400).send({
+            message: "An error occurred",
+        });
+    }
+});
+
+userRouter.get("/:userId", async (req: AuthentifiedRequest, res) => {
+    try {
+        const user = await getUserById.execute({
+            userId: req.params.userId,
+        });
+
+        return res.status(200).send(userApiUserMapper.fromDomain(user));
+
     } catch (err) {
         console.error(err);
 

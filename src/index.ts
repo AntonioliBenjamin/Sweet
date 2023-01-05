@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express from "express";
+import express, {request} from "express";
 import * as mongoose from "mongoose";
 import {answerRouter} from "./app/routes/answer";
 import {followRouter} from "./app/routes/follow";

@@ -11,8 +11,6 @@ import { authorization } from "../middlewares/JwtAuthorizationMiddleware";
 import { AuthentifiedRequest } from "../types/AuthentifiedRequest";
 import { AnswerMarkAsRead } from "../../core/usecases/answer/AnswerMarkAsRead";
 import { AnswerToQuestionCommands } from "../commands/answer/AnswerToQuestionCommands";
-import { validateOrReject, validate } from "class-validator";
-import { commandsValidation } from "../commands/CommandsValidation";
 const answerRouter = express.Router();
 const mongoDbQuestionRepository = new MongoDbQuestionRepository();
 const mongoDbUserRepository = new MongoDbUserRepository();

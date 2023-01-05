@@ -19,7 +19,7 @@ describe("Unit - GetLastQuestionAnswered", () => {
                 picture: "http://pic",
             },
             response: {
-                userId: "5555",
+                userId: "0000",
                 firstName: "name",
                 lastName: "lastname",
                 userName: "username",

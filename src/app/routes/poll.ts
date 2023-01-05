@@ -53,5 +53,4 @@ pollRouter.get("/current", async (req: AuthentifiedRequest, res) => {
     }
 })
 
-
 export {pollRouter};

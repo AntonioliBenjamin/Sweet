@@ -15,12 +15,6 @@ export class InMemoryQuestionRepository implements QuestionRepository {
     return Array.from(this.db.values());
   }
 
-  getById(questionId: string): Promise<Question> {
-    const question = this.db.get(questionId);
-
-    return Promise.resolve(question);
-  }
-
   selectRandom(numberOfQuestions: number): Promise<QuestionProperties[]> {
     return Promise.resolve(questionFixtures);
   }

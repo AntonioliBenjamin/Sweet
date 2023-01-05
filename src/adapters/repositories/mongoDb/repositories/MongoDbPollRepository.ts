@@ -18,20 +18,6 @@ export class MongoDbPollRepository implements PollRepository {
         return polls.map((elm) => mongoDbPollMapper.toDomain(elm));
     }
 
-    async update(poll: Poll): Promise<Poll> {
-        const toPollModel = mongoDbPollMapper.fromDomain(poll);
-        await PollModel.findOneAndUpdate(
-            {id: toPollModel.pollId},
-            {
-                $set: {
-                    questions: toPollModel.questions,
-                },
-            },
-            {new: true}
-        );
-        return poll;
-    }
-
     async getCurrentPoll(input: void): Promise<Poll> {
         const pollModel = await PollModel.find().sort({createdAt: -1})
         return mongoDbPollMapper.toDomain(pollModel[0]);
