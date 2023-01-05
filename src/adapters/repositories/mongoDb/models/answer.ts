@@ -7,17 +7,27 @@ export type AnswerModel = {
   answerId: string;
   question: QuestionProperties;
   response: ResponseProperties;
-  answer: string;
+  userId: string;
   createdAt: number;
   markAsRead: boolean;
+  pollId: string;
 };
 
 const answerSchema = new Schema({
   answerId: {
     type: String,
     required: true,
-    unique: true,
     index: true,
+    unique: true
+  },
+  userId: {
+    type: String,
+    required: true,
+    index: true
+  },
+  pollId: {
+    type: String,
+    required: true
   },
   question: {
     type: {
@@ -58,6 +68,7 @@ const answerSchema = new Schema({
       schoolId: {
         type: String,
         required: true,
+        index: true
       },
       section: {
         type: String,
@@ -71,11 +82,6 @@ const answerSchema = new Schema({
       },
     },
     required: true,
-  },
-  answer: {
-    type: String,
-    required: true,
-    index: true,
   },
   createdAt: {
     type: Number,

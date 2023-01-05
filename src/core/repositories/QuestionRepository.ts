@@ -3,11 +3,11 @@ import { Question, QuestionProperties } from "../Entities/Question";
 export interface QuestionRepository {
   create(input: Question): Promise<Question>;
 
-  getAllQuestions(input: void): Promise<Question[]>;
+  getAll(input: void): Promise<Question[]>;
 
-  selectRandomQuestions(numberOfQuestions: number): Promise<QuestionProperties[]>;
+  selectRandom(numberOfQuestions: number): Promise<QuestionProperties[]>;
 
-  getByQuestionId(questionId: string): Promise<Question>;
+  getById(questionId: string): Promise<Question>;
 
   delete(questionId: string): Promise<void>;
 }

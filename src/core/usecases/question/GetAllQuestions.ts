@@ -9,6 +9,6 @@ export class GetAllQuestions implements UseCase<void, Question[]> {
     }
 
     async execute(): Promise<Question[]> {
-        return await this.questionRepository.getAllQuestions()
+        return await this.questionRepository.getAll()
     }
 }

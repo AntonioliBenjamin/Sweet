@@ -47,23 +47,23 @@ describe("Integration - MongoDbQuestionRepository", () => {
   it("Should get all questions", async () => {
     await mongoDbQuestionRepository.create(question2);
 
-    const array = await mongoDbQuestionRepository.getAllQuestions();
+    const array = await mongoDbQuestionRepository.getAll();
     expect(array).toHaveLength(2);
   });
 
   it("Should select random questions", async () => {
     await Promise.all(questionMongoFixtures.map((elem) =>mongoDbQuestionRepository.create(elem)));
-    const result = await mongoDbQuestionRepository.selectRandomQuestions(12);
+    const result = await mongoDbQuestionRepository.selectRandom(12);
     expect(result).toHaveLength(12);
   });
 
   it("should throw if question not found", async () => {
-    const result = () => mongoDbQuestionRepository.getByQuestionId("false questionID")
+    const result = () => mongoDbQuestionRepository.getById("false questionID")
     await expect(result).rejects.toThrow(QuestionErrors.NotFound)
   })
 
   it("should delete question", async () => {
     await mongoDbQuestionRepository.delete(question.props.questionId)
-    expect(mongoDbQuestionRepository.getByQuestionId(question.props.questionId)).rejects.toThrow(QuestionErrors.NotFound)
+    expect(mongoDbQuestionRepository.getById(question.props.questionId)).rejects.toThrow(QuestionErrors.NotFound)
   })
 });

@@ -9,6 +9,8 @@ describe("Integration - MongoDbAnswerRepository", () => {
     let mongoDbAnswerRepository: MongoDbAnswerRepository;
     let answer: Answer;
     let answer2: Answer;
+    let answer3: Answer;
+    let answer4: Answer;
 
     beforeAll(async () => {
         await connectDB();
@@ -18,34 +20,14 @@ describe("Integration - MongoDbAnswerRepository", () => {
         answer = new Answer({
             answerId: "1234",
             markAsRead : true,
-            question: {
-                questionId: "9999",
-                description: "this is a desc",
-                picture: "http://pic",
-            },
-            response: {
-                userId: "8888",
-                firstName: "name",
-                lastName: "lastname",
-                userName: "username",
-                schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
-                section: "1er L",
-                gender: Gender.GIRL,
-            },
-            answer: "9999",
-            createdAt: new Date(),
-        });
-
-        answer2 = new Answer({
-            answerId: "4321",
-            markAsRead : true,
+            pollId: "1234",
             question: {
                 questionId: "1111",
                 description: "this is a desc",
                 picture: "http://pic",
             },
             response: {
-                userId: "8888",
+                userId: "1111",
                 firstName: "name",
                 lastName: "lastname",
                 userName: "username",
@@ -53,7 +35,73 @@ describe("Integration - MongoDbAnswerRepository", () => {
                 section: "1er L",
                 gender: Gender.GIRL,
             },
-            answer: "9999",
+            userId: "9999",
+            createdAt: new Date(100),
+        });
+
+        answer2 = new Answer({
+            answerId: "4321",
+            markAsRead : true,
+            pollId: "1234",
+            question: {
+                questionId: "2222",
+                description: "this is a desc",
+                picture: "http://pic",
+            },
+            response: {
+                userId: "1111",
+                firstName: "name",
+                lastName: "lastname",
+                userName: "username",
+                schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
+                section: "1er L",
+                gender: Gender.GIRL,
+            },
+            userId: "9999",
+            createdAt: new Date(50),
+        });
+
+        answer3 = new Answer({
+            answerId: "985498",
+            markAsRead : true,
+            pollId: "1234",
+            question: {
+                questionId: "3333",
+                description: "this is a desc",
+                picture: "http://pic",
+            },
+            response: {
+                userId: "2222",
+                firstName: "name",
+                lastName: "lastname",
+                userName: "username",
+                schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
+                section: "1er L",
+                gender: Gender.GIRL,
+            },
+            userId: "9999",
+            createdAt: new Date(),
+        });
+
+        answer4 = new Answer({
+            answerId: "684654",
+            markAsRead : true,
+            pollId: "8888",
+            question: {
+                questionId: "4444",
+                description: "this is a desc",
+                picture: "http://pic",
+            },
+            response: {
+                userId: "1111",
+                firstName: "name",
+                lastName: "lastname",
+                userName: "username",
+                schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
+                section: "1er L",
+                gender: Gender.GIRL,
+            },
+            userId: "9999",
             createdAt: new Date(),
         });
     });
@@ -61,6 +109,8 @@ describe("Integration - MongoDbAnswerRepository", () => {
     beforeEach(async () => {
         await mongoDbAnswerRepository.create(answer);
         await mongoDbAnswerRepository.create(answer2);
+        await mongoDbAnswerRepository.create(answer3);
+        await mongoDbAnswerRepository.create(answer4);
     });
 
     afterEach(async () => {
@@ -75,6 +125,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
         const result = await mongoDbAnswerRepository.create(new Answer({
             answerId: "7894564123",
             markAsRead : false,
+            pollId: "1111",
             question: {
                 questionId: "1111",
                 description: "this is a desc",
@@ -89,7 +140,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
                 section: "1er L",
                 gender: Gender.GIRL,
             },
-            answer: "9999",
+            userId: "9999",
             createdAt: new Date(),
         }));
 
@@ -97,14 +148,13 @@ describe("Integration - MongoDbAnswerRepository", () => {
     });
 
     it("should get all answers", async () => {
-
-        const result = await mongoDbAnswerRepository.getAllAnswers();
-        expect(result).toHaveLength(2)
+        const result = await mongoDbAnswerRepository.getAllBySchoolId(answer.props.response.schoolId, answer.props.userId);
+        expect(result).toHaveLength(4)
     })
 
     it("should delete answer", async () => {
         await mongoDbAnswerRepository.delete(answer.props.answerId);
-        const result = await AnswerModel.findOne({answerId: answer.props.answerId});
+        const result = await AnswerModel.findOne({ answerId: answer.props.answerId});
         expect(result).toBeFalsy();
     })
 
@@ -114,8 +164,8 @@ describe("Integration - MongoDbAnswerRepository", () => {
     })
 
     it("should throw an error because answer not found", async () => {
-        const result = ()=>  mongoDbAnswerRepository.getById("wrong id");
-        await expect(()=>result()).rejects.toThrow(AnswerErrors.NotFound);
+        const result = mongoDbAnswerRepository.getById("wrong id");
+        await expect(result).rejects.toThrow(AnswerErrors.NotFound);
     })
 
     it("should mark answer mark read", async () => {
@@ -125,4 +175,9 @@ describe("Integration - MongoDbAnswerRepository", () => {
 
         expect(result.props.markAsRead).toEqual(true);
     });
+
+    it("should get the last question answered", async () => {
+        const result = await mongoDbAnswerRepository.getLastQuestionAnswered(answer.props.pollId, answer.props.userId)
+        expect(result.props.question.questionId).toEqual("3333")
+    })
 });

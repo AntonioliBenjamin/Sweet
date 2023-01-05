@@ -1,4 +1,5 @@
 import {Answer} from "../../Entities/Answer";
+import { Poll } from "../../Entities/Poll";
 import {Question} from "../../Entities/Question";
 import {Gender, User} from "../../Entities/User";
 import {AnswerToQuestion} from "../../usecases/answer/AnswerToQuestion";
@@ -30,6 +31,12 @@ describe("Unit - AnswerToQuestion", () => {
             picture: "http://yes"
         });
         questionDb.set(question.props.questionId, question);
+
+        const poll = new Poll({
+            createdAt: new Date(),
+            expirationDate: null,
+            pollId: "1234",
+        })
 
         const user = new User({
             email: "user@example.com",
@@ -66,8 +73,9 @@ describe("Unit - AnswerToQuestion", () => {
         userDb.set(user2.props.id, user2);
 
         const result = await answerToQuestion.execute({
+            pollId: poll.props.pollId,
             questionId: question.props.questionId,
-            answerUserId: user.props.id,
+            friendId: user.props.id,
             userId: user2.props.id
         });
 

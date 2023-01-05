@@ -5,8 +5,11 @@ export class AnswerToQuestionCommands {
     questionId: string;
 
     @IsString()
-    answerUserId: string;
+    friendId: string;
 
     @IsString()
     userId: string;
+
+    @IsString()
+    pollId: string;
 }

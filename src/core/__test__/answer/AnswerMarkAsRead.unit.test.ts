@@ -18,6 +18,7 @@ let answerMarkAsRead : AnswerMarkAsRead
         const answer = new Answer({
             answerId: "1234",
             markAsRead : false,
+            pollId:"123",
             question: {
                 questionId: "9999",
                 description: "this is a desc",
@@ -32,7 +33,7 @@ let answerMarkAsRead : AnswerMarkAsRead
                 section: "1er L",
                 gender: Gender.GIRL,
             },
-            answer: "8888",
+            userId: "8888",
             createdAt: new Date()
         });
 

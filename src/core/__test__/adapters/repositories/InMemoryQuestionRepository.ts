@@ -11,17 +11,17 @@ export class InMemoryQuestionRepository implements QuestionRepository {
     return Promise.resolve(question);
   }
 
-  async getAllQuestions(): Promise<Question[]> {
+  async getAll(): Promise<Question[]> {
     return Array.from(this.db.values());
   }
 
-  getByQuestionId(questionId: string): Promise<Question> {
+  getById(questionId: string): Promise<Question> {
     const question = this.db.get(questionId);
 
     return Promise.resolve(question);
   }
 
-  selectRandomQuestions(numberOfQuestions: number): Promise<QuestionProperties[]> {
+  selectRandom(numberOfQuestions: number): Promise<QuestionProperties[]> {
     return Promise.resolve(questionFixtures);
   }
 

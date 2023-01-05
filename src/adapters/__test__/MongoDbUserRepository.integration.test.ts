@@ -71,6 +71,7 @@ describe("Integration - MongoDbUserRepository", () => {
     answer = new Answer({
       answerId: "1234",
       markAsRead : true,
+      pollId:"123",
       question: {
         questionId: "9999",
         description: "this is a desc",
@@ -85,7 +86,7 @@ describe("Integration - MongoDbUserRepository", () => {
         section: "1er L",
         gender: Gender.GIRL,
       },
-      answer: "12345",
+      userId: "12345",
       createdAt: new Date(),
     });
 
@@ -181,7 +182,7 @@ describe("Integration - MongoDbUserRepository", () => {
     const result = await mongoDbUserRepository.getByEmail("fakeEmail@example.com");
 
     expect(result).toBeFalsy();
-    await expect(AnswerModel.findOne({ answerId: user.props.id })).resolves.toEqual(null);
+    await expect(AnswerModel.findOne({ friendId: user.props.id })).resolves.toEqual(null);
     await expect(FollowModel.findOne({ id: user.props.id })).resolves.toEqual(null);
   });
 
