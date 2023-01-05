@@ -6,7 +6,7 @@ import { Gender } from "../../../../core/Entities/User";
 export type AnswerModel = {
   answerId: string;
   question: QuestionProperties;
-  response: ResponseProperties;
+  response?: ResponseProperties;
   userId: string;
   createdAt: number;
   markAsRead: boolean;
@@ -77,11 +77,10 @@ const answerSchema = new Schema({
       gender: {
         type: String,
         enum: Object.values(Gender),
-        default: Gender.BOY,
         required: true,
       },
     },
-    required: true,
+    required: false,
   },
   createdAt: {
     type: Number,

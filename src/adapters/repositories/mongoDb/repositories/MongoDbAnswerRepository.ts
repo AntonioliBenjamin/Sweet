@@ -70,7 +70,12 @@ export class MongoDbAnswerRepository implements AnswerRepository {
     }
 
     async getAllByUserId(userId: string): Promise<Answer[]> {
-        const results = await AnswerModel.find({userId})
+        const results = await AnswerModel.find({
+            "response.userId" : userId,
+            userId : {
+                $ne : userId
+            }
+        })
         return results.map(elm => answerMapper.toDomain(elm))
     }
 }
