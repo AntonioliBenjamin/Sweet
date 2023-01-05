@@ -11,7 +11,6 @@ import morgan from "morgan";
 import * as path from "path";
 import {friendsRouter} from "./app/routes/friends";
 import {createPollTimer} from "./app/jobs";
-import errorhandler from 'errorhandler';
 
 const port = +process.env.PORT;
 
@@ -36,6 +35,10 @@ app.use(morgan('combined'));
 
 app.use(express.json());
 
+app.get('/status', (req, res) => {
+    throw new Error('Not implemented')
+})
+
 app.use("/user", userRouter);
 
 app.use("/school", schoolRouter);
@@ -50,9 +53,14 @@ app.use("/answer", answerRouter);
 
 app.use("/friends", friendsRouter);
 
-createPollTimer.start();
+app.use((err, req, res, next) => {
+    if (res.headersSent) {
+        return next(err)
+    }
+    res.status(400).send(err)
+});
 
-app.use(errorhandler())
+createPollTimer.start();
 
 app.listen(port, () => {
     console.log(`listening on port ${port}`);

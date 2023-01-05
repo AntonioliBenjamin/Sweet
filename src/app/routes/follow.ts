@@ -22,40 +22,23 @@ const getMyFollows = new GetMyFollows(mongoDbFollowRepository, mongoDbUserReposi
 followRouter.use(authorization);
 
 followRouter.post("/", async (req: AuthentifiedRequest, res) => {
-    try {
-        const body = await AddFollowCommands.setProperties({
-            addedBy: req.user.id,
-            userId: req.body.userId
-        })
+    const body = await AddFollowCommands.setProperties({
+        addedBy: req.user.id,
+        userId: req.body.userId
+    })
 
-        const follow = await followUser.execute(body);
+    const follow = await followUser.execute(body);
 
-        return res.status(201).send(follow.props);
-    } catch (err) {
-        console.error(err);
-
-        return res.status(400).send({
-            message: "An error occurred",
-        });
-    }
+    return res.status(201).send(follow.props);
 });
 
 followRouter.get("/", async (req: AuthentifiedRequest, res) => {
-    try {
-        const users = await getMyFollows.execute(req.user.id);
+    const users = await getMyFollows.execute(req.user.id);
 
-        return res.send(users.map(elm => userApiUserMapper.fromDomain(elm)));
-    } catch (err) {
-        console.error(err);
-
-        return res.status(400).send({
-            message: "An error occurred",
-        });
-    }
+    return res.send(users.map(elm => userApiUserMapper.fromDomain(elm)));
 });
 
 followRouter.delete("/:friendId", async (req: AuthentifiedRequest, res) => {
-
     await unfollowUser.execute({
         userId: req.params.friendId,
         addedBy: req.user.id
