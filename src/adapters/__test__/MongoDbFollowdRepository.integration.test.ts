@@ -59,15 +59,13 @@ describe("Integration - MongoDbFriendShipRepository", () => {
     })
 
     it("should delete follow by userId and addedBy", async () => {
-        await mongoDbFollowRepository.delete( {userId: "cedric",
-            addedBy: "chalom"});
+        await mongoDbFollowRepository.delete("cedric", "chalom");
         const result = await mongoDbFollowRepository.getById("12345");
         expect(result).toBeFalsy();
     })
 
     it("should return followed if exist", async () => {
         const result = await mongoDbFollowRepository.exists("cedric", "ben")
-        console.log(result)
         expect(result).toBeTruthy()
     })
 })

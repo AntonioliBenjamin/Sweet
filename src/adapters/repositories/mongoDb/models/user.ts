@@ -10,7 +10,7 @@ export type userModel = {
   password: string;
   age: number;
   schoolId: string;
-  section: string;
+  section?: string;
   gender: Gender;
   createdAt: number;
   updatedAt?: number;
@@ -59,7 +59,7 @@ const userSchema = new Schema({
   },
   section: {
     type: String,
-    required: true,
+    required: false,
   },
   gender: {
     type: String,

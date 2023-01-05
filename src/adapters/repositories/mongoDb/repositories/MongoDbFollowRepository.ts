@@ -45,10 +45,10 @@ export class MongoDbFollowRepository implements FollowedRepository {
         return followMapper.toDomain(follow);
     }
 
-    async delete(deleteProperties: DeleteFollowProperties): Promise<void> {
+    async delete(userId : string, addedBy : string): Promise<void> {
         await FollowModel.deleteOne({
-            userId: deleteProperties.userId,
-            addedBy :deleteProperties.addedBy
+            userId: userId,
+            addedBy :addedBy
         });
         return;
     }

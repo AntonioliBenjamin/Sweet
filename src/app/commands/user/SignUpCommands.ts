@@ -1,5 +1,5 @@
 import {Gender} from "../../../core/Entities/User";
-import {IsEmail, IsEnum, IsInt, IsString, Min, validateOrReject} from "class-validator";
+import {IsEmail, IsEnum, IsInt, IsOptional, IsString, Min, validateOrReject} from "class-validator";
 
 export class SignUpCommands {
     @IsString()
@@ -25,6 +25,7 @@ export class SignUpCommands {
     schoolId: string;
 
     @IsString()
+    @IsOptional()
     section: string;
 
     @IsEnum(Gender)

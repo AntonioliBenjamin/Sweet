@@ -14,6 +14,6 @@ export class UnfollowUser implements UseCase<DeleteFollowProperties, Promise<voi
     }
 
     async execute(input: DeleteFollowProperties): Promise<void> {
-        return await this.followedRepository.delete({userId : input.userId, addedBy : input.addedBy});
+        return await this.followedRepository.delete( input.userId, input.addedBy);
     }
 }

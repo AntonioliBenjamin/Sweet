@@ -82,9 +82,9 @@ userRouter.post("/", async (req, res) => {
             accessKey,
         });
     } catch (err) {
-        console.error(err[0].constraints);
+        console.error(err);
 
-        return res.status(400).send(err[0].constraints);
+        return res.status(400).send(err);
     }
 });
 
@@ -154,7 +154,7 @@ userRouter.post("/password/recovery", async (req, res) => {
 
 userRouter.post("/password/reset", async (req, res) => {
     try {
-        const body = await ResetPasswordCommands.setProperties( {
+        const body = await ResetPasswordCommands.setProperties({
             password: req.body.password,
             token: req.body.token,
         });
@@ -206,7 +206,8 @@ userRouter.patch("/", async (req: AuthentifiedRequest, res) => {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             section: req.body.section,
-            gender: req.body.gender
+            gender: req.body.gender,
+            schoolId: req.body.schoolId
         });
 
         const updatedUser = await updateUser.execute({
@@ -214,7 +215,7 @@ userRouter.patch("/", async (req: AuthentifiedRequest, res) => {
             firstName: body.firstName,
             lastName: body.lastName,
             section: body.section,
-            schoolId: req.user.schoolId,
+            schoolId: body.schoolId,
             gender: body.gender,
             id: req.user.id,
         });

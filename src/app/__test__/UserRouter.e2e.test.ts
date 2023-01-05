@@ -123,9 +123,9 @@ describe("E2E - User Router", () => {
             })
             .expect((response) => {
                 const responseBody = response.body;
-                expect(responseBody.updatedAt).toBeTruthy();
                 expect(responseBody.gender).toEqual("girl");
                 expect(responseBody.schoolId).toEqual("3f5f3ce518a5fd5873ce5b543f560e9bf759a5db");
+                expect(responseBody.updatedAt).toBeTruthy();
             })
             .expect(200);
     });

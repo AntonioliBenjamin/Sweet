@@ -38,7 +38,7 @@ export class InMemoryFollowRepository implements FollowedRepository {
         return this.db.get(id);
     }
 
-    async delete(deleteProperties:DeleteFollowProperties): Promise<void> {
+    async delete(userId : string, addedBy : string): Promise<void> {
         this.db.delete("0000");
 
         return;

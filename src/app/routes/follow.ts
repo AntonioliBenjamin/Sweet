@@ -54,9 +54,12 @@ followRouter.get("/", async (req: AuthentifiedRequest, res) => {
     }
 });
 
-followRouter.delete("/:userId", async (req: AuthentifiedRequest, res) => {
+followRouter.delete("/:friendId", async (req: AuthentifiedRequest, res) => {
 
-    await unfollowUser.execute({userId: req.params.userId, addedBy: req.user.id});
+    await unfollowUser.execute({
+        userId: req.params.friendId,
+        addedBy: req.user.id
+    });
 
     return res.sendStatus(200);
 });
