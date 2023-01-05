@@ -148,7 +148,7 @@ userRouter.post("/password/recovery", async (req, res) => {
             userName: user.props.userName,
         });
 
-        return res.status(200).send(userApiUserMapper.fromDomain(user));
+        return res.sendStatus(200);
     } catch (err) {
         console.error(err);
 
