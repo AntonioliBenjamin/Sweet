@@ -42,4 +42,5 @@ questionRouter.delete("/:questionId", async (req, res) => {
     return res.sendStatus(200)
 });
 
-export {questionRouter};
+
+export { questionRouter };

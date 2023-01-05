@@ -14,29 +14,6 @@ export class MongoDbFollowRepository implements FollowedRepository {
         return input;
     }
 
-    async getFollowByUsersId(addedBy: string, userId: string): Promise<Followed> {
-        const follow = await FollowModel.findOne({
-            addedBy: addedBy,
-            userId: userId,
-        });
-        if (!follow) {
-            return null;
-        }
-        return followMapper.toDomain(follow);
-    }
-
-    async getFollowersByUserId(userId: string): Promise<string[]> {
-        const friendShipsModel = await FollowModel.find({userId: userId});
-        const result = friendShipsModel.map((elm) => followMapper.toDomain(elm));
-        return result.map((elm) => elm.props.addedBy);
-    }
-
-    async getFollowingsByUserId(userId: string): Promise<string[]> {
-        const friendShipsModel = await FollowModel.find({addedBy: userId});
-        const result = friendShipsModel.map((elm) => followMapper.toDomain(elm));
-        return result.map((elm) => elm.props.userId);
-    }
-
     async getById(followId: string): Promise<Followed> {
         const follow = await FollowModel.findOne({id: followId});
         if (!follow) {
@@ -72,7 +49,7 @@ export class MongoDbFollowRepository implements FollowedRepository {
 
     async getMyFollows(userId: string): Promise<Followed[]> {
     const followsModels = await FollowModel.find({ addedBy: userId });
-    if (!followsModels) {
+    if (followsModels.length === 0) {
       return null;
     }
     return followsModels.map((elm) => followMapper.toDomain(elm));

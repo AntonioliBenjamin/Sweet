@@ -14,26 +14,6 @@ export class InMemoryFollowRepository implements FollowedRepository {
         return followed;
     }
 
-    async getFollowersByUserId(userId: string): Promise<string[]> {
-        const values = Array.from(this.db.values());
-
-        const follows = values.filter(
-            (elm) => elm.props.userId === userId
-        );
-
-        return follows.map(elm => elm.props.addedBy);
-    }
-
-    async getFollowingsByUserId(userId: string): Promise<string[]> {
-        const values = Array.from(this.db.values());
-
-        const follows = values.filter(
-            (elm) => elm.props.addedBy === userId
-        );
-
-        return follows.map(elm => elm.props.userId);
-    }
-
     async getById(id: string): Promise<Followed> {
         return this.db.get(id);
     }

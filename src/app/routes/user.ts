@@ -27,6 +27,7 @@ import {RecoveryCommands} from "../commands/user/RecoveryCommands";
 import {ResetPasswordCommands} from "../commands/user/ResetPasswordCommands";
 import {EmailExistCommands} from "../commands/user/EmailExistCommands";
 import {GetUserById} from "../../core/usecases/user/GetUserById";
+import { SendFeedbackCommands } from "../commands/user/SendFeedbackCommands";
 
 const mailService = new MailService();
 const emailSender = process.env.RECOVERY_EMAIL_SENDER;
@@ -191,6 +192,20 @@ userRouter.post("/exist", async (req, res) => {
         });
     }
 });
+
+userRouter.post("/send-feedback", async (req, res) => {
+    const body = await SendFeedbackCommands.setProperties({
+        email: req.body.email,
+        message: req.body.message
+    })
+
+    await sendGridGateway.sendFeedback({
+        email: body.email,
+        message: body.message
+    })
+
+    return res.sendStatus(200)
+})
 
 userRouter.use(authorization);
 

@@ -196,4 +196,12 @@ describe("Integration - MongoDbUserRepository", () => {
     expect(result).toHaveLength(3)
   })
 
+  it("shoul update password", async () => {
+    user.props.password = "new password"
+
+    await mongoDbUserRepository.updatePassword(user)
+    const result = await mongoDbUserRepository.getById(user.props.id)
+    expect(result.props.password).toEqual("new password")
+  })
+
 });

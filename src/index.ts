@@ -11,6 +11,7 @@ import morgan from "morgan";
 import * as path from "path";
 import {friendsRouter} from "./app/routes/friends";
 import {createPollTimer} from "./app/jobs";
+import errorhandler from 'errorhandler';
 
 const port = +process.env.PORT;
 
@@ -51,6 +52,10 @@ app.use("/friends", friendsRouter);
 
 createPollTimer.start();
 
+app.use(errorhandler())
+
 app.listen(port, () => {
     console.log(`listening on port ${port}`);
 });
+ 
+
