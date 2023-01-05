@@ -38,16 +38,18 @@ export class InMemoryAnswerRepository implements AnswerRepository {
     return answer;
   }
 
-  async getLastQuestionAnswered(pollId: string, userId: string): Promise<Question> {
+  async getLastQuestionAnswered(pollId: string, userId: string): Promise<Answer> {
     const values = Array.from(this.db.values());
-    const answers = values
+    const answer = values
       .filter((elm) => elm.props.pollId === pollId  && elm.props.response.userId === userId)
       .sort((a, b) => +b.props.createdAt - +a.props.createdAt)[0];
 
-    const question = answers.props.question;
-  
-    return new Question({
-      ...question
-    });
+    return answer;
+  }
+
+  async getAllByUserId(userId: string): Promise<Answer[]> {
+    const values = Array.from(this.db.values()); 
+
+    return values.filter(elm => elm.props.userId === userId)
   }
 }

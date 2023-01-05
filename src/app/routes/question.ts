@@ -20,20 +20,24 @@ const deleteQuestion = new DeleteQuestion(mongoDbQuestionRepository)
 
 questionRouter.use(authorization);
 
-questionRouter.post("/", clientErrorHandler (async (req: AuthentifiedRequest, res) => {
+
+
+questionRouter.post("/",  async (req: AuthentifiedRequest, res) => {
     await transformAndValidate(CreateQuestionCommands, req.body) 
     const question = await createQuestion.execute(req.body);
     return res.status(201).send(apiQuestionMapper.fromDomain(question));
-}));
+});
 
-questionRouter.get("/all", clientErrorHandler (async (req: AuthentifiedRequest, res) => {
+questionRouter.get("/all",  async (req: AuthentifiedRequest, res) => {
     const questions = await getAllQuestions.execute();
     return await res.status(200).send(questions.map((elm) => elm.props));
-}))
+})
 
-questionRouter.delete("/:pollId", clientErrorHandler (async (req, res) => {
+questionRouter.delete("/:questionId",  async (req, res) => {
     await deleteQuestion.execute(req.params.questionId)
     return res.sendStatus(200)
-}));
+});
+
+questionRouter.use(clientErrorHandler)
 
 export { questionRouter };

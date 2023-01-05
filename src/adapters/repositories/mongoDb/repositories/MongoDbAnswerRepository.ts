@@ -67,4 +67,9 @@ export class MongoDbAnswerRepository implements AnswerRepository {
 
     return answerMapper.toDomain(answersModel[0])
   }
+
+  async getAllByUserId(userId: string): Promise<Answer[]> {
+    const results = await AnswerModel.find({ userId })
+    return results.map(elm => answerMapper.toDomain(elm))
+  }
 }

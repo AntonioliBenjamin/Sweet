@@ -1,5 +1,4 @@
 import { Answer } from "../../Entities/Answer";
-import { Poll } from "../../Entities/Poll";
 import { Gender } from "../../Entities/User";
 import { GetLastQuestionAnswered } from "../../usecases/answer/GetLastQuestionAnswered"
 import { InMemoryAnswerRepository } from "../adapters/repositories/InMemoryAnswerRepository"
@@ -88,6 +87,6 @@ describe("Unit - GetLastQuestionAnswered", () => {
             pollId: "1234",
             userId: "0000"
         })
-        expect(result.props.questionId).toEqual("1111")
+        expect(result.props.question.questionId).toEqual("1111")
     })
 })

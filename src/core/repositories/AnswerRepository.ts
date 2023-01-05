@@ -14,4 +14,6 @@ export interface AnswerRepository {
     markAsRead(answer: Answer): Promise<Answer>;
 
     getLastQuestionAnswered(pollId: string, userId: string): Promise<Answer>
+
+    getAllByUserId(userId: string): Promise<Answer[]>
 }

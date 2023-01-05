@@ -5,7 +5,7 @@ import {InMemoryAnswerRepository} from "../adapters/repositories/InMemoryAnswerR
 
 const db = new Map<string, Answer>();
 
-describe("Unit - AnswerToQuestion", () => {
+describe("Unit - GetAllAnswers", () => {
     it("should get follow Answers", async () => {
         const inMemoryAnswerRepository = new InMemoryAnswerRepository(db);
         const getAllAnswers = new GetAllAnswers(inMemoryAnswerRepository);
@@ -56,7 +56,10 @@ describe("Unit - AnswerToQuestion", () => {
         })
         db.set(answer2.props.answerId, answer2);
 
-        const result = await getAllAnswers.execute();
+        const result = await getAllAnswers.execute({
+            schoolId: answer.props.response.schoolId,
+            userId: answer.props.userId
+        });
 
         expect(result).toHaveLength(2);
     })

@@ -1,3 +1,4 @@
+import { Answer } from "../../core/Entities/Answer";
 import { Poll } from "../../core/Entities/Poll";
 import { Question } from "../../core/Entities/Question";
 
@@ -13,11 +14,11 @@ export type PollApiResponse = {
   questions?: Array<PollQuestionApiResponse>;
   createdAt: Date;
   expirationDate: Date;
-  lastQuestionAnswered: Question;
+  lastQuestionAnswered?: PollQuestionApiResponse;
 };
 
 export class PollApiMapper {
-  fromDomain(data: Poll, lastQuestionAnswered: Question): PollApiResponse {
+  fromDomain(data: Poll, lastQuestionAnswered: Answer): PollApiResponse {
     const questions = data.props.questions.map((elm, index) => {
       return {
         questionId: elm.questionId,
@@ -27,12 +28,14 @@ export class PollApiMapper {
       };
     });
 
+    const lastQuestion = questions.find(elm => elm.questionId === lastQuestionAnswered?.props.question.questionId )
+
     return {
       pollId: data.props.pollId,
       questions: questions,
       createdAt: data.props.createdAt,
       expirationDate: data.props.expirationDate,
-      lastQuestionAnswered: lastQuestionAnswered,
+      lastQuestionAnswered: lastQuestion ?? null
     };
   }
 }

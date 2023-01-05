@@ -183,26 +183,7 @@ describe("E2E - AnswerRouter", () => {
     );
 
     await supertest(app)
-      .get("/answer/all")
-      .set("access_key", accessKey)
-      .expect((response) => {
-        const responseBody = response.body;
-        expect(responseBody).toHaveLength(2);
-      })
-      .expect(200);
-  });
-
-  it("should get answer/friend/:id", async () => {
-    accessKey = sign(
-      {
-        id: "9999",
-        schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
-      },
-      "maytheforcebewithyou"
-    );
-
-    await supertest(app)
-      .get("/answer/friend/9999")
+      .get("/answer/all/0f87dd7e1c1d7fef5269f007c7b112a22f610cf7")
       .set("access_key", accessKey)
       .expect((response) => {
         const responseBody = response.body;

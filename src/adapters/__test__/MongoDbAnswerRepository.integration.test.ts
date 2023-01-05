@@ -157,7 +157,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
     });
 
     it("should get all answers", async () => {
-        const result = await mongoDbAnswerRepository.getAllBySchoolId();
+        const result = await mongoDbAnswerRepository.getAllBySchoolId(answer.props.response.schoolId, answer.props.userId);
         expect(result).toHaveLength(4)
     })
 
@@ -186,7 +186,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
     });
 
     it("should get the last question answered", async () => {
-        const result = await mongoDbAnswerRepository.getLastQuestionAnswered(answer.props.pollId, answer.props.response.userId)
-        expect(result.props.questionId).toEqual("1111")
+        const result = await mongoDbAnswerRepository.getLastQuestionAnswered(answer.props.pollId, answer.props.userId)
+        expect(result.props.question.questionId).toEqual("3333")
     })
 });
