@@ -4,6 +4,7 @@ import { IdGateway } from "../../gateways/IdGateway";
 import { AnswerRepository } from "../../repositories/AnswerRepository";
 import { UserRepository } from "../../repositories/UserRepository";
 import { QuestionRepository } from "../../repositories/QuestionRepository";
+import { User } from "../../Entities/User";
 
 export type AnswerToQuestionInput = {
   questionId: string;
@@ -23,8 +24,11 @@ export class AnswerToQuestion
   ) {}
 
   async execute(input: AnswerToQuestionInput): Promise<Answer> {
-    const user = await this.userRepository.getById(input.friendId);
-    
+    let user: User = null
+    if(input.friendId) {
+      user = await this.userRepository.getById(input.friendId);
+    }
+
     const question = await this.questionRepository.getById(
       input.questionId
     );
@@ -40,7 +44,7 @@ export class AnswerToQuestion
         picture: question.props.picture,
         questionId: question.props.questionId,
       },
-      response: {
+      response: user === null ? null : {
         firstName: user.props.firstName,
         gender: user.props.gender,
         lastName: user.props.lastName,

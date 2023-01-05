@@ -13,32 +13,38 @@ const questionDb = new Map<string, Question>();
 const userDb = new Map<string, User>();
 
 describe("Unit - AnswerToQuestion", () => {
-    it("should create an Answer", async () => {
+    let answerToQuestion: AnswerToQuestion;
+    let poll: Poll
+    let question: Question;
+    let user: User;
+    let user2: User;
+
+    beforeAll(() => {
         const inMemoryQuestionRepository = new InMemoryQuestionRepository(questionDb);
         const idGateway = new UuidGateway();
         const inMemoryAnswerRepository = new InMemoryAnswerRepository(db);
         const inMemoryUserRepository = new InMemoryUserRepository(userDb);
-        const answerToQuestion = new AnswerToQuestion(
+        answerToQuestion = new AnswerToQuestion(
             inMemoryAnswerRepository,
             inMemoryUserRepository,
             inMemoryQuestionRepository,
             idGateway
         );
 
-        const question = Question.create({
+         question = Question.create({
             questionId: "9999",
             description: "yes",
             picture: "http://yes"
         });
         questionDb.set(question.props.questionId, question);
 
-        const poll = new Poll({
+         poll = new Poll({
             createdAt: new Date(),
             expirationDate: null,
             pollId: "1234",
         })
 
-        const user = new User({
+         user = new User({
             email: "user@example.com",
             id: "123456",
             password: "password",
@@ -55,7 +61,7 @@ describe("Unit - AnswerToQuestion", () => {
         });
         userDb.set(user.props.id, user);
 
-        const user2 = new User({
+         user2 = new User({
             email: "user@example.com",
             id: "123456",
             password: "password",
@@ -71,7 +77,9 @@ describe("Unit - AnswerToQuestion", () => {
             recoveryCode: null
         });
         userDb.set(user2.props.id, user2);
+    })
 
+    it("should create an Answer", async () => {
         const result = await answerToQuestion.execute({
             pollId: poll.props.pollId,
             questionId: question.props.questionId,
@@ -81,5 +89,15 @@ describe("Unit - AnswerToQuestion", () => {
 
         expect(result.props.answerId).toBeTruthy();
         expect(result.props.question.questionId).toEqual("9999");
+    })
+
+    it("should add an empty answer", async () => {
+        const result = await answerToQuestion.execute({
+            pollId: "12",
+            questionId: question.props.questionId,
+            userId: user.props.id,
+            friendId: null
+        })
+        expect(result.props.response).toBeFalsy()
     })
 })
