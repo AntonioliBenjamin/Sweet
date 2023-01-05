@@ -1,10 +1,9 @@
-import mongoose from "mongoose";
-import {v4} from "uuid";
 import {Answer} from "../../core/Entities/Answer";
 import {Gender} from "../../core/Entities/User";
 import {AnswerModel} from "../repositories/mongoDb/models/answer";
 import {MongoDbAnswerRepository} from "../repositories/mongoDb/repositories/MongoDbAnswerRepository";
 import {AnswerErrors} from "../../core/errors/AnswerErrors";
+import {connectDB, dropCollections, dropDB} from "./setupTestDb";
 
 describe("Integration - MongoDbAnswerRepository", () => {
     let mongoDbAnswerRepository: MongoDbAnswerRepository;
@@ -14,14 +13,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
     let answer4: Answer;
 
     beforeAll(async () => {
-        const databaseId = v4();
-        mongoose.set('strictQuery', true);
-        mongoose.connect(`mongodb://127.0.0.1:27017/${databaseId}`, (err) => {
-            if (err) {
-                throw err;
-            }
-            console.info("Connected to mongodb");
-        });
+        await connectDB();
 
         mongoDbAnswerRepository = new MongoDbAnswerRepository();
 
@@ -122,12 +114,11 @@ describe("Integration - MongoDbAnswerRepository", () => {
     });
 
     afterEach(async () => {
-        await AnswerModel.collection.drop();
+        await dropCollections();
     });
 
     afterAll(async () => {
-        await mongoose.connection.dropDatabase();
-        await mongoose.connection.close();
+        await dropDB();
     });
 
     it("should save answer", async () => {

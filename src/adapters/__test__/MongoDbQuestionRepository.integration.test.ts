@@ -1,10 +1,8 @@
-import mongoose from "mongoose";
-import { v4 } from "uuid";
 import { MongoDbQuestionRepository } from "../repositories/mongoDb/repositories/MongoDbQuestionRepository";
 import { Question } from "../../core/Entities/Question";
-import { QuestionModel } from "../repositories/mongoDb/models/question";
 import { questionMongoFixtures } from "../../core/fixtures/questionMongoFixtures";
 import { QuestionErrors } from "../../core/errors/QuestionErrors";
+import {connectDB, dropCollections, dropDB} from "./setupTestDb";
 
 describe("Integration - MongoDbQuestionRepository", () => {
   let mongoDbQuestionRepository: MongoDbQuestionRepository;
@@ -15,14 +13,7 @@ describe("Integration - MongoDbQuestionRepository", () => {
   beforeAll(async () => {
     mongoDbQuestionRepository = new MongoDbQuestionRepository();
 
-    const databaseId = v4();
-    mongoose.set("strictQuery", false);
-    mongoose.connect(`mongodb://127.0.0.1:27017/${databaseId}`, (err) => {
-      if (err) {
-        throw err;
-      }
-      console.info("Connected to mongodb");
-    });
+    await connectDB();
 
     question = Question.create({
       questionId: "1234",
@@ -42,12 +33,11 @@ describe("Integration - MongoDbQuestionRepository", () => {
   });
 
   afterEach(async () => {
-    await QuestionModel.collection.drop();
+    await dropCollections();
   });
 
   afterAll(async () => {
-    await mongoose.connection.dropDatabase();
-    await mongoose.connection.close();
+    await dropDB();
   });
 
   it("Should save a question", () => {

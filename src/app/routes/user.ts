@@ -16,17 +16,16 @@ import {SignIn} from "../../core/usecases/user/SignIn";
 import {UpdateUser} from "../../core/Usecases/user/UpdateUser";
 import {DeleteUser} from "../../core/Usecases/user/DeleteUser";
 import {MongoDbUserRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
-import {SignInSchema} from "../commands/user/SignInSchema";
-import {RecoverySchema} from "../commands/user/RecoverySchema";
-import {ResetPasswordSchema} from "../commands/user/ResetPasswordSchema";
-import {UpdateUserSchema} from "../commands/user/UpdateUserSchema";
 import {MongoDbFollowRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
 import {MongoDbAnswerRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbAnswerRepository";
 import {EmailExist} from "../../core/usecases/user/EmailExist";
-import {EmailExistSchema} from "../commands/user/EmailExistSchema";
 import {UpdatePushToken} from "../../core/usecases/user/UpdatePushToken";
 import {SignUpCommands} from "../commands/user/SignUpCommands";
-import {transformAndValidate} from "class-transformer-validator";
+import {SignInCommands} from "../commands/user/SignInCommands";
+import {UpdateUserCommands} from "../commands/user/UpdateUserCommands";
+import {RecoveryCommands} from "../commands/user/RecoveryCommands";
+import {ResetPasswordCommands} from "../commands/user/ResetPasswordCommands";
+import {EmailExistCommands} from "../commands/user/EmailExistCommands";
 
 const mailService = new MailService();
 const emailSender = process.env.RECOVERY_EMAIL_SENDER;
@@ -55,7 +54,7 @@ mailService.setApiKey(process.env.SENDGRID_API_KEY);
 userRouter.post("/", async (req, res) => {
     try {
 
-        const body = {
+        const body = await SignUpCommands.setProperties({
             userName: req.body.userName,
             email: req.body.email,
             password: req.body.password,
@@ -65,8 +64,7 @@ userRouter.post("/", async (req, res) => {
             schoolId: req.body.schoolId,
             section: req.body.section,
             gender: req.body.gender,
-        }
-       // await transformAndValidate(SignUpCommands, body);
+        });
 
         const user = await signUp.execute(body);
 
@@ -84,22 +82,20 @@ userRouter.post("/", async (req, res) => {
             accessKey,
         });
     } catch (err) {
-        console.error(err[0].constraints);
+        console.error(err);
 
-        return res.status(400).send(err[0].constraints);
+        return res.status(400).send(err);
     }
 });
 
 userRouter.post("/sign-in", async (req, res) => {
     try {
-        const body = {
+        const body = await SignInCommands.setProperties({
             email: req.body.email.toLowerCase().trim(),
             password: req.body.password,
-        };
+        });
 
-        const values = await SignInSchema.validateAsync(body);
-
-        const user = await signIn.execute(values);
+        const user = await signIn.execute(body);
 
         const accessKey = jwt.sign(
             {
@@ -125,13 +121,11 @@ userRouter.post("/sign-in", async (req, res) => {
 
 userRouter.post("/password/recovery", async (req, res) => {
     try {
-        const body = {
+        const body = await RecoveryCommands.setProperties({
             email: req.body.email.toLowerCase().trim(),
-        };
+        });
 
-        const values = await RecoverySchema.validateAsync(body);
-
-        const user = await updateRecoveryCode.execute(values);
+        const user = await updateRecoveryCode.execute(body);
 
         const token = jwt.sign(
             {
@@ -160,18 +154,16 @@ userRouter.post("/password/recovery", async (req, res) => {
 
 userRouter.post("/password/reset", async (req, res) => {
     try {
-        const body = {
+        const body = await ResetPasswordCommands.setProperties({
             password: req.body.password,
             token: req.body.token,
-        };
+        });
 
-        const values = await ResetPasswordSchema.validateAsync(body);
-
-        const decodedJwt = jwt.verify(values.token, secretKey) as any;
+        const decodedJwt = jwt.verify(body.token, secretKey) as any;
 
         await resetPassword.execute({
             recoveryCode: decodedJwt.recoveryCode,
-            password: values.password,
+            password: body.password,
             id: decodedJwt.id,
         });
 
@@ -187,11 +179,11 @@ userRouter.post("/password/reset", async (req, res) => {
 
 userRouter.post("/exist", async (req, res) => {
     try {
-        const body = {
+        const body = await EmailExistCommands.setProperties({
             email: req.body.email.toLowerCase().trim(),
-        };
-        const values = await EmailExistSchema.validateAsync(body);
-        const exist = await emailExist.execute(values.email);
+        });
+
+        const exist = await emailExist.execute(body.email);
 
         return res.send({
             exists: exist,
@@ -209,25 +201,23 @@ userRouter.use(authorization);
 
 userRouter.patch("/", async (req: AuthentifiedRequest, res) => {
     try {
-        const body = {
+        const body = await UpdateUserCommands.setProperties({
             userName: req.body.userName.trim(),
             firstName: req.body.firstName,
             lastName: req.body.lastName,
-            gender: req.body.gender,
             section: req.body.section,
+            gender: req.body.gender,
             schoolId: req.body.schoolId
-        };
-
-        const values = await UpdateUserSchema.validateAsync(body);
+        });
 
         const updatedUser = await updateUser.execute({
-            userName: values.userName,
-            gender: values.gender,
-            firstName: values.firstName,
-            lastName: values.lastName,
-            section: values.section,
+            userName: body.userName,
+            firstName: body.firstName,
+            lastName: body.lastName,
+            section: body.section,
+            schoolId: body.schoolId,
+            gender: body.gender,
             id: req.user.id,
-            schoolId: values.schoolId
         });
 
         return res.status(200).send(userApiUserMapper.fromDomain(updatedUser));

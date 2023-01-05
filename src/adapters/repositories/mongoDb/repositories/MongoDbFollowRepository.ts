@@ -2,6 +2,7 @@ import {Followed} from "../../../../core/Entities/Followed";
 import {FollowedRepository} from "../../../../core/repositories/FollowedRepository";
 import {MongoDbFollowMapper} from "../mappers/MongoDbFollowMapper";
 import {FollowModel} from "../models/follow";
+import {DeleteFollowProperties} from "../../../../core/usecases/follow/UnfollowUser";
 
 const followMapper = new MongoDbFollowMapper();
 
@@ -44,8 +45,11 @@ export class MongoDbFollowRepository implements FollowedRepository {
         return followMapper.toDomain(follow);
     }
 
-    async delete(FollowId: string): Promise<void> {
-        await FollowModel.deleteOne({id: FollowId});
+    async delete(userId : string, addedBy : string): Promise<void> {
+        await FollowModel.deleteOne({
+            userId: userId,
+            addedBy :addedBy
+        });
         return;
     }
 

@@ -3,6 +3,7 @@ import {PollRepository} from "../../repositories/PollRepository";
 
 export type DeletePollInput = {
     pollId: string;
+
 };
 
 export class DeletePoll implements UseCase<DeletePollInput, void> {

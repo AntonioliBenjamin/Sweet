@@ -5,7 +5,6 @@ import {MongoDbUserRepository} from "../../adapters/repositories/mongoDb/reposit
 import {FollowUser} from "../../core/usecases/follow/FollowUser";
 import {GetMyFollows} from "../../core/usecases/follow/GetMyFollows";
 import {UnfollowUser} from "../../core/usecases/follow/UnfollowUser";
-import {commandsValidation} from "../commands/CommandsValidation";
 import {AddFollowCommands} from "../commands/follow/AddFollowCommands";
 import {UserApiUserMapper} from "../dtos/UserApiUserMapper";
 import {authorization} from "../middlewares/JwtAuthorizationMiddleware";
@@ -55,18 +54,14 @@ followRouter.get("/", async (req: AuthentifiedRequest, res) => {
     }
 });
 
-followRouter.delete("/:followId", async (req, res) => {
-    try {
-        await unfollowUser.execute(req.params.followId);
+followRouter.delete("/:friendId", async (req: AuthentifiedRequest, res) => {
 
-        return res.sendStatus(200);
-    } catch (err) {
-        console.error(err);
+    await unfollowUser.execute({
+        userId: req.params.friendId,
+        addedBy: req.user.id
+    });
 
-        return res.status(400).send({
-            message: "An error occurred",
-        });
-    }
+    return res.sendStatus(200);
 });
 
 export {followRouter};

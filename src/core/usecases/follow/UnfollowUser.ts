@@ -1,19 +1,19 @@
-import {FollowErrors} from "../../errors/FollowErrors";
+
 import {FollowedRepository} from "../../repositories/FollowedRepository";
 import {UseCase} from "../Usecase";
 
-export class UnfollowUser implements UseCase<string, Promise<void>> {
+export type DeleteFollowProperties = {
+    addedBy: string
+    userId: string
+}
+
+export class UnfollowUser implements UseCase<DeleteFollowProperties, Promise<void>> {
     constructor(
         private readonly followedRepository: FollowedRepository
     ) {
     }
 
-    async execute(id: string): Promise<void> {
-        const followed = await this.followedRepository.getById(id);
-        if (!followed) {
-            throw new FollowErrors.NotFound();
-        }
-
-        return await this.followedRepository.delete(followed.props.id);
+    async execute(input: DeleteFollowProperties): Promise<void> {
+        return await this.followedRepository.delete( input.userId, input.addedBy);
     }
 }

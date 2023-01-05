@@ -1,6 +1,5 @@
 import {Gender} from "../../../core/Entities/User";
-import {IsEmail, IsEnum, IsInt, IsString,Min} from "class-validator";
-import {plainToClass} from "class-transformer"
+import {IsEmail, IsEnum, IsInt, IsOptional, IsString, Min, validateOrReject} from "class-validator";
 
 export class SignUpCommands {
     @IsString()
@@ -26,12 +25,24 @@ export class SignUpCommands {
     schoolId: string;
 
     @IsString()
+    @IsOptional()
     section: string;
 
     @IsEnum(Gender)
     gender: Gender;
 
-    static setProperties(cmd: SignUpCommands):  SignUpCommands {
-        return plainToClass( SignUpCommands, cmd, { excludeExtraneousValues: true });
+    static async setProperties(body: SignUpCommands) {
+        const signUpCommands = new SignUpCommands();
+        signUpCommands.userName = body.userName;
+        signUpCommands.firstName = body.firstName;
+        signUpCommands.lastName = body.lastName;
+        signUpCommands.email = body.email;
+        signUpCommands.password = body.password;
+        signUpCommands.age = body.age;
+        signUpCommands.schoolId = body.schoolId;
+        signUpCommands.section = body.section;
+        signUpCommands.gender = body.gender;
+        await validateOrReject(signUpCommands);
+        return signUpCommands;
     }
 }
