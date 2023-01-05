@@ -88,112 +88,82 @@ userRouter.post("/", async (req, res) => {
 });
 
 userRouter.post("/sign-in", async (req, res) => {
-    try {
-        const body = await SignInCommands.setProperties({
-            email: req.body.email.toLowerCase().trim(),
-            password: req.body.password,
-        });
+    const body = await SignInCommands.setProperties({
+        email: req.body.email.toLowerCase().trim(),
+        password: req.body.password,
+    });
 
-        const user = await signIn.execute(body);
+    const user = await signIn.execute(body);
 
-        const accessKey = jwt.sign(
-            {
-                id: user.props.id,
-                schoolId: user.props.schoolId,
-                email: user.props.email,
-            },
-            secretKey
-        );
+    const accessKey = jwt.sign(
+        {
+            id: user.props.id,
+            schoolId: user.props.schoolId,
+            email: user.props.email,
+        },
+        secretKey
+    );
 
-        return res.status(200).send({
-            ...userApiUserMapper.fromDomain(user),
-            accessKey,
-        });
-    } catch (err) {
-        console.error(err);
-
-        return res.status(400).send({
-            message: "An error occurred",
-        });
-    }
+    return res.status(200).send({
+        ...userApiUserMapper.fromDomain(user),
+        accessKey,
+    });
 });
 
 userRouter.post("/password/recovery", async (req, res) => {
-    try {
-        const body = await RecoveryCommands.setProperties({
-            email: req.body.email.toLowerCase().trim(),
-        });
 
-        const user = await updateRecoveryCode.execute(body);
+    const body = await RecoveryCommands.setProperties({
+        email: req.body.email.toLowerCase().trim(),
+    });
 
-        const token = jwt.sign(
-            {
-                id: user.props.id,
-                recoveryCode: user.props.recoveryCode,
-            },
-            secretKey,
-            {expiresIn: "1h"}
-        );
+    const user = await updateRecoveryCode.execute(body);
 
-        await sendGridGateway.sendRecoveryCode({
-            email: user.props.email,
-            resetLink: `http://localhost:3005/views/reset?trustedKey=${token}`,
-            userName: user.props.userName,
-        });
+    const token = jwt.sign(
+        {
+            id: user.props.id,
+            recoveryCode: user.props.recoveryCode,
+        },
+        secretKey,
+        {expiresIn: "1h"}
+    );
 
-        return res.sendStatus(200);
-    } catch (err) {
-        console.error(err);
+    await sendGridGateway.sendRecoveryCode({
+        email: user.props.email,
+        resetLink: `http://localhost:3005/views/reset?trustedKey=${token}`,
+        userName: user.props.userName,
+    });
 
-        return res.status(400).send({
-            message: "An error occurred",
-        });
-    }
+    return res.sendStatus(200);
 });
 
 userRouter.post("/password/reset", async (req, res) => {
-    try {
-        const body = await ResetPasswordCommands.setProperties({
-            password: req.body.password,
-            token: req.body.token,
-        });
 
-        const decodedJwt = jwt.verify(body.token, secretKey) as any;
+    const body = await ResetPasswordCommands.setProperties({
+        password: req.body.password,
+        token: req.body.token,
+    });
 
-        await resetPassword.execute({
-            recoveryCode: decodedJwt.recoveryCode,
-            password: body.password,
-            id: decodedJwt.id,
-        });
+    const decodedJwt = jwt.verify(body.token, secretKey) as any;
 
-        return res.sendStatus(200);
-    } catch (err) {
-        console.error(err);
+    await resetPassword.execute({
+        recoveryCode: decodedJwt.recoveryCode,
+        password: body.password,
+        id: decodedJwt.id,
+    });
 
-        return res.status(400).send({
-            message: "An error occurred",
-        });
-    }
+    return res.sendStatus(200);
 });
 
 userRouter.post("/exist", async (req, res) => {
-    try {
-        const body = await EmailExistCommands.setProperties({
-            email: req.body.email.toLowerCase().trim(),
-        });
+    const body = await EmailExistCommands.setProperties({
+        email: req.body.email.toLowerCase().trim(),
+    });
 
-        const exist = await emailExist.execute(body.email);
+    const exist = await emailExist.execute(body.email);
 
-        return res.send({
-            exists: exist,
-        });
-    } catch (err) {
-        console.error(err);
-
-        return res.status(400).send({
-            message: "An error occurred",
-        });
-    }
+    return res.send({
+        exists: exist,
+    });
 });
 
 userRouter.use(authorization);
@@ -213,108 +183,68 @@ userRouter.post("/send-feedback", async (req: AuthentifiedRequest, res) => {
 })
 
 userRouter.patch("/", async (req: AuthentifiedRequest, res) => {
-    try {
-        const body = await UpdateUserCommands.setProperties({
-            userName: req.body.userName.trim(),
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            section: req.body.section,
-            gender: req.body.gender,
-            schoolId: req.body.schoolId
-        });
+    const body = await UpdateUserCommands.setProperties({
+        userName: req.body.userName.trim(),
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        section: req.body.section,
+        gender: req.body.gender,
+        schoolId: req.body.schoolId
+    });
 
-        const updatedUser = await updateUser.execute({
-            userName: body.userName,
-            firstName: body.firstName,
-            lastName: body.lastName,
-            section: body.section,
-            schoolId: body.schoolId,
-            gender: body.gender,
-            id: req.user.id,
-        });
+    const updatedUser = await updateUser.execute({
+        userName: body.userName,
+        firstName: body.firstName,
+        lastName: body.lastName,
+        section: body.section,
+        schoolId: body.schoolId,
+        gender: body.gender,
+        id: req.user.id,
+    });
 
-        return res.status(200).send(userApiUserMapper.fromDomain(updatedUser));
-    } catch (err) {
-        console.error(err);
-
-        return res.status(400).send({
-            message: "An error occurred",
-        });
-    }
+    return res.status(200).send(userApiUserMapper.fromDomain(updatedUser));
 });
 
 userRouter.patch("/push-token", async (req: AuthentifiedRequest, res) => {
-    try {
-        const body = {
-            userId: req.user.id,
-            pushToken: req.body.pushToken
-        }
 
-        const user = await updatePushtoken.execute(body)
-
-        return res.send(userApiUserMapper.fromDomain(user))
-    } catch (err) {
-        console.error(err);
-
-        return res.status(400).send({
-            message: "An error occurred",
-        });
+    const body = {
+        userId: req.user.id,
+        pushToken: req.body.pushToken
     }
+
+    const user = await updatePushtoken.execute(body)
+
+    return res.send(userApiUserMapper.fromDomain(user))
 })
 
 userRouter.get("/all/:schoolId", async (req: AuthentifiedRequest, res) => {
-    try {
-        const users = await getAllMyPotentialFriends.execute(req.params.schoolId);
+    const users = await getAllMyPotentialFriends.execute(req.params.schoolId);
 
-        const userApiResponse = users.map((elm) =>
-            userApiUserMapper.fromDomain(elm)
-        );
+    const userApiResponse = users.map((elm) =>
+        userApiUserMapper.fromDomain(elm)
+    );
 
-        const ArrayWithoutCurrentUser = userApiResponse.filter(
-            (elm) => elm.id !== req.user.id
-        );
+    const ArrayWithoutCurrentUser = userApiResponse.filter(
+        (elm) => elm.id !== req.user.id
+    );
 
-        return res.status(200).send(ArrayWithoutCurrentUser);
-    } catch (err) {
-        console.error(err);
-
-        return res.status(400).send({
-            message: "An error occurred",
-        });
-    }
+    return res.status(200).send(ArrayWithoutCurrentUser);
 });
 
 userRouter.delete("/", async (req: AuthentifiedRequest, res) => {
-    try {
-        await deleteUser.execute({
-            userId: req.user.id,
-        });
+    await deleteUser.execute({
+        userId: req.user.id,
+    });
 
-        return res.sendStatus(200);
-    } catch (err) {
-        console.error(err);
-
-        return res.status(400).send({
-            message: "An error occurred",
-        });
-    }
+    return res.sendStatus(200);
 });
 
 userRouter.get("/:userId", async (req: AuthentifiedRequest, res) => {
-    try {
-        const user = await getUserById.execute({
-            userId: req.params.userId,
-        });
+    const user = await getUserById.execute({
+        userId: req.params.userId,
+    });
 
-        return res.status(200).send(userApiUserMapper.fromDomain(user));
-
-    } catch (err) {
-        console.error(err);
-
-        return res.status(400).send({
-            message: "An error occurred",
-        });
-    }
+    return res.status(200).send(userApiUserMapper.fromDomain(user));
 });
 
 export {userRouter};

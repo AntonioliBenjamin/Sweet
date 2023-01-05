@@ -4,9 +4,9 @@ import {AuthentifiedRequest} from "../types/AuthentifiedRequest";
 import {MongoDbPollRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbPollRepository";
 import {GetAllPolls} from "../../core/usecases/poll/GetAllPolls";
 import {GetCurrentPoll} from "../../core/usecases/poll/GetCurrentPoll";
-import { MongoDbAnswerRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbAnswerRepository";
-import { PollApiMapper } from "../dtos/PollApiMapper";
-import { GetLastQuestionAnswered } from "../../core/usecases/answer/GetLastQuestionAnswered";
+import {MongoDbAnswerRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbAnswerRepository";
+import {PollApiMapper} from "../dtos/PollApiMapper";
+import {GetLastQuestionAnswered} from "../../core/usecases/answer/GetLastQuestionAnswered";
 
 const pollRouter = express.Router();
 const mongoDbPollRepository = new MongoDbPollRepository();
@@ -33,24 +33,16 @@ pollRouter.get("/all", async (req: AuthentifiedRequest, res) => {
 })
 
 pollRouter.get("/current", async (req: AuthentifiedRequest, res) => {
-    try {
-        const currentPoll = await getCurrentPoll.execute();
-        
-        const lastAnswer = await lastQuestionAnswered.execute({
-            pollId: currentPoll.props.pollId,
-            userId: req.user.id
-        })
+    const currentPoll = await getCurrentPoll.execute();
 
-        const pollApiResponse = pollApimapper.fromDomain(currentPoll, lastAnswer)
+    const lastAnswer = await lastQuestionAnswered.execute({
+        pollId: currentPoll.props.pollId,
+        userId: req.user.id
+    })
 
-        return res.status(200).send(pollApiResponse);
+    const pollApiResponse = pollApimapper.fromDomain(currentPoll, lastAnswer)
 
-    } catch (err) {
-        console.error(err)
-        return res.status(400).send({
-            message: "An error occurred"
-        })
-    }
+    return res.status(200).send(pollApiResponse);
 })
 
 export {pollRouter};

@@ -1,26 +1,27 @@
 import express from "express";
-import { V4IdGateway } from "../../adapters/gateways/V4IdGateway";
-import { MongoDbAnswerRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbAnswerRepository";
-import { MongoDbQuestionRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbQuestionRepository";
-import { MongoDbUserRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
-import { AnswerToQuestion } from "../../core/usecases/answer/AnswerToQuestion";
-import { DeleteAnswer } from "../../core/usecases/answer/DeleteAnswer";
-import { GetAllAnswers } from "../../core/usecases/answer/GetAllAnswers";
-import { GetMyAnswers } from "../../core/usecases/answer/GetMyAnswers";
-import { authorization } from "../middlewares/JwtAuthorizationMiddleware";
-import { AuthentifiedRequest } from "../types/AuthentifiedRequest";
-import { AnswerMarkAsRead } from "../../core/usecases/answer/AnswerMarkAsRead";
-import { AnswerToQuestionCommands } from "../commands/answer/AnswerToQuestionCommands";
+import {V4IdGateway} from "../../adapters/gateways/V4IdGateway";
+import {MongoDbAnswerRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbAnswerRepository";
+import {MongoDbQuestionRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbQuestionRepository";
+import {MongoDbUserRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
+import {AnswerToQuestion} from "../../core/usecases/answer/AnswerToQuestion";
+import {DeleteAnswer} from "../../core/usecases/answer/DeleteAnswer";
+import {GetAllAnswers} from "../../core/usecases/answer/GetAllAnswers";
+import {GetMyAnswers} from "../../core/usecases/answer/GetMyAnswers";
+import {authorization} from "../middlewares/JwtAuthorizationMiddleware";
+import {AuthentifiedRequest} from "../types/AuthentifiedRequest";
+import {AnswerMarkAsRead} from "../../core/usecases/answer/AnswerMarkAsRead";
+import {AnswerToQuestionCommands} from "../commands/answer/AnswerToQuestionCommands";
+
 const answerRouter = express.Router();
 const mongoDbQuestionRepository = new MongoDbQuestionRepository();
 const mongoDbUserRepository = new MongoDbUserRepository();
 const v4IdGateway = new V4IdGateway();
 const mongoDbAnswerRepository = new MongoDbAnswerRepository();
 const answerToQuestion = new AnswerToQuestion(
-  mongoDbAnswerRepository,
-  mongoDbUserRepository,
-  mongoDbQuestionRepository,
-  v4IdGateway
+    mongoDbAnswerRepository,
+    mongoDbUserRepository,
+    mongoDbQuestionRepository,
+    v4IdGateway
 );
 const getAllAnswers = new GetAllAnswers(mongoDbAnswerRepository);
 const getMyAnswers = new GetMyAnswers(mongoDbAnswerRepository);
@@ -30,83 +31,43 @@ const answerMarkAsRead = new AnswerMarkAsRead(mongoDbAnswerRepository);
 answerRouter.use(authorization);
 
 answerRouter.post("/", async (req: AuthentifiedRequest, res) => {
-  try {
     const body = await AnswerToQuestionCommands.setProperties({
-      questionId: req.body.questionId,
-      friendId: req.body.friendId,
-      userId: req.user.id,
-      pollId: req.body.pollId,
+        questionId: req.body.questionId,
+        friendId: req.body.friendId,
+        userId: req.user.id,
+        pollId: req.body.pollId,
     });
 
     const answer = await answerToQuestion.execute(body);
 
     return res.status(201).send(answer.props);
-  } catch (err) {
-    console.error(err);
-
-    return res.status(400).send({
-      message: "An error occurred",
-    });
-  }
 });
 
 answerRouter.get("/all/:schoolId", async (req: AuthentifiedRequest, res) => {
-  try {
     const answers = await getAllAnswers.execute({
-      schoolId: req.params.schoolId,
-      userId: req.user.id,
+        schoolId: req.params.schoolId,
+        userId: req.user.id,
     });
 
     return res.status(200).send(answers);
-  } catch (err) {
-    console.error(err);
-
-    return res.status(400).send({
-      message: "An error occurred",
-    });
-  }
 });
 
 answerRouter.get("/mine", async (req: AuthentifiedRequest, res) => {
-  try {
     const friendAnswers = await getMyAnswers.execute(req.user.id);
 
     return res.status(200).send(friendAnswers);
-  } catch (err) {
-    console.error(err);
-
-    return res.status(400).send({
-      message: "An error occurred",
-    });
-  }
 });
 
 answerRouter.delete("/:answerId", async (req, res) => {
-  try {
     await deleteAnswer.execute(req.params.answerId);
 
     return res.sendStatus(200);
-  } catch (err) {
-    console.error(err);
-
-    return res.status(400).send({
-      message: "An error occurred",
-    });
-  }
 });
 
 answerRouter.patch("/:answerId", async (req, res) => {
-  try {
     await answerMarkAsRead.execute(req.params.answerId);
 
     return res.sendStatus(200);
-  } catch (err) {
-    console.error(err);
-
-    return res.status(400).send({
-      message: "An error occurred",
-    });
-  }
 });
 
-export { answerRouter };
+export {answerRouter};

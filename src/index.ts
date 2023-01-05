@@ -35,6 +35,10 @@ app.use(morgan('combined'));
 
 app.use(express.json());
 
+app.get('/status', (req, res) => {
+    throw new Error('Not implemented')
+})
+
 app.use("/user", userRouter);
 
 app.use("/school", schoolRouter);
@@ -53,11 +57,10 @@ app.use((err, req, res, next) => {
     if (res.headersSent) {
         return next(err)
     }
-    res.status(500).send('INTERNAL SERVER ERROR !')
+    res.status(400).send(err)
 });
 
 createPollTimer.start();
-
 
 app.listen(port, () => {
     console.log(`listening on port ${port}`);
