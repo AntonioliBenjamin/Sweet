@@ -31,7 +31,7 @@ export class SendGridGateway implements EmailGateway {
         await this.mailService.send({
             templateId: "d-f6e42c62ae494789965870a9af270a2e",
             from: {email: this.emailSender, name: "Sweet Dev"},
-            to: payload.email,
+            to: this.emailSender,
             dynamicTemplateData: {
                 message: payload.message,
             },

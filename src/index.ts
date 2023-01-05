@@ -11,7 +11,6 @@ import morgan from "morgan";
 import * as path from "path";
 import {friendsRouter} from "./app/routes/friends";
 import {createPollTimer} from "./app/jobs";
-import errorhandler from 'errorhandler';
 
 const port = +process.env.PORT;
 
@@ -50,9 +49,15 @@ app.use("/answer", answerRouter);
 
 app.use("/friends", friendsRouter);
 
+app.use((err, req, res, next) => {
+    if (res.headersSent) {
+        return next(err)
+    }
+    res.status(500).send('INTERNAL SERVER ERROR !')
+});
+
 createPollTimer.start();
 
-app.use(errorhandler())
 
 app.listen(port, () => {
     console.log(`listening on port ${port}`);

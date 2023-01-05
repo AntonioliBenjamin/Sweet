@@ -1,18 +1,18 @@
 import { EmailGateway } from "../../gateways/EmailGateway";
 import { UseCase } from "../Usecase";
 
-export type sendFeedbackInput = {
+export type SendFeedbackInput = {
     message: string;
     email: string;
 }
 
-export class sendFeedback implements UseCase<sendFeedbackInput, void> {
+export class SendFeedback implements UseCase<SendFeedbackInput, void> {
     constructor(
         private readonly emailGateway: EmailGateway,
     ) {}
 
-    execute(input: sendFeedbackInput): Promise<void> {
-        this.emailGateway.sendFeedback({
+    async execute(input: SendFeedbackInput): Promise<void> {
+        await this.emailGateway.sendFeedback({
             message: input.message,
             email: input.email
         })

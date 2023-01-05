@@ -27,7 +27,8 @@ import {RecoveryCommands} from "../commands/user/RecoveryCommands";
 import {ResetPasswordCommands} from "../commands/user/ResetPasswordCommands";
 import {EmailExistCommands} from "../commands/user/EmailExistCommands";
 import {GetUserById} from "../../core/usecases/user/GetUserById";
-import { SendFeedbackCommands } from "../commands/user/SendFeedbackCommands";
+import {SendFeedbackCommands} from "../commands/user/SendFeedbackCommands";
+import {SendFeedback} from "../../core/usecases/user/SendFeeback";
 
 const mailService = new MailService();
 const emailSender = process.env.RECOVERY_EMAIL_SENDER;
@@ -52,36 +53,38 @@ const resetPassword = new ResetPassword(mongoDbUserRepository, bcryptGateway);
 const updatePushtoken = new UpdatePushToken(mongoDbUserRepository);
 const userApiUserMapper = new UserApiUserMapper();
 
+const sendFeedBack = new SendFeedback(sendGridGateway)
+
 mailService.setApiKey(process.env.SENDGRID_API_KEY);
 
-userRouter.post("/", async (req, res ) => {
-        const body = await SignUpCommands.setProperties({
-            userName: req.body.userName,
-            email: req.body.email,
-            password: req.body.password,
-            age: req.body.age,
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            schoolId: req.body.schoolId,
-            section: req.body.section,
-            gender: req.body.gender,
-        });
+userRouter.post("/", async (req, res) => {
+    const body = await SignUpCommands.setProperties({
+        userName: req.body.userName,
+        email: req.body.email,
+        password: req.body.password,
+        age: req.body.age,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        schoolId: req.body.schoolId,
+        section: req.body.section,
+        gender: req.body.gender,
+    });
 
-        const user = await signUp.execute(body);
+    const user = await signUp.execute(body);
 
-        const accessKey = jwt.sign(
-            {
-                id: user.props.id,
-                schoolId: user.props.schoolId,
-                email: user.props.email,
-            },
-            secretKey
-        );
+    const accessKey = jwt.sign(
+        {
+            id: user.props.id,
+            schoolId: user.props.schoolId,
+            email: user.props.email,
+        },
+        secretKey
+    );
 
-        return res.status(201).send({
-            ...userApiUserMapper.fromDomain(user),
-            accessKey,
-        });
+    return res.status(201).send({
+        ...userApiUserMapper.fromDomain(user),
+        accessKey,
+    });
 });
 
 userRouter.post("/sign-in", async (req, res) => {
@@ -193,21 +196,21 @@ userRouter.post("/exist", async (req, res) => {
     }
 });
 
-userRouter.post("/send-feedback", async (req, res) => {
+userRouter.use(authorization);
+
+userRouter.post("/send-feedback", async (req: AuthentifiedRequest, res) => {
     const body = await SendFeedbackCommands.setProperties({
-        email: req.body.email,
+        email: req.user.email,
         message: req.body.message
     })
 
-    await sendGridGateway.sendFeedback({
+    await sendFeedBack.execute({
         email: body.email,
         message: body.message
     })
 
     return res.sendStatus(200)
 })
-
-userRouter.use(authorization);
 
 userRouter.patch("/", async (req: AuthentifiedRequest, res) => {
     try {
