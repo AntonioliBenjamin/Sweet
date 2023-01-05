@@ -1,18 +1,16 @@
 import supertest from "supertest";
-import mongoose from "mongoose";
 import "dotenv/config";
-import {v4} from "uuid";
 import {sign} from "jsonwebtoken";
 import express from "express";
 import {friendsRouter} from "../routes/friends";
-import {UserModel} from "../../adapters/repositories/mongoDb/models/user";
 import {Gender, User} from "../../core/Entities/User";
 import {UserRepository} from "../../core/repositories/UserRepository";
 import {MongoDbUserRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
+import {connectDB, dropCollections, dropDB} from "../../adapters/__test__/setupTestDb";
 
 const app = express();
 
-describe("E2E - User Router", () => {
+describe("E2E - Friends Router", () => {
     let accessKey;
     let mongoDbUserRepository: UserRepository;
     let user: User;
@@ -23,19 +21,12 @@ describe("E2E - User Router", () => {
         app.use(express.json());
         app.use("/friends", friendsRouter);
 
-        const databaseId = v4();
-        mongoose.set("strictQuery", false);
-        mongoose.connect(`mongodb://127.0.0.1:27017/${databaseId}`, (err) => {
-            if (err) {
-                throw err;
-            }
-            console.info("Connected to mongodb");
-        });
+        await connectDB();
 
         user = new User({
-            email: "user@example.com",
+            email: "user1@example.com",
             id: "12345",
-            password: "password",
+            password: "password1",
             userName: "mickey",
             age: 15,
             firstName: "mickey",
@@ -48,9 +39,9 @@ describe("E2E - User Router", () => {
         });
 
         user2 = User.create({
-            email: "user@example.com",
+            email: "2@example.com",
             id: "9999",
-            password: "password",
+            password: "password2",
             userName: "mickael",
             age: 15,
             firstName: "mickael",
@@ -61,9 +52,9 @@ describe("E2E - User Router", () => {
         });
 
         user3 = User.create({
-            email: "user@example.com",
+            email: "user3@example.com",
             id: "sdfsdf",
-            password: "password",
+            password: "password3",
             userName: "mini",
             age: 15,
             firstName: "mich",
@@ -83,12 +74,11 @@ describe("E2E - User Router", () => {
     });
 
     afterEach(async () => {
-        await UserModel.collection.drop();
+        await dropCollections();
     });
 
     afterAll(async () => {
-        await mongoose.connection.dropDatabase();
-        await mongoose.connection.close();
+        await dropDB();
     });
 
     it("should get search/:keyword/:schoolId", async () => {
@@ -105,7 +95,6 @@ describe("E2E - User Router", () => {
             .get("/friends/search/mi/456")
             .set("access_key", accessKey)
             .expect((response) => {
-                console.log(response)
                 const responseBody = response.body;
                 expect(responseBody).toHaveLength(2)
             })

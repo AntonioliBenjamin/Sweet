@@ -23,7 +23,7 @@ friendsRouter.get("/search/:keyword/:schoolId?", async (req, res) => {
         console.error(err)
 
         return res.status(400).send({
-            message: "An error occured"
+            message: "An error occurred"
         })
     }
 })

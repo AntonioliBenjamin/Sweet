@@ -1,8 +1,6 @@
 import "dotenv/config";
 import { followRouter } from "../routes/follow";
 import supertest from "supertest";
-import mongoose from "mongoose";
-import { v4 } from "uuid";
 import { sign } from "jsonwebtoken";
 import express from "express";
 import { MongoDbUserRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
@@ -10,9 +8,8 @@ import { Gender, User } from "../../core/Entities/User";
 import { UserRepository } from "../../core/repositories/UserRepository";
 import { FollowedRepository } from "../../core/repositories/FollowedRepository";
 import { MongoDbFollowRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
-import { UserModel } from "../../adapters/repositories/mongoDb/models/user";
-import { FollowModel } from "../../adapters/repositories/mongoDb/models/follow";
 import { Followed } from "../../core/Entities/Followed";
+import {connectDB, dropCollections, dropDB} from "../../adapters/__test__/setupTestDb";
 
 const app = express();
 
@@ -34,14 +31,7 @@ describe("E2E - FollowRouter", () => {
     app.use(express.json());
     app.use("/follow", followRouter);
 
-    const databaseId = v4();
-    mongoose.set("strictQuery", false);
-    mongoose.connect(`mongodb://127.0.0.1:27017/${databaseId}`, (err) => {
-      if (err) {
-        throw err;
-      }
-      console.info("Connected to mongodb");
-    });
+    await connectDB();
 
     user = new User({
       email: "user@example.com",
@@ -117,13 +107,11 @@ describe("E2E - FollowRouter", () => {
   });
 
   afterEach(async () => {
-    await UserModel.collection.drop();
-    await FollowModel.collection.drop();
+    await dropCollections();
   });
 
   afterAll(async () => {
-    await mongoose.connection.dropDatabase();
-    await mongoose.connection.close();
+    await dropDB();
   });
 
   it("should post /follow", async () => {

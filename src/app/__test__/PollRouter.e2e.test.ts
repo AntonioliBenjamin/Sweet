@@ -1,17 +1,14 @@
 import "dotenv/config";
 import supertest from 'supertest';
-import mongoose from 'mongoose';
 import express from "express";
-import {v4} from "uuid";
 import {QuestionRepository} from "../../core/repositories/QuestionRepository";
 import {MongoDbQuestionRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbQuestionRepository";
-import {Question} from "../../core/Entities/Question";
 import {sign} from "jsonwebtoken";
 import {PollRepository} from "../../core/repositories/PollRepository";
 import {Poll} from "../../core/Entities/Poll";
 import {pollRouter} from "../routes/poll";
 import {MongoDbPollRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbPollRepository";
-import {PollModel} from "../../adapters/repositories/mongoDb/models/poll";
+import {connectDB, dropCollections, dropDB} from "../../adapters/__test__/setupTestDb";
 
 const app = express();
 
@@ -28,14 +25,7 @@ describe("E2E - Poll Router", () => {
         app.use(express.json());
         app.use("/poll", pollRouter);
 
-        const databaseId = v4();
-        mongoose.set('strictQuery', false)
-        mongoose.connect(`mongodb://127.0.0.1:27017/${databaseId}`, (err) => {
-            if (err) {
-                throw err;
-            }
-            console.info("Connected to mongodb");
-        });
+        await connectDB();
 
         poll = Poll.create({
             pollId: "5678"
@@ -49,12 +39,11 @@ describe("E2E - Poll Router", () => {
     });
 
     afterEach(async () => {
-        await PollModel.collection.drop();
+        await dropCollections();
     });
 
     afterAll(async () => {
-        await mongoose.connection.dropDatabase();
-        await mongoose.connection.close();
+        await dropDB();
     });
 
     it("Should get/poll/all", async () => {

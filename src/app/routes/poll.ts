@@ -6,7 +6,6 @@ import {GetAllPolls} from "../../core/usecases/poll/GetAllPolls";
 import {GetCurrentPoll} from "../../core/usecases/poll/GetCurrentPoll";
 import { MongoDbAnswerRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbAnswerRepository";
 import { PollApiMapper } from "../dtos/PollApiMapper";
-import { clientErrorHandler } from "../middlewares/errorClientHandler";
 import { GetLastQuestionAnswered } from "../../core/usecases/answer/GetLastQuestionAnswered";
 const pollRouter = express.Router();
 const mongoDbPollRepository = new MongoDbPollRepository();
@@ -52,6 +51,5 @@ pollRouter.get("/current", async (req: AuthentifiedRequest, res) => {
         })
     }
 })
-
 
 export {pollRouter};
