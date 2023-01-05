@@ -26,6 +26,7 @@ import {UpdateUserCommands} from "../commands/user/UpdateUserCommands";
 import {RecoveryCommands} from "../commands/user/RecoveryCommands";
 import {ResetPasswordCommands} from "../commands/user/ResetPasswordCommands";
 import {EmailExistCommands} from "../commands/user/EmailExistCommands";
+import { SendFeedbackCommands } from "../commands/user/SendFeedbackCommands";
 
 const mailService = new MailService();
 const emailSender = process.env.RECOVERY_EMAIL_SENDER;
@@ -51,8 +52,8 @@ const userApiUserMapper = new UserApiUserMapper();
 
 mailService.setApiKey(process.env.SENDGRID_API_KEY);
 
-userRouter.post("/", async (req, res) => {
-    try {
+userRouter.post("/",  async (req, res) => {
+  
 
         const body = await SignUpCommands.setProperties({
             userName: req.body.userName,
@@ -81,11 +82,6 @@ userRouter.post("/", async (req, res) => {
             ...userApiUserMapper.fromDomain(user),
             accessKey,
         });
-    } catch (err) {
-        console.error(err);
-
-        return res.status(400).send(err);
-    }
 });
 
 userRouter.post("/sign-in", async (req, res) => {
@@ -196,6 +192,20 @@ userRouter.post("/exist", async (req, res) => {
         });
     }
 });
+
+userRouter.post("/send-feedback", async (req, res) => {
+    const body = await SendFeedbackCommands.setProperties({
+        email: req.body.email,
+        message: req.body.message
+    })
+
+    await sendGridGateway.sendFeedback({
+        email: body.email,
+        message: body.message
+    })
+
+    return res.sendStatus(200)
+})
 
 userRouter.use(authorization);
 

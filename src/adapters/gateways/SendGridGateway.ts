@@ -23,4 +23,18 @@ export class SendGridGateway implements EmailGateway {
             },
         });
     }
+
+    async sendFeedback(payload: {
+        email: string;
+        message: string;
+    }) {
+        await this.mailService.send({
+            templateId: "d-f6e42c62ae494789965870a9af270a2e",
+            from: {email: this.emailSender, name: "Sweet Dev"},
+            to: payload.email,
+            dynamicTemplateData: {
+                message: payload.message,
+            },
+        });
+    }
 }

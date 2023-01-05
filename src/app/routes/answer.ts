@@ -33,13 +33,12 @@ answerRouter.use(authorization);
 
 answerRouter.post("/", async (req: AuthentifiedRequest, res) => {
   try {
-    const body = new AnswerToQuestionCommands();
-    body.questionId = req.body.questionId;
-    body.friendId = req.body.friendId;
-    body.userId = req.user.id;
-    body.pollId = req.body.pollId;
-
-    await commandsValidation(body);
+    const body = await AnswerToQuestionCommands.setProperties({
+      questionId: req.body.questionId,
+      friendId: req.body.friendId,
+      userId: req.user.id,
+      pollId: req.body.pollId,
+    });
 
     const answer = await answerToQuestion.execute(body);
 

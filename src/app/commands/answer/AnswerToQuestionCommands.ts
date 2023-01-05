@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsString, validateOrReject } from 'class-validator';
 
 export class AnswerToQuestionCommands {
     @IsString()
@@ -12,4 +12,14 @@ export class AnswerToQuestionCommands {
 
     @IsString()
     pollId: string;
+
+    static async setProperties(body: AnswerToQuestionCommands) {
+        const answerToQuestionCommands = new AnswerToQuestionCommands();
+        answerToQuestionCommands.friendId = body.friendId;
+        answerToQuestionCommands.pollId = body.pollId;
+        answerToQuestionCommands.questionId = body.questionId;
+        answerToQuestionCommands.userId = body.userId;
+        await validateOrReject(answerToQuestionCommands);
+        return answerToQuestionCommands;
+    }
 }

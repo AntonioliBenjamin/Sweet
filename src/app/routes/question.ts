@@ -9,7 +9,7 @@ import { CreateQuestionCommands } from "../commands/question/CreateQuestionComma
 import { AuthentifiedRequest } from "../types/AuthentifiedRequest";
 import { DeleteQuestion } from "../../core/usecases/question/DeleteQuestion";
 import { transformAndValidate } from "class-transformer-validator";
-import { clientErrorHandler } from "../middlewares/errorClientHandler";
+
 const questionRouter = express.Router();
 const mongoDbQuestionRepository = new MongoDbQuestionRepository();
 const v4IdGateway = new V4IdGateway();
@@ -38,6 +38,5 @@ questionRouter.delete("/:questionId",  async (req, res) => {
     return res.sendStatus(200)
 });
 
-questionRouter.use(clientErrorHandler)
 
 export { questionRouter };
