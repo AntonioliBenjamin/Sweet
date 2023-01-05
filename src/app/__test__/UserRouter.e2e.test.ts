@@ -1,15 +1,13 @@
 import supertest from "supertest";
-import mongoose from "mongoose";
 import "dotenv/config";
 import {sign} from "jsonwebtoken";
 import express from "express";
-import {v4} from "uuid";
 import {userRouter} from "../routes/user";
 import {MongoDbUserRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
 import {Gender, User} from "../../core/Entities/User";
-import {UserModel} from "../../adapters/repositories/mongoDb/models/user";
 import {UserRepository} from "../../core/repositories/UserRepository";
 import {BcryptGateway} from "../../adapters/gateways/BcryptGateway";
+import {connectDB, dropCollections, dropDB} from "../../adapters/__test__/setupTestDb";
 
 const app = express();
 
@@ -22,14 +20,8 @@ describe("E2E - User Router", () => {
         app.use(express.json());
         app.use("/user", userRouter);
 
-        const databaseId = v4();
-        mongoose.set("strictQuery", false);
-        mongoose.connect(`mongodb://127.0.0.1:27017/${databaseId}`, (err) => {
-            if (err) {
-                throw err;
-            }
-            console.info("Connected to mongodb");
-        });
+        await connectDB();
+
         const bcryptGateway = new BcryptGateway();
         userRepository = new MongoDbUserRepository();
 
@@ -52,12 +44,11 @@ describe("E2E - User Router", () => {
     });
 
     afterEach(async () => {
-        await UserModel.collection.drop();
+        await dropCollections();
     });
 
     afterAll(async () => {
-        await mongoose.connection.dropDatabase();
-        await mongoose.connection.close();
+        await dropDB();
     });
 
     it("Should post/user", async () => {
@@ -114,7 +105,7 @@ describe("E2E - User Router", () => {
             .set("access_key", accessKey)
             .send({
                 userName: "JOJO",
-                gender : "girl",
+                gender: "girl",
                 firstName: "gdfgdfg",
                 lastName: "dfgdrfg",
                 section: "dfgdfg",
@@ -183,54 +174,76 @@ describe("E2E - User Router", () => {
             "maytheforcebewithyou"
         );
 
-    await supertest(app)
-      .get(`/user/all/5678`)
-      .set("access_key", accessKey)
-      .expect((response) => {
-        const responseBody = response.body;
-        expect(responseBody).toHaveLength(1);
-      })
-      .expect(200);
+        await supertest(app)
+            .get(`/user/all/5678`)
+            .set("access_key", accessKey)
+            .expect((response) => {
+                const responseBody = response.body;
+                expect(responseBody).toHaveLength(1);
+            })
+            .expect(200);
     });
 
     it("should post/user/exist", async () => {
-    await userRepository.create(user);
-    await supertest(app)
-      .post("/user/exist")
-      .send({
-        email: "jojolapin@gmail.com"
-      })
+        await userRepository.create(user);
+        await supertest(app)
+            .post("/user/exist")
+            .send({
+                email: "jojolapin@gmail.com"
+            })
 
-      .expect((response) => {
-        const responseBody = response.body;
-        expect(responseBody.exists).toBeTruthy()
-      })
-      .expect(200);
+            .expect((response) => {
+                const responseBody = response.body;
+                expect(responseBody.exists).toBeTruthy()
+            })
+            .expect(200);
     })
 
     it("Should patch/user/push-token", async () => {
-    await userRepository.create(user);
+        await userRepository.create(user);
 
-    accessKey = sign(
-        {
-            id: user.props.id,
-            schoolId: user.props.schoolId,
-        },
-        "maytheforcebewithyou"
-    );
+        accessKey = sign(
+            {
+                id: user.props.id,
+                schoolId: user.props.schoolId,
+            },
+            "maytheforcebewithyou"
+        );
 
-    await supertest(app)
-        .patch("/user/push-token")
-        .set("access_key", accessKey)
-        .send({
-            id: user.props.id,
-            pushToken: "3f5f3ce518a5fd5873ce5b543f560e9bf759a5db"
-        })
-        .expect((response) => {
-            const responseBody = response.body;
-            expect(responseBody.pushToken).toEqual("3f5f3ce518a5fd5873ce5b543f560e9bf759a5db");
-        })
-        .expect(200);
+        await supertest(app)
+            .patch("/user/push-token")
+            .set("access_key", accessKey)
+            .send({
+                id: user.props.id,
+                pushToken: "3f5f3ce518a5fd5873ce5b543f560e9bf759a5db"
+            })
+            .expect((response) => {
+                const responseBody = response.body;
+                expect(responseBody.pushToken).toEqual("3f5f3ce518a5fd5873ce5b543f560e9bf759a5db");
+            })
+            .expect(200);
+    });
+
+    it("Should get /:userId", async () => {
+        await userRepository.create(user);
+
+        accessKey = sign(
+            {
+                id: user.props.id,
+                userName: user.props.userName,
+                email: user.props.email,
+            },
+            "maytheforcebewithyou"
+        );
+
+        await supertest(app)
+            .get("/user/12345")
+            .set("access_key", accessKey)
+            .expect((response) => {
+                const responseBody = response.body;
+                expect(responseBody.userName).toEqual("jojolapin");
+            })
+            .expect(200);
     });
 
 });

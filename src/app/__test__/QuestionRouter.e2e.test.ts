@@ -1,14 +1,12 @@
 import "dotenv/config";
 import supertest from "supertest";
-import mongoose from "mongoose";
 import express from "express";
-import {v4} from "uuid";
 import {questionRouter} from "../routes/question";
 import {QuestionRepository} from "../../core/repositories/QuestionRepository";
 import {MongoDbQuestionRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbQuestionRepository";
 import {Question} from "../../core/Entities/Question";
-import {QuestionModel} from "../../adapters/repositories/mongoDb/models/question";
 import {sign} from "jsonwebtoken";
+import {connectDB, dropCollections, dropDB} from "../../adapters/__test__/setupTestDb";
 
 const app = express();
 
@@ -21,14 +19,7 @@ describe("E2E - Question Router", () => {
         app.use(express.json());
         app.use("/question", questionRouter);
 
-        const databaseId = v4();
-        mongoose.set("strictQuery", false);
-        mongoose.connect(`mongodb://127.0.0.1:27017/${databaseId}`, (err) => {
-            if (err) {
-                throw err;
-            }
-            console.info("Connected to mongodb");
-        });
+        await connectDB();
 
         questionRepository = new MongoDbQuestionRepository();
 
@@ -44,12 +35,11 @@ describe("E2E - Question Router", () => {
     })
 
     afterEach(async () => {
-        await QuestionModel.collection.drop();
+        await dropCollections();
     });
 
     afterAll(async () => {
-        await mongoose.connection.dropDatabase();
-        await mongoose.connection.close();
+        await dropDB();
     });
 
     it("Should post /question", async () => {

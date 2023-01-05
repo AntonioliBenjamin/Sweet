@@ -8,16 +8,17 @@ import {UpdateUser} from "../../Usecases/user/UpdateUser";
 import {School} from "../../Entities/School";
 import {InMemorySchoolRepository} from "../adapters/repositories/InMemorySchoolRepository";
 import {SchoolErrors} from "../../errors/SchoolErrors";
+import {GetUserById} from "../../usecases/user/GetUserById";
 
 const db = new Map<string, User>();
 const dbSchool = new Map<string, School>();
 
-describe("Unit - UpdateUser", () => {
+describe("Unit - GetUserById", () => {
     let inMemoryUserRepository: InMemoryUserRepository;
     let inMemorySchoolRepository: InMemorySchoolRepository;
     let uuidGateway: UuidGateway;
     let bcryptGateway: BcryptGateway;
-    let updateUser: UpdateUser;
+    let getUserById: GetUserById;
     let user: User;
     let result: User;
 
@@ -27,7 +28,7 @@ describe("Unit - UpdateUser", () => {
         inMemorySchoolRepository = new InMemorySchoolRepository(dbSchool);
         uuidGateway = new UuidGateway();
         bcryptGateway = new BcryptGateway();
-        updateUser = new UpdateUser(inMemoryUserRepository, inMemorySchoolRepository);
+        getUserById = new GetUserById(inMemoryUserRepository);
         const signUp = new SignUp(
             inMemoryUserRepository,
             inMemorySchoolRepository,
@@ -64,36 +65,18 @@ describe("Unit - UpdateUser", () => {
             section: "dfgdfg",
         });
 
-        result = await updateUser.execute({
-            userName: "JOJO",
-            gender : Gender.GIRL,
-            firstName: "gdfgdfg",
-            lastName: "dfgdrfg",
-            section: "dfgdfg",
-            id: user.props.id,
-            schoolId: "1111",
+        result = await getUserById.execute({
+            userId : user.props.id
         });
 
     })
-    it("should update user", async () => {
+
+    it("should get user by Id", async () => {
         expect(result.props.userName).toEqual("jojo");
         expect(result.props.email).toEqual("jojo@gmail.com");
-        expect(result.props.gender).toEqual("girl");
-        expect(result.props.schoolId).toEqual("1111");
+        expect(result.props.gender).toEqual("boy");
+        expect(result.props.schoolId).toEqual("6789");
         expect(bcryptGateway.decrypt("1234", result.props.password)).toEqual(true);
         expect(result.props.id).toEqual(user.props.id);
     });
-
-    it("should throw if user is too young", async () => {
-        const wrongSchoolId = () => updateUser.execute({
-            userName: "JOJO",
-            gender :Gender.GIRL,
-            firstName: "gdfgdfg",
-            lastName: "dfgdrfg",
-            section: "dfgdfg",
-            id: user.props.id,
-            schoolId : "wrong schoolId",
-        });
-        await expect(wrongSchoolId).rejects.toThrow(SchoolErrors.NotFound)
-    })
 });

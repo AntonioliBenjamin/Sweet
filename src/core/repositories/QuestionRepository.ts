@@ -7,7 +7,5 @@ export interface QuestionRepository {
 
   selectRandom(numberOfQuestions: number): Promise<QuestionProperties[]>;
 
-  getById(questionId: string): Promise<Question>;
-
   delete(questionId: string): Promise<void>;
 }
