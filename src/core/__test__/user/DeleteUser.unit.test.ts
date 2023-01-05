@@ -31,6 +31,7 @@ describe("Unit - deleteUser", () => {
     const answer = new Answer({
       answerId: "1234",
       markAsRead : true,
+      pollId:"123",
       question: {
         questionId: "9999",
         description: "this is a desc",
@@ -45,7 +46,7 @@ describe("Unit - deleteUser", () => {
         section: "1er L",
         gender: Gender.GIRL,
       },
-      answer: "12345",
+      userId: "12345",
       createdAt: new Date(),
     });
 

@@ -15,12 +15,12 @@ export class MongoDbQuestionRepository implements QuestionRepository {
         return question;
     }
 
-    async getAllQuestions(): Promise<Question[]> {
+    async getAll(): Promise<Question[]> {
         const questions = await QuestionModel.find();
         return questions.map(elm => mongoDbQuestionMapper.toDomain(elm))
     }
 
-    async getByQuestionId(questionId: string): Promise<Question> {
+    async getById(questionId: string): Promise<Question> {
         const question = await QuestionModel.findOne({questionId: questionId});
         if (!question) {
             throw new QuestionErrors.NotFound();
@@ -28,7 +28,7 @@ export class MongoDbQuestionRepository implements QuestionRepository {
         return mongoDbQuestionMapper.toDomain(question);
     }
 
-    async selectRandomQuestions(numberOfQuestions: number): Promise<QuestionProperties[]> {
+    async selectRandom(numberOfQuestions: number): Promise<QuestionProperties[]> {
         const questionsModel = await QuestionModel.aggregate([
             {$sample: {size: numberOfQuestions}}
         ])

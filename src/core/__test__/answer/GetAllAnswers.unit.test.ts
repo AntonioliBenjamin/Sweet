@@ -5,7 +5,7 @@ import {InMemoryAnswerRepository} from "../adapters/repositories/InMemoryAnswerR
 
 const db = new Map<string, Answer>();
 
-describe("Unit - AnswerToQuestion", () => {
+describe("Unit - GetAllAnswers", () => {
     it("should get follow Answers", async () => {
         const inMemoryAnswerRepository = new InMemoryAnswerRepository(db);
         const getAllAnswers = new GetAllAnswers(inMemoryAnswerRepository);
@@ -13,6 +13,7 @@ describe("Unit - AnswerToQuestion", () => {
         const answer = new Answer({
             answerId: "1234",
             markAsRead : true,
+            pollId:"123",
             question: {
                 questionId: "9999",
                 description: "this is a desc",
@@ -27,7 +28,7 @@ describe("Unit - AnswerToQuestion", () => {
                 section: "1er L",
                 gender: Gender.GIRL,
             },
-            answer: "",
+            userId: "",
             createdAt: new Date()
         })
         db.set(answer.props.answerId, answer);
@@ -35,6 +36,7 @@ describe("Unit - AnswerToQuestion", () => {
         const answer2 = new Answer({
             answerId: "4321",
             markAsRead : true,
+            pollId:"123",
             question: {
                 questionId: "1111",
                 description: "this is a desc",
@@ -49,12 +51,15 @@ describe("Unit - AnswerToQuestion", () => {
                 section: "1er L",
                 gender: Gender.GIRL,
             },
-            answer: "",
+            userId: "",
             createdAt: new Date()
         })
         db.set(answer2.props.answerId, answer2);
 
-        const result = await getAllAnswers.execute();
+        const result = await getAllAnswers.execute({
+            schoolId: answer.props.response.schoolId,
+            userId: answer.props.userId
+        });
 
         expect(result).toHaveLength(2);
     })

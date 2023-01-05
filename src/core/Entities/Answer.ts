@@ -13,9 +13,10 @@ export type ResponseProperties = {
 
 export type AnswerProperties = {
     answerId: string;
+    pollId: string;
     question: QuestionProperties;
     response: ResponseProperties;
-    answer: string;
+    userId: string;
     createdAt: Date;
     markAsRead: boolean;
 };
@@ -31,13 +32,15 @@ export class Answer {
         answerId: string;
         question: QuestionProperties;
         response: ResponseProperties;
-        answer: string;
+        pollId: string;
+        userId: string;
     }) {
         return new Answer({
             answerId: props.answerId,
+            pollId: props.pollId,
             question: props.question,
             response: props.response,
-            answer: props.answer,
+            userId: props.userId,
             createdAt: new Date(),
             markAsRead : false
         });

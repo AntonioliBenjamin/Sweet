@@ -2,12 +2,17 @@ import { Answer } from "../../Entities/Answer";
 import { AnswerRepository } from "../../repositories/AnswerRepository";
 import { UseCase } from "../Usecase";
 
-export class GetAllAnswers implements UseCase<void, Answer[]> {
+export type GetAllAnswersInput = {
+  schoolId: string;
+  userId: string;
+}
+
+export class GetAllAnswers implements UseCase<GetAllAnswersInput, Answer[]> {
   constructor(
     private readonly answerRepository: AnswerRepository
     ) {}
 
-  execute(): Promise<Answer[]> {
-    return this.answerRepository.getAllAnswers();
+  execute(input: GetAllAnswersInput): Promise<Answer[]> {
+    return this.answerRepository.getAllBySchoolId(input.schoolId, input.userId);
   }
 }

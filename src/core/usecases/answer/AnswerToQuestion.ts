@@ -7,8 +7,9 @@ import { QuestionRepository } from "../../repositories/QuestionRepository";
 
 export type AnswerToQuestionInput = {
   questionId: string;
-  answerUserId: string;
+  friendId: string;
   userId: string;
+  pollId: string;
 };
 
 export class AnswerToQuestion
@@ -22,17 +23,18 @@ export class AnswerToQuestion
   ) {}
 
   async execute(input: AnswerToQuestionInput): Promise<Answer> {
-    const user = await this.userRepository.getById(input.userId);
+    const user = await this.userRepository.getById(input.friendId);
     
-    const question = await this.questionRepository.getByQuestionId(
+    const question = await this.questionRepository.getById(
       input.questionId
     );
 
     const id = this.idGateway.generate();
 
     const answer = Answer.create({
-      answer: input.answerUserId,
+      userId: input.userId,
       answerId: id,
+      pollId: input.pollId,
       question: {
         description: question.props.description,
         picture: question.props.picture,

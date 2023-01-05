@@ -18,7 +18,6 @@ const app = express();
 describe("E2E - Poll Router", () => {
     let accessKey;
     let questionRepository: QuestionRepository;
-    let question: Question;
     let pollRepository: PollRepository;
     let poll: Poll;
     let poll2: Poll
@@ -47,13 +46,6 @@ describe("E2E - Poll Router", () => {
             createdAt: new Date(1),
             expirationDate: new Date(new Date(1).setHours(new Date(1).getHours() + 1)),
         })
-
-
-        question = Question.create({
-            questionId: "1234",
-            description: "yes",
-            picture: "http://yes"
-        });
     });
 
     afterEach(async () => {
@@ -105,7 +97,7 @@ describe("E2E - Poll Router", () => {
             .set("access_key", accessKey)
             .expect((response) => {
                 const responseBody = response.body;
-                expect(responseBody.props.pollId).toEqual("5678");
+                expect(responseBody.pollId).toEqual("5678");
             })
             .expect(200);
     });

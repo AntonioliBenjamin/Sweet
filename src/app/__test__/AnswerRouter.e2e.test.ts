@@ -28,7 +28,7 @@ describe("E2E - AnswerRouter", () => {
   let questionRepository: QuestionRepository;
   let question: Question;
 
-  beforeAll(() => {
+  beforeAll(async() => {
     answerRepository = new MongoDbAnswerRepository();
     userRepository = new MongoDbUserRepository();
 
@@ -54,6 +54,7 @@ describe("E2E - AnswerRouter", () => {
     answer = new Answer({
       answerId: "1234",
       markAsRead : false,
+      pollId: "1234",
       question: {
         questionId: "9999",
         description: "this is a desc",
@@ -68,12 +69,13 @@ describe("E2E - AnswerRouter", () => {
         section: "1er L",
         gender: Gender.GIRL,
       },
-      answer: "9999",
+      userId: "9999",
       createdAt: new Date(),
     });
 
     answer2 = new Answer({
       answerId: "4321",
+      pollId: "9999",
       markAsRead : false,
       question: {
         questionId: "1111",
@@ -89,9 +91,26 @@ describe("E2E - AnswerRouter", () => {
         section: "1er L",
         gender: Gender.GIRL,
       },
-      answer: "9999",
+      userId: "9999",
       createdAt: new Date(),
     });
+
+    const user2 = new User({
+      email: "user@example.com",
+      id: "7",
+      password: "password",
+      userName: "user Name",
+      age: 15,
+      firstName: "michou",
+      gender: Gender.BOY,
+      lastName: "papito",
+      schoolId: "456",
+      section: "cp",
+      createdAt: new Date(),
+      updatedAt: null,
+      recoveryCode: null,
+    });
+    await userRepository.create(user2);
   });
 
   beforeEach(async () => {
@@ -137,11 +156,13 @@ describe("E2E - AnswerRouter", () => {
     );
 
     await supertest(app)
-      .post("/answer/9999")
+      .post("/answer")
       .set("access_key", accessKey)
       .send({
         userId: user.props.id,
-        answerUserId: answer.props.answerId,
+        friendId: "7",
+        pollId: answer.props.pollId,
+        questionId: "9999"
       })
       .expect((response) => {
         const responseBody = response.body;
@@ -162,26 +183,7 @@ describe("E2E - AnswerRouter", () => {
     );
 
     await supertest(app)
-      .get("/answer/all")
-      .set("access_key", accessKey)
-      .expect((response) => {
-        const responseBody = response.body;
-        expect(responseBody).toHaveLength(2);
-      })
-      .expect(200);
-  });
-
-  it("should get answer/friend/:id", async () => {
-    accessKey = sign(
-      {
-        id: "9999",
-        schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
-      },
-      "maytheforcebewithyou"
-    );
-
-    await supertest(app)
-      .get("/answer/friend/9999")
+      .get("/answer/all/0f87dd7e1c1d7fef5269f007c7b112a22f610cf7")
       .set("access_key", accessKey)
       .expect((response) => {
         const responseBody = response.body;
