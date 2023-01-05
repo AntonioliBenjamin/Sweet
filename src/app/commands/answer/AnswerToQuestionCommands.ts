@@ -1,9 +1,10 @@
-import { IsString, validateOrReject } from 'class-validator';
+import { IsOptional, IsString, validateOrReject } from 'class-validator';
 
 export class AnswerToQuestionCommands {
     @IsString()
     questionId: string;
 
+    @IsOptional()
     @IsString()
     friendId: string;
 

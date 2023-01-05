@@ -52,7 +52,7 @@ describe("E2E - AnswerRouter", () => {
         picture: "http://pic",
       },
       response: {
-        userId: "8888",
+        userId: "4321",
         firstName: "name",
         lastName: "lastname",
         userName: "username",
@@ -74,7 +74,7 @@ describe("E2E - AnswerRouter", () => {
         picture: "http://pic",
       },
       response: {
-        userId: "8888",
+        userId: "4321",
         firstName: "name",
         lastName: "lastname",
         userName: "username",
@@ -87,7 +87,7 @@ describe("E2E - AnswerRouter", () => {
     });
 
     const user2 = new User({
-      email: "user@example.com",
+      email: "user2@example.com",
       id: "7",
       password: "password",
       userName: "user Name",
@@ -150,7 +150,7 @@ describe("E2E - AnswerRouter", () => {
       .set("access_key", accessKey)
       .send({
         userId: user.props.id,
-        friendId: "7",
+        friendId: null,
         pollId: answer.props.pollId,
         questionId: "9999"
       })
@@ -185,7 +185,7 @@ describe("E2E - AnswerRouter", () => {
   it("should get/answer/mine", async () => {
     accessKey = sign(
       {
-        id: "9999",
+        id: "4321",
         schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
       },
       "maytheforcebewithyou"
