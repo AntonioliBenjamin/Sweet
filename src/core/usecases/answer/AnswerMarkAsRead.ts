@@ -11,11 +11,9 @@ export class AnswerMarkAsRead implements UseCase<string, Answer> {
     async execute(answerId: string): Promise<Answer> {
 
         const answer = await this.answerRepository.getById(answerId);
-        if(!answer) {
             if (!answer) {
                 throw new AnswerErrors.NotFound();
             }
-        }
 
         answer.markAsRead();
         await this.answerRepository.markAsRead(answer);

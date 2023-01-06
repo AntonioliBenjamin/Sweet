@@ -49,7 +49,7 @@ export class MongoDbAnswerRepository implements AnswerRepository {
     async markAsRead(answer: Answer): Promise<Answer> {
         const toAnswerModel = answerMapper.fromDomain(answer);
         await AnswerModel.findOneAndUpdate(
-            {id: toAnswerModel.answerId},
+            {answerId: toAnswerModel.answerId},
             {
                 $set: {
                     markAsRead: toAnswerModel.markAsRead,

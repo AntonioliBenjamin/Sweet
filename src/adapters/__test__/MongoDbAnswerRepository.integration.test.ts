@@ -19,7 +19,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
 
         answer = new Answer({
             answerId: "1234",
-            markAsRead : true,
+            markAsRead : false,
             pollId: "1234",
             question: {
                 questionId: "1111",
@@ -42,7 +42,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
 
         answer2 = new Answer({
             answerId: "4321",
-            markAsRead : true,
+            markAsRead : false,
             pollId: "1234",
             question: {
                 questionId: "2222",
@@ -65,7 +65,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
 
         answer3 = new Answer({
             answerId: "985498",
-            markAsRead : true,
+            markAsRead : false,
             pollId: "1234",
             question: {
                 questionId: "3333",
@@ -88,7 +88,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
 
         answer4 = new Answer({
             answerId: "684654",
-            markAsRead : true,
+            markAsRead : false,
             pollId: "8888",
             question: {
                 questionId: "4444",
