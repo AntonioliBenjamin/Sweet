@@ -1,12 +1,14 @@
-import { GetAllUsersBySchool } from "./../../usecases/user/GetAllUsersBySchool";
-import { InMemoryUserRepository } from "./../adapters/repositories/InmemoryUserRepository";
+
+import { GetAllMyPotentialFriends } from "../../usecases/user/GetAllMyPotentialFriends";
+import { InMemoryUserRepository } from "../adapters/repositories/InMemoryUserRepository";
 import { User, Gender } from "./../../Entities/User";
 
-describe("Unit - GetAllUsersBySchool", () => {
+const db = new Map<string, User>();
+
+describe("Unit - GetAllMyPotentialFriends", () => {
   it("should Get All Users By School", async () => {
-    const db = new Map<string, User>();
     const inMemoryUserRepository = new InMemoryUserRepository(db);
-    const getAllUsersBySchool = new GetAllUsersBySchool(inMemoryUserRepository);
+    const getAllMyPotentialFriends = new GetAllMyPotentialFriends(inMemoryUserRepository);
 
     const user1 = User.create({
       userName: "JOJO",
@@ -17,9 +19,10 @@ describe("Unit - GetAllUsersBySchool", () => {
       age: 13,
       gender: Gender.BOY,
       email: "jojo@gmail.com",
-      password: "1234",
+      password: "12345",
       id: "9999",
     });
+
     const user2 = User.create({
       userName: "JOJO",
       firstName: "gerard",
@@ -36,7 +39,7 @@ describe("Unit - GetAllUsersBySchool", () => {
     db.set(user1.props.id, user1);
     db.set(user2.props.id, user2);
 
-    const result = await getAllUsersBySchool.execute("012345");
+    const result = await getAllMyPotentialFriends.execute("012345");
     expect(result).toHaveLength(2);
   });
 });

@@ -1,4 +1,4 @@
-import { Gender } from './../../../../core/Entities/User';
+import { Gender } from "./../../../../core/Entities/User";
 import { model, Schema } from "mongoose";
 
 export type userModel = {
@@ -10,32 +10,39 @@ export type userModel = {
   password: string;
   age: number;
   schoolId: string;
-  section: string;
+  section?: string;
   gender: Gender;
   createdAt: number;
   updatedAt?: number;
+  recoveryCode?: string;
+  pushToken?: string;
 };
 
 const userSchema = new Schema({
   id: {
     type: String,
     required: true,
+    unique: true,
+    index: true,
   },
   userName: {
     type: String,
     required: true,
+    index: true,
   },
   firstName: {
     type: String,
-    required: true
+    required: true,
   },
   lastName: {
     type: String,
-    required: true
+    required: true,
   },
   email: {
     type: String,
     required: true,
+    unique: true,
+    index: true,
   },
   password: {
     type: String,
@@ -47,17 +54,18 @@ const userSchema = new Schema({
   },
   schoolId: {
     type: String,
-    required: true
+    required: true,
+    index: true,
   },
   section: {
     type: String,
-    required: true
+    required: false,
   },
   gender: {
     type: String,
     enum: Object.values(Gender),
-    default: null,
-    required: true
+    default: Gender.BOY,
+    required: true,
   },
   createdAt: {
     type: Number,
@@ -67,6 +75,14 @@ const userSchema = new Schema({
     type: Number,
     required: false,
   },
+  recoveryCode: {
+    type: String,
+    required: false,
+  },
+  pushToken: {
+    type: String,
+    required: false
+  }
 });
 
-export const UserModel = model("User", userSchema);
+export const UserModel = model("users", userSchema);

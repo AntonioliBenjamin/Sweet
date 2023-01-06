@@ -1,31 +1,41 @@
 import {UseCase} from "../Usecase";
-import {User} from "../../Entities/User";
+import {Gender, User} from "../../Entities/User";
 import {UserRepository} from "../../repositories/UserRepository";
+import {SchoolErrors} from "../../errors/SchoolErrors";
+import {SchoolRepository} from "../../repositories/SchoolRepository";
 
 export type UserUpdatedInput = {
     userName: string;
     firstName: string;
     lastName: string;
-    age: number;
+    gender: Gender;
     section: string;
-    id: string
-}
+    id: string;
+    schoolId: string;
+};
 
 export class UpdateUser implements UseCase<UserUpdatedInput, User> {
-
-    constructor(private readonly userRepository: UserRepository) {}
+    constructor(private readonly userRepository: UserRepository,
+                private readonly schoolRepository: SchoolRepository) {
+    }
 
     async execute(input: UserUpdatedInput): Promise<User> {
-        const user = await this.userRepository.getById(input.id)
-        
+        const user = await this.userRepository.getById(input.id);
+
+        const school = this.schoolRepository.getBySchoolId(input.schoolId);
+        if (!school) {
+            throw new SchoolErrors.NotFound();
+        }
+
         user.update({
-            age: input.age,
+            gender: input.gender,
             firstName: input.firstName,
             lastName: input.lastName,
             section: input.section,
             userName: input.userName,
-        })
-        
+            schoolId: input.schoolId
+        });
+
         await this.userRepository.update(user);
 
         return Promise.resolve(user);

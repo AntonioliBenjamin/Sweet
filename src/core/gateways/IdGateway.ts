@@ -1,3 +1,3 @@
 export interface IdGateway {
-    generate(): string;
+  generate(): string;
 }

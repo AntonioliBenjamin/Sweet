@@ -1,5 +1,6 @@
 import { UserErrors } from "../errors/UserErrors";
 
+
 export enum Gender {
   BOY = "boy",
   GIRL = "girl",
@@ -18,6 +19,8 @@ export type UserProperties = {
   gender: Gender;
   createdAt: Date;
   updatedAt: Date;
+  recoveryCode?: string;
+  pushToken?: string;
 };
 
 export class User {
@@ -55,6 +58,7 @@ export class User {
       password: props.password,
       createdAt: new Date(),
       updatedAt: null,
+      pushToken: null
     });
   }
 
@@ -62,17 +66,32 @@ export class User {
     userName: string;
     firstName: string;
     lastName: string;
-    age: number;
+    gender : Gender;
     section: string;
+    schoolId: string;
   }) {
-    if (props.age < 13) {
-        throw new UserErrors.TooYoung();
-      }
     this.props.userName = props.userName.toLowerCase().trim();
     this.props.firstName = props.firstName;
     this.props.lastName = props.lastName;
-    this.props.age = props.age;
+    this.props.gender = props.gender;
     this.props.section = props.section;
+    this.props.schoolId = props.schoolId;
     this.props.updatedAt = new Date();
+  }
+
+  updateRecoveryCode(recoveryCode: string) {
+    this.props.recoveryCode = recoveryCode;
+  }
+
+  resetPassword(payload: { recoveryCode: string; password: string }) {
+    if (this.props.recoveryCode !== payload.recoveryCode) {
+      throw new UserErrors.InvalidRecoveryCode();
+    }
+    this.props.password = payload.password;
+    this.props.updatedAt = new Date();
+  }
+
+  updatePushtoken(pushToken: string) {
+    this.props.pushToken = pushToken
   }
 }
