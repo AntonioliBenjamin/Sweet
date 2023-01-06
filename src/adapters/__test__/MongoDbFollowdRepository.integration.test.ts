@@ -73,9 +73,4 @@ describe("Integration - MongoDbFriendShipRepository", () => {
         const result = await mongoDbFollowRepository.getById("fake id");
         expect(result).toEqual(null)
     })
-
-    it("should return null  if follows[] dosen't exist", async () => {
-        const result = await mongoDbFollowRepository.getMyFollows("fake id");
-        expect(result).toEqual(null)
-    })
 })

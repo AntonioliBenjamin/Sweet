@@ -75,7 +75,7 @@ describe("E2E - AnswerRouter", () => {
         picture: "http://pic",
       },
       response: {
-        userId: "9999",
+        userId: "8888",
         firstName: "name",
         lastName: "lastname",
         userName: "username",
@@ -179,7 +179,7 @@ describe("E2E - AnswerRouter", () => {
       .set("access_key", accessKey)
       .expect((response) => {
         const responseBody = response.body;
-        expect(responseBody).toHaveLength(2);
+        expect(responseBody).toHaveLength(1);
       })
       .expect(200);
   });

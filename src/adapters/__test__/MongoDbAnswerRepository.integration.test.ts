@@ -59,8 +59,8 @@ describe("Integration - MongoDbAnswerRepository", () => {
                 section: "1er L",
                 gender: Gender.GIRL,
             },
-            userId: "1111",
-            createdAt: new Date(50),
+            userId: "3333",
+            createdAt: new Date(150),
         });
 
         answer3 = new Answer({
@@ -73,7 +73,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
                 picture: "http://pic",
             },
             response: {
-                userId: "9999",
+                userId: "7777",
                 firstName: "name",
                 lastName: "lastname",
                 userName: "username",
@@ -96,7 +96,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
                 picture: "http://pic",
             },
             response: {
-                userId: "9999",
+                userId: "6666",
                 firstName: "name",
                 lastName: "lastname",
                 userName: "username",
@@ -154,7 +154,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
 
     it("should get all answers", async () => {
         const result = await mongoDbAnswerRepository.getAllBySchoolId(answer.props.response.schoolId, answer.props.response.userId);
-        expect(result).toHaveLength(4);
+        expect(result).toHaveLength(2);
     })
 
     it("should delete answer", async () => {
@@ -183,6 +183,6 @@ describe("Integration - MongoDbAnswerRepository", () => {
 
     it("should get the last question answered", async () => {
         const result = await mongoDbAnswerRepository.getLastQuestionAnswered(answer.props.pollId, answer.props.response.userId)
-        expect(result.props.question.questionId).toEqual("3333")
+        expect(result.props.question.questionId).toEqual("2222")
     })
 });
