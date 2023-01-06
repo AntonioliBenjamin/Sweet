@@ -17,7 +17,7 @@ export class MongoDbAnswerRepository implements AnswerRepository {
     async getAllBySchoolId(schoolId: string, userId: string): Promise<Answer[]> {
         const answers = await AnswerModel.find({
             "response.schoolId": schoolId,
-            "response.userId": {
+            userId: {
                 $ne: userId
             }
         });
@@ -61,7 +61,7 @@ export class MongoDbAnswerRepository implements AnswerRepository {
     }
 
     async getLastQuestionAnswered(pollId: string, userId: string): Promise<Answer> {
-        const answersModel = await AnswerModel.find({pollId: pollId, userId: userId}).sort({_id: -1});
+        const answersModel = await AnswerModel.find({pollId: pollId, "response.userId": userId}).sort({_id: -1});
         if (answersModel[0] == null) {
             return null;
         }
@@ -71,10 +71,7 @@ export class MongoDbAnswerRepository implements AnswerRepository {
 
     async getAllByUserId(userId: string): Promise<Answer[]> {
         const results = await AnswerModel.find({
-            "response.userId" : userId,
-            userId : {
-                $ne : userId
-            }
+            userId : userId,
         })
         return results.map(elm => answerMapper.toDomain(elm))
     }

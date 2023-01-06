@@ -24,10 +24,8 @@ export class AnswerToQuestion
   ) {}
 
   async execute(input: AnswerToQuestionInput): Promise<Answer> {
-    let user: User = null
-    if(input.friendId) {
-      user = await this.userRepository.getById(input.friendId);
-    }
+
+      const user = await this.userRepository.getById(input.userId);
 
     const question = await this.questionRepository.getById(
       input.questionId
@@ -36,7 +34,7 @@ export class AnswerToQuestion
     const id = this.idGateway.generate();
 
     const answer = Answer.create({
-      userId: input.userId,
+      userId: input.friendId,
       answerId: id,
       pollId: input.pollId,
       question: {
@@ -44,12 +42,12 @@ export class AnswerToQuestion
         picture: question.props.picture,
         questionId: question.props.questionId,
       },
-      response: user === null ? null : {
+      response: {
         firstName: user.props.firstName,
         gender: user.props.gender,
         lastName: user.props.lastName,
         schoolId: user.props.schoolId,
-        section: user.props.schoolId,
+        section: user.props.section,
         userId: user.props.id,
         userName: user.props.userName,
       },

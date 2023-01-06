@@ -52,7 +52,7 @@ describe("E2E - AnswerRouter", () => {
         picture: "http://pic",
       },
       response: {
-        userId: "4321",
+        userId: "9999",
         firstName: "name",
         lastName: "lastname",
         userName: "username",
@@ -60,7 +60,7 @@ describe("E2E - AnswerRouter", () => {
         section: "1er L",
         gender: Gender.GIRL,
       },
-      userId: "9999",
+      userId: "4321",
       createdAt: new Date(),
     });
 
@@ -74,7 +74,7 @@ describe("E2E - AnswerRouter", () => {
         picture: "http://pic",
       },
       response: {
-        userId: "4321",
+        userId: "9999",
         firstName: "name",
         lastName: "lastname",
         userName: "username",
@@ -82,7 +82,7 @@ describe("E2E - AnswerRouter", () => {
         section: "1er L",
         gender: Gender.GIRL,
       },
-      userId: "9999",
+      userId: "4321",
       createdAt: new Date(),
     });
 
