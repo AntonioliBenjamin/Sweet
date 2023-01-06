@@ -98,6 +98,6 @@ describe("Unit - AnswerToQuestion", () => {
             userId: user.props.id,
             friendId: null
         })
-        expect(result.props.response).toBeFalsy()
+        expect(result.props.userId).toBeFalsy()
     })
 })

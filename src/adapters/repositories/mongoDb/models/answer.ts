@@ -6,8 +6,8 @@ import { Gender } from "../../../../core/Entities/User";
 export type AnswerModel = {
   answerId: string;
   question: QuestionProperties;
-  response?: ResponseProperties;
-  userId: string;
+  response: ResponseProperties;
+  userId?: string;
   createdAt: number;
   markAsRead: boolean;
   pollId: string;
@@ -22,7 +22,7 @@ const answerSchema = new Schema({
   },
   userId: {
     type: String,
-    required: true,
+    required: false,
     index: true
   },
   pollId: {
@@ -80,7 +80,7 @@ const answerSchema = new Schema({
         required: true,
       },
     },
-    required: false,
+    required: true,
   },
   createdAt: {
     type: Number,
