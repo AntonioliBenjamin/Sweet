@@ -7,8 +7,10 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     /* Modules */
+    "resolveJsonModule": true,
     "module": "commonjs" /* Specify what module code is generated. */,
     "rootDir": "./src",
     "outDir": "dist"
-  }
+  },
+    "exclude": ["node_modules", "src/**/*.test.ts", "jest.config.ts"]
 }

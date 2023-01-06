@@ -17,9 +17,6 @@ export class MongoDbAnswerRepository implements AnswerRepository {
     async getAllBySchoolId(schoolId: string, userId: string): Promise<Answer[]> {
         const answers = await AnswerModel.find({
             "response.schoolId": schoolId,
-            "response.userId": {
-                $ne: userId
-            },
             "userId": { $ne: null }
         });
         return answers.map((elm) => answerMapper.toDomain(elm));
