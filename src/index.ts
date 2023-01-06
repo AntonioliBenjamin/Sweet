@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express, {request} from "express";
+import express from "express";
 import * as mongoose from "mongoose";
 import {answerRouter} from "./app/routes/answer";
 import {followRouter} from "./app/routes/follow";
@@ -11,11 +11,12 @@ import morgan from "morgan";
 import * as path from "path";
 import {friendsRouter} from "./app/routes/friends";
 import {createPollTimer} from "./app/jobs";
+const MONGODB_URL = process.env.MONGODB_URL
 
 const port = +process.env.PORT;
 
 mongoose.set('strictQuery', false)
-mongoose.connect("mongodb://127.0.0.1:27017/sweet", (err) => {
+mongoose.connect(MONGODB_URL, (err) => {
     if (err) {
         throw err;
     }
