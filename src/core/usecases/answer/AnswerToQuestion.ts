@@ -54,14 +54,14 @@ export class AnswerToQuestion
                 questionId: question.props.questionId,
             },
             response: friend != null ? {
-                firstName: user.props.firstName,
-                gender: user.props.gender,
-                lastName: user.props.lastName,
-                schoolId: user.props.schoolId,
+                firstName: friend.props.firstName,
+                gender: friend.props.gender,
+                lastName: friend.props.lastName,
+                schoolId: friend.props.schoolId,
                 schoolName: school.props.name,
-                section: user.props.section,
-                userId: user.props.id,
-                userName: user.props.userName,
+                section: friend.props.section,
+                userId: friend.props.id,
+                userName: friend.props.userName,
             } : null,
         });
     
