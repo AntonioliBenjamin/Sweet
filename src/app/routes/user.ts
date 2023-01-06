@@ -3,7 +3,7 @@ import {ResetPassword} from "../../core/usecases/user/ResetPassword";
 import {SendGridGateway} from "../../adapters/gateways/SendGridGateway";
 import {GenerateRecoveryCode} from "../../core/usecases/user/GenerateRecoveryCode";
 import {GetAllMyPotentialFriends} from "../../core/usecases/user/GetAllMyPotentialFriends";
-import {UserApiUserMapper} from "../dtos/UserApiUserMapper";
+import {UserApiResponse} from "../dtos/UserApiUserMapper";
 import {SchoolDbRepository} from "../../adapters/repositories/school/SchoolDbRepository";
 import express from "express";
 import {BcryptGateway} from "../../adapters/gateways/BcryptGateway";
@@ -29,6 +29,7 @@ import {EmailExistCommands} from "../commands/user/EmailExistCommands";
 import {GetUserById} from "../../core/usecases/user/GetUserById";
 import {SendFeedbackCommands} from "../commands/user/SendFeedbackCommands";
 import {SendFeedback} from "../../core/usecases/user/SendFeeback";
+import { User } from "../../core/Entities/User";
 
 const mailService = new MailService();
 const emailSender = process.env.RECOVERY_EMAIL_SENDER;
@@ -51,7 +52,7 @@ const getAllMyPotentialFriends = new GetAllMyPotentialFriends(mongoDbUserReposit
 const updateRecoveryCode = new GenerateRecoveryCode(mongoDbUserRepository, v4IdGateway);
 const resetPassword = new ResetPassword(mongoDbUserRepository, bcryptGateway);
 const updatePushtoken = new UpdatePushToken(mongoDbUserRepository);
-const userApiUserMapper = new UserApiUserMapper();
+const userApiResponse = new UserApiResponse();
 
 const sendFeedBack = new SendFeedback(sendGridGateway)
 
@@ -82,7 +83,7 @@ userRouter.post("/", async (req, res) => {
     );
 
     return res.status(201).send({
-        ...userApiUserMapper.fromDomain(user),
+        ...userApiResponse.fromDomain(user),
         accessKey,
     });
 });
@@ -105,7 +106,7 @@ userRouter.post("/sign-in", async (req, res) => {
     );
 
     return res.status(200).send({
-        ...userApiUserMapper.fromDomain(user),
+        ...userApiResponse.fromDomain(user),
         accessKey,
     });
 });
@@ -202,7 +203,7 @@ userRouter.patch("/", async (req: AuthentifiedRequest, res) => {
         id: req.user.id,
     });
 
-    return res.status(200).send(userApiUserMapper.fromDomain(updatedUser));
+    return res.status(200).send(userApiResponse.fromDomain(updatedUser));
 });
 
 userRouter.patch("/push-token", async (req: AuthentifiedRequest, res) => {
@@ -214,17 +215,17 @@ userRouter.patch("/push-token", async (req: AuthentifiedRequest, res) => {
 
     const user = await updatePushtoken.execute(body)
 
-    return res.send(userApiUserMapper.fromDomain(user))
+    return res.send(userApiResponse.fromDomain(user))
 })
 
 userRouter.get("/all/:schoolId", async (req: AuthentifiedRequest, res) => {
     const users = await getAllMyPotentialFriends.execute(req.params.schoolId);
-
-    const userApiResponse = users.map((elm) =>
-        userApiUserMapper.fromDomain(elm)
+    
+    const userResponse = users.map((elm) =>
+        userApiResponse.fromDomain(elm)
     );
 
-    const ArrayWithoutCurrentUser = userApiResponse.filter(
+    const ArrayWithoutCurrentUser = userResponse.filter(
         (elm) => elm.id !== req.user.id
     );
 
@@ -244,7 +245,7 @@ userRouter.get("/:userId", async (req: AuthentifiedRequest, res) => {
         userId: req.params.userId,
     });
 
-    return res.status(200).send(userApiUserMapper.fromDomain(user));
+    return res.status(200).send(userApiResponse.fromDomain(user));
 });
 
 export {userRouter};

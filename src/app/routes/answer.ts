@@ -12,6 +12,8 @@ import {AuthentifiedRequest} from "../types/AuthentifiedRequest";
 import {AnswerMarkAsRead} from "../../core/usecases/answer/AnswerMarkAsRead";
 import {AnswerToQuestionCommands} from "../commands/answer/AnswerToQuestionCommands";
 import {SchoolDbRepository} from "../../adapters/repositories/school/SchoolDbRepository";
+import admin from "firebase-admin";
+import { FirebaseGateway } from "../../adapters/gateways/FirebaseGateway";
 
 const answerRouter = express.Router();
 const mongoDbQuestionRepository = new MongoDbQuestionRepository();
@@ -19,13 +21,13 @@ const mongoDbUserRepository = new MongoDbUserRepository();
 const schoolDbRepository = new SchoolDbRepository();
 const v4IdGateway = new V4IdGateway();
 const mongoDbAnswerRepository = new MongoDbAnswerRepository();
-const answerToQuestion = new AnswerToQuestion(
-    mongoDbAnswerRepository,
-    mongoDbUserRepository,
-    mongoDbQuestionRepository,
-    schoolDbRepository,
-    v4IdGateway
-);
+const googleCreadentials = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+const serviceAccount = JSON.parse(
+    Buffer.from(googleCreadentials, 'base64').toString('utf-8')
+    );
+const initialize = admin.initializeApp({credential: admin.credential.cert(serviceAccount)});
+const firebaseGateway = new FirebaseGateway(initialize)
+const answerToQuestion = new AnswerToQuestion(mongoDbAnswerRepository, mongoDbUserRepository, mongoDbQuestionRepository, schoolDbRepository, v4IdGateway, firebaseGateway);
 const getAllAnswers = new GetAllAnswers(mongoDbAnswerRepository);
 const getMyAnswers = new GetMyAnswers(mongoDbAnswerRepository);
 const deleteAnswer = new DeleteAnswer(mongoDbAnswerRepository);
@@ -52,7 +54,7 @@ answerRouter.get("/all/:schoolId", async (req: AuthentifiedRequest, res) => {
         userId: req.user.id,
     });
 
-    return res.status(200).send(answers);
+    return res.status(200).send(answers.map(item => item.props));
 });
 
 answerRouter.get("/mine", async (req: AuthentifiedRequest, res) => {
