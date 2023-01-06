@@ -19,5 +19,5 @@ export interface UserRepository {
 
   updatePushtoken(user: User): Promise<User>
 
-  getByIdArray(array: string[]): Promise<User[]>
+  getByUserIds(array: string[]): Promise<User[]>
 }

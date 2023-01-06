@@ -21,10 +21,10 @@ export class FollowUser implements UseCase<CreateFollowProperties, Followed> {
             return followAlreadyExists
         }
 
-        const FollowId = this.idGateway.generate();
+        const followId = this.idGateway.generate();
 
         const followed = Followed.create({
-            id: FollowId,
+            id: followId,
             userId: input.userId,
             addedBy: input.addedBy
         });

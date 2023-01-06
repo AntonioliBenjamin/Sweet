@@ -6,11 +6,11 @@ import {FollowUser} from "../../core/usecases/follow/FollowUser";
 import {GetMyFollows} from "../../core/usecases/follow/GetMyFollows";
 import {UnfollowUser} from "../../core/usecases/follow/UnfollowUser";
 import {AddFollowCommands} from "../commands/follow/AddFollowCommands";
-import {UserApiUserMapper} from "../dtos/UserApiUserMapper";
+import {UserApiResponse} from "../dtos/UserApiUserMapper";
 import {authorization} from "../middlewares/JwtAuthorizationMiddleware";
 import {AuthentifiedRequest} from "../types/AuthentifiedRequest";
 
-const userApiUserMapper = new UserApiUserMapper();
+const userApiUserMapper = new UserApiResponse();
 const mongoDbUserRepository = new MongoDbUserRepository()
 const followRouter = express.Router();
 const mongoDbFollowRepository = new MongoDbFollowRepository();

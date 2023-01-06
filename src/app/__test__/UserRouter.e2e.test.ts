@@ -146,10 +146,10 @@ describe("E2E - User Router", () => {
             .expect(200);
     });
 
-    it("Should get/all/:schoolId", async () => {
+    it("Should get /all/:schoolId", async () => {
         const currentUser = new User({
             userName: "jojolapin",
-            email: "jojolapin@gmail.com",
+            email: "jojolapin1@gmail.com",
             password: "1234",
             id: "current user id",
             age: 15,

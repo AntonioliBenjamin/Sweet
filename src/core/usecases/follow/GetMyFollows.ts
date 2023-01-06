@@ -12,16 +12,9 @@ export class GetMyFollows implements UseCase<string, Promise<User[]>> {
     async execute(myUserId: string): Promise<User[]> {
         const follows = await this.followRepository.getMyFollows(myUserId)
         
-        let arr = []
-        for (let follow of follows) {
-                arr.push(follow.props.addedBy, follow.props.userId) 
-        }
-        
-        const usersIds = arr.filter((elm, index ) => {
-            return elm !== myUserId && arr.indexOf(elm) == index
-        })
+        const userIds = follows.map(elem => elem.props.userId)
 
-        const users = await this.userRepository.getByIdArray(usersIds)
+        const users = await this.userRepository.getByUserIds(userIds)
         
         return Promise.all(users)
     }

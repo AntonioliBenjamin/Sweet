@@ -8,7 +8,7 @@ export type PollQuestionApiResponse = {
   index: number;
 };
 
-export type PollApiResponse = {
+export type PollApiResponsePropeties = {
   id: string;
   questions?: Array<PollQuestionApiResponse>;
   createdAt: Date;
@@ -18,8 +18,8 @@ export type PollApiResponse = {
   isFinished: boolean;
 };
 
-export class PollApiMapper {
-  fromDomain(data: Poll, lastQuestionAnswered: Answer): PollApiResponse {
+export class PollApiResponse {
+  fromDomain(data: Poll, lastQuestionAnswered: Answer): PollApiResponsePropeties {
     let currentQuestion: PollQuestionApiResponse;
     let isFinished = false;
     const questions = data.props.questions.map((elm, index) => {

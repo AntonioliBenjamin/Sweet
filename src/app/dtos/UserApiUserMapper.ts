@@ -1,7 +1,7 @@
-import { User } from "./../../core/Entities/User";
-import { Mapper } from "./../../core/models/Mapper";
+import { User } from "../../core/Entities/User";
+import { Mapper } from "../../core/models/Mapper";
 
-export type UserApiResponse = {
+export type UserApiResponseProperties = {
   id: string;
   userName: string;
   email: string;
@@ -16,8 +16,8 @@ export type UserApiResponse = {
   pushToken: string;
 };
 
-export class UserApiUserMapper implements Mapper<UserApiResponse, User> {
-  fromDomain(data: User): UserApiResponse {
+export class UserApiResponse implements Mapper<UserApiResponseProperties, User> {
+  fromDomain(data: User): UserApiResponseProperties {
     return {
       id: data.props.id,
       createdAt: data.props.createdAt,
