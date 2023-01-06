@@ -70,9 +70,13 @@ const answerSchema = new Schema({
         required: true,
         index: true
       },
-      section: {
+      schoolName: {
         type: String,
         required: true,
+      },
+      section: {
+        type: String,
+        required: false,
       },
       gender: {
         type: String,

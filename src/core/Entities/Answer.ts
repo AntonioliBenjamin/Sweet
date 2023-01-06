@@ -7,7 +7,8 @@ export type ResponseProperties = {
     lastName: string;
     userName: string;
     schoolId: string;
-    section: string;
+    schoolName: string;
+    section?: string;
     gender: Gender;
 };
 
