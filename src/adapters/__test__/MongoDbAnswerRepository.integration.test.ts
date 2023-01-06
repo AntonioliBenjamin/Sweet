@@ -149,7 +149,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
 
     it("should get all answers", async () => {
         const result = await mongoDbAnswerRepository.getAllBySchoolId(answer.props.response.schoolId, answer.props.response.userId);
-        expect(result).toHaveLength(4)
+        expect(result).toHaveLength(4);
     })
 
     it("should delete answer", async () => {
