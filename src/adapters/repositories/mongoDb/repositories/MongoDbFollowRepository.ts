@@ -22,10 +22,10 @@ export class MongoDbFollowRepository implements FollowedRepository {
         return followMapper.toDomain(follow);
     }
 
-    async delete(userId : string, addedBy : string): Promise<void> {
+    async delete(userId: string, addedBy: string): Promise<void> {
         await FollowModel.deleteOne({
             userId: userId,
-            addedBy :addedBy
+            addedBy: addedBy
         });
         return;
     }
@@ -36,22 +36,20 @@ export class MongoDbFollowRepository implements FollowedRepository {
     }
 
     async exists(userId: string, addedBy: string): Promise<Followed> {
-    const follow = await FollowModel.findOne({
-      userId: userId,
-      addedBy: addedBy
-    });
-    
-    if (!follow) {
-      return null;
-    }
-    return followMapper.toDomain(follow);
+        const follow = await FollowModel.findOne({
+            userId: userId,
+            addedBy: addedBy
+        });
+
+        if (!follow) {
+            return null;
+        }
+        return followMapper.toDomain(follow);
     }
 
     async getMyFollows(userId: string): Promise<Followed[]> {
-    const followsModels = await FollowModel.find({ addedBy: userId });
-    if (followsModels.length === 0) {
-      return null;
-    }
-    return followsModels.map((elm) => followMapper.toDomain(elm));
+        const followsModels = await FollowModel.find({addedBy: userId});
+
+        return followsModels.map((elm) => followMapper.toDomain(elm));
     }
 }
