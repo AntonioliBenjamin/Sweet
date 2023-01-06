@@ -20,6 +20,9 @@ export class MongoDbAnswerRepository implements AnswerRepository {
             "response.userId": {
                 $ne: userId,
             },
+            response: {
+                $ne: null
+            },
             "userId": {
                 $ne: null
             }
