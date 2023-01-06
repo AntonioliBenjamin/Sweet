@@ -11,7 +11,8 @@ export class MongoDbAnswerMapper implements Mapper<AnswerModel, Answer> {
       question: raw.question,
       response: raw.response,
       markAsRead : raw.markAsRead,
-      pollId: raw.pollId
+      pollId: raw.pollId,
+      from: raw.from,
     });
   }
 
@@ -23,7 +24,8 @@ export class MongoDbAnswerMapper implements Mapper<AnswerModel, Answer> {
       question: data.props.question,
       response: data.props.response,
       markAsRead : data.props.markAsRead,
-      pollId: data.props.pollId
+      pollId: data.props.pollId,
+      from: data.props.from,
     };
   }
 }

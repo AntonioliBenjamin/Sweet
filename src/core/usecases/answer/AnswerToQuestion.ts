@@ -53,6 +53,16 @@ export class AnswerToQuestion
                 picture: question.props.picture,
                 questionId: question.props.questionId,
             },
+            from: {
+                firstName: user.props.firstName,
+                gender: user.props.gender,
+                lastName: user.props.lastName,
+                schoolId: user.props.schoolId,
+                schoolName: school.props.name,
+                section: user.props.section,
+                userId: user.props.id,
+                userName: user.props.userName,
+            },
             response: friend != null ? {
                 firstName: friend.props.firstName,
                 gender: friend.props.gender,

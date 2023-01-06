@@ -23,9 +23,6 @@ export class MongoDbAnswerRepository implements AnswerRepository {
             response: {
                 $ne: null
             },
-            "userId": {
-                $ne: null
-            }
         });
         return answers.map((elm) => answerMapper.toDomain(elm));
     }

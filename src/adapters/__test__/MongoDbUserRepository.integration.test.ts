@@ -87,6 +87,16 @@ describe("Integration - MongoDbUserRepository", () => {
         section: "1er L",
         gender: Gender.GIRL,
       },
+      from: {
+        userId: "8888",
+        firstName: "name",
+        lastName: "lastname",
+        userName: "username",
+        schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
+        schoolName : "schoolName2",
+        section: "1er L",
+        gender: Gender.GIRL,
+      },
       userId: "12345",
       createdAt: new Date(),
     });

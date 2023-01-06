@@ -7,6 +7,7 @@ export type AnswerModel = {
   answerId: string;
   question: QuestionProperties;
   response?: ResponseProperties;
+  from: ResponseProperties;
   userId: string;
   createdAt: number;
   markAsRead: boolean;
@@ -86,6 +87,46 @@ const answerSchema = new Schema({
     },
     required: false,
   },
+  from: {
+  type: {
+    userId: {
+      type: String,
+          required: true,
+          index: true,
+    },
+    firstName: {
+      type: String,
+          required: true,
+    },
+    lastName: {
+      type: String,
+          required: true,
+    },
+    userName: {
+      type: String,
+          required: true,
+    },
+    schoolId: {
+      type: String,
+          required: true,
+          index: true
+    },
+    schoolName: {
+      type: String,
+          required: true,
+    },
+    section: {
+      type: String,
+          required: false,
+    },
+    gender: {
+      type: String,
+      enum: Object.values(Gender),
+          required: true,
+    },
+  },
+  required: true,
+},
   createdAt: {
     type: Number,
     required: true,
