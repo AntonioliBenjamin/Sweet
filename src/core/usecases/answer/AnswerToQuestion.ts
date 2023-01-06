@@ -4,8 +4,8 @@ import {IdGateway} from "../../gateways/IdGateway";
 import {AnswerRepository} from "../../repositories/AnswerRepository";
 import {UserRepository} from "../../repositories/UserRepository";
 import {QuestionRepository} from "../../repositories/QuestionRepository";
-import {User} from "../../Entities/User";
 import {SchoolRepository} from "../../repositories/SchoolRepository";
+import { MessagePayload, PushNotificationGateway } from "../../gateways/PushNotificationGateway";
 
 export type AnswerToQuestionInput = {
     questionId: string;
@@ -21,17 +21,25 @@ export class AnswerToQuestion
         private readonly userRepository: UserRepository,
         private readonly questionRepository: QuestionRepository,
         private readonly schoolRepository: SchoolRepository,
-        private readonly idGateway: IdGateway
-    ) {
-    }
+        private readonly idGateway: IdGateway,
+        private readonly pushNotificationGateway: PushNotificationGateway
+    ) {}
 
     async execute(input: AnswerToQuestionInput): Promise<Answer> {
 
         const user = await this.userRepository.getById(input.userId);
 
-        const question = await this.questionRepository.getById(
-            input.questionId
-        );
+        if (input.friendId != null) {
+            const friend = await this.userRepository.getById(input.friendId);
+
+            await this.sendNotification({
+                identifier: friend.props.pushToken,
+                message: `Vas vite sur l'app pour découvrir ton admirateur secret`,
+                title: "Quelqu'un s'intéresse à toi"
+            })
+        }
+
+        const question = await this.questionRepository.getById(input.questionId);
 
         const school = await this.schoolRepository.getBySchoolId(user.props.schoolId);
 
@@ -57,7 +65,15 @@ export class AnswerToQuestion
                 userName: user.props.userName,
             },
         });
-
+    
         return await this.answerRepository.create(answer);
+    }
+
+    private async sendNotification(payload: MessagePayload) {
+        try {
+            return await this.pushNotificationGateway.send(payload)
+        } catch(err) {
+            return;
+        }
     }
 }

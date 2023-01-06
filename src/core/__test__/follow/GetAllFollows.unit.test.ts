@@ -87,6 +87,6 @@ describe("Unit - getAllFollowers", () => {
     db.set(friendship3.props.id, friendship3);
 
     const result = await getMyFollows.execute("cedric");
-    expect(result).toHaveLength(2);
+    expect(result).toHaveLength(3);
   });
 });

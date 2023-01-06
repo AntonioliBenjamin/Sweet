@@ -193,7 +193,7 @@ describe("Integration - MongoDbUserRepository", () => {
   })
 
   it("should get by userId Array", async () => {
-    const result = await mongoDbUserRepository.getByIdArray(["12345", "9999", "sdfsdf"])
+    const result = await mongoDbUserRepository.getByUserIds(["12345", "9999", "sdfsdf"])
     expect(result).toHaveLength(3)
   })
 

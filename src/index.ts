@@ -55,8 +55,10 @@ app.use("/friends", friendsRouter);
 
 app.use((err, req, res, next) => {
     if (res.headersSent) {
+        console.error(err)
         return next(err)
     }
+    console.error(err)
     res.status(400).send(err)
 });
 

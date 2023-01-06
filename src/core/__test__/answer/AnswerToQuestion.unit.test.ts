@@ -9,6 +9,7 @@ import {InMemoryQuestionRepository} from "../adapters/repositories/InMemoryQuest
 import {InMemoryUserRepository} from "../adapters/repositories/InMemoryUserRepository";
 import {School} from "../../Entities/School";
 import {InMemorySchoolRepository} from "../adapters/repositories/InMemorySchoolRepository";
+import { FakeFirebaseGateway } from "../adapters/gateways/FakeFirebaseGateway";
 
 const db = new Map<string, Answer>();
 const questionDb = new Map<string, Question>();
@@ -29,12 +30,14 @@ describe("Unit - AnswerToQuestion", () => {
         const inMemoryAnswerRepository = new InMemoryAnswerRepository(db);
         const inMemoryUserRepository = new InMemoryUserRepository(userDb);
         const inMemorySchoolRepository = new InMemorySchoolRepository(schoolDb)
+        const fakeFirebase = new FakeFirebaseGateway()
         answerToQuestion = new AnswerToQuestion(
             inMemoryAnswerRepository,
             inMemoryUserRepository,
             inMemoryQuestionRepository,
             inMemorySchoolRepository,
-            idGateway
+            idGateway, 
+            fakeFirebase
         );
 
         question = Question.create({

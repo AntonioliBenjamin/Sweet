@@ -5,15 +5,15 @@ import {MongoDbPollRepository} from "../../adapters/repositories/mongoDb/reposit
 import {GetAllPolls} from "../../core/usecases/poll/GetAllPolls";
 import {GetCurrentPoll} from "../../core/usecases/poll/GetCurrentPoll";
 import {MongoDbAnswerRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbAnswerRepository";
-import {PollApiMapper} from "../dtos/PollApiMapper";
 import {GetLastQuestionAnswered} from "../../core/usecases/answer/GetLastQuestionAnswered";
+import { PollApiResponse } from "../dtos/PollApiResponse";
 
 const pollRouter = express.Router();
 const mongoDbPollRepository = new MongoDbPollRepository();
 const mongoDbAnswerRepository = new MongoDbAnswerRepository()
 const getAllPolls = new GetAllPolls(mongoDbPollRepository);
 const getCurrentPoll = new GetCurrentPoll(mongoDbPollRepository)
-const pollApimapper = new PollApiMapper()
+const pollApimapper = new PollApiResponse()
 const lastQuestionAnswered = new GetLastQuestionAnswered(mongoDbAnswerRepository)
 
 pollRouter.use(authorization);

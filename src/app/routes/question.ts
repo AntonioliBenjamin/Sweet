@@ -4,7 +4,7 @@ import {MongoDbQuestionRepository} from "../../adapters/repositories/mongoDb/rep
 import {CreateQuestion} from "../../core/usecases/question/CreateQuestion";
 import {V4IdGateway} from "../../adapters/gateways/V4IdGateway";
 import {GetAllQuestions} from "../../core/usecases/question/GetAllQuestions";
-import {ApiQuestionMapper} from "../dtos/ApiQuestionMapper";
+import {QuestionApiResponse} from "../dtos/QuestionApiResponse";
 import {CreateQuestionCommands} from "../commands/question/CreateQuestionCommands";
 import {AuthentifiedRequest} from "../types/AuthentifiedRequest";
 import {DeleteQuestion} from "../../core/usecases/question/DeleteQuestion";
@@ -14,7 +14,7 @@ const mongoDbQuestionRepository = new MongoDbQuestionRepository();
 const v4IdGateway = new V4IdGateway();
 const createQuestion = new CreateQuestion(mongoDbQuestionRepository, v4IdGateway);
 const getAllQuestions = new GetAllQuestions(mongoDbQuestionRepository);
-const apiQuestionMapper = new ApiQuestionMapper();
+const apiQuestionMapper = new QuestionApiResponse();
 const deleteQuestion = new DeleteQuestion(mongoDbQuestionRepository)
 
 questionRouter.use(authorization);

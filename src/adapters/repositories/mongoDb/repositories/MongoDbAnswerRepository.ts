@@ -19,12 +19,9 @@ export class MongoDbAnswerRepository implements AnswerRepository {
             "response.schoolId": schoolId,
             "response.userId": {
                 $ne: userId
-            }
+            },
+            "userId": { $ne: null }
         });
-        if (!answers) {
-            return null;
-        }
-
         return answers.map((elm) => answerMapper.toDomain(elm));
     }
 
@@ -49,7 +46,7 @@ export class MongoDbAnswerRepository implements AnswerRepository {
     async markAsRead(answer: Answer): Promise<Answer> {
         const toAnswerModel = answerMapper.fromDomain(answer);
         await AnswerModel.findOneAndUpdate(
-            {id: toAnswerModel.answerId},
+            { answerId: toAnswerModel.answerId },
             {
                 $set: {
                     markAsRead: toAnswerModel.markAsRead,
