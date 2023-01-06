@@ -20,7 +20,9 @@ export class MongoDbAnswerRepository implements AnswerRepository {
             "response.userId": {
                 $ne: userId,
             },
-            "userId": { $ne: null }
+            "userId": {
+                $ne: null
+            }
         });
         return answers.map((elm) => answerMapper.toDomain(elm));
     }
@@ -58,7 +60,7 @@ export class MongoDbAnswerRepository implements AnswerRepository {
     }
 
     async getLastQuestionAnswered(pollId: string, userId: string): Promise<Answer> {
-        const answersModel = await AnswerModel.find({pollId: pollId, "response.userId": userId}).sort({_id: -1});
+        const answersModel = await AnswerModel.find({pollId: pollId, userId: userId}).sort({_id: -1});
         if (answersModel[0] == null) {
             return null;
         }
@@ -68,7 +70,7 @@ export class MongoDbAnswerRepository implements AnswerRepository {
 
     async getAllByUserId(userId: string): Promise<Answer[]> {
         const results = await AnswerModel.find({
-            userId : userId,
+            "response.userId": userId,
         })
         return results.map(elm => answerMapper.toDomain(elm))
     }

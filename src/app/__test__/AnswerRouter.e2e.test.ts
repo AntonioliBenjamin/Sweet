@@ -52,7 +52,7 @@ describe("E2E - AnswerRouter", () => {
         picture: "http://pic",
       },
       response: {
-        userId: "9999",
+        userId: "4321",
         firstName: "name",
         lastName: "lastname",
         userName: "username",
@@ -61,7 +61,7 @@ describe("E2E - AnswerRouter", () => {
         section: "1er L",
         gender: Gender.GIRL,
       },
-      userId: "4321",
+      userId: "9999",
       createdAt: new Date(),
     });
 
@@ -75,7 +75,7 @@ describe("E2E - AnswerRouter", () => {
         picture: "http://pic",
       },
       response: {
-        userId: "8888",
+        userId: "4321",
         firstName: "name",
         lastName: "lastname",
         userName: "username",
@@ -84,7 +84,7 @@ describe("E2E - AnswerRouter", () => {
         section: "1er L",
         gender: Gender.GIRL,
       },
-      userId: "4321",
+      userId: "8888",
       createdAt: new Date(),
     });
 
@@ -179,7 +179,7 @@ describe("E2E - AnswerRouter", () => {
       .set("access_key", accessKey)
       .expect((response) => {
         const responseBody = response.body;
-        expect(responseBody).toHaveLength(1);
+        expect(responseBody).toHaveLength(2);
       })
       .expect(200);
   });

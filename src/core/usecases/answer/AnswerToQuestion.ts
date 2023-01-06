@@ -6,6 +6,7 @@ import {UserRepository} from "../../repositories/UserRepository";
 import {QuestionRepository} from "../../repositories/QuestionRepository";
 import {SchoolRepository} from "../../repositories/SchoolRepository";
 import { MessagePayload, PushNotificationGateway } from "../../gateways/PushNotificationGateway";
+import {User} from "../../Entities/User";
 
 export type AnswerToQuestionInput = {
     questionId: string;
@@ -26,12 +27,10 @@ export class AnswerToQuestion
     ) {}
 
     async execute(input: AnswerToQuestionInput): Promise<Answer> {
-
+        let friend: User = null;
         const user = await this.userRepository.getById(input.userId);
-
-        if (input.friendId != null) {
-            const friend = await this.userRepository.getById(input.friendId);
-
+        if (input.friendId) {
+            friend = await this.userRepository.getById(input.friendId);
             await this.sendNotification({
                 identifier: friend.props.pushToken,
                 message: `Vas vite sur l'app pour découvrir ton admirateur secret`,
@@ -46,7 +45,7 @@ export class AnswerToQuestion
         const id = this.idGateway.generate();
 
         const answer = Answer.create({
-            userId: input.friendId,
+            userId: input.userId,
             answerId: id,
             pollId: input.pollId,
             question: {
@@ -54,7 +53,7 @@ export class AnswerToQuestion
                 picture: question.props.picture,
                 questionId: question.props.questionId,
             },
-            response: {
+            response: friend != null ? {
                 firstName: user.props.firstName,
                 gender: user.props.gender,
                 lastName: user.props.lastName,
@@ -63,7 +62,7 @@ export class AnswerToQuestion
                 section: user.props.section,
                 userId: user.props.id,
                 userName: user.props.userName,
-            },
+            } : null,
         });
     
         return await this.answerRepository.create(answer);
