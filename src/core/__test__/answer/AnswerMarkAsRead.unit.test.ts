@@ -30,6 +30,7 @@ let answerMarkAsRead : AnswerMarkAsRead
                 lastName: "lastname",
                 userName: "username",
                 schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
+                schoolName : "schoolName",
                 section: "1er L",
                 gender: Gender.GIRL,
             },

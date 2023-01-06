@@ -11,16 +11,19 @@ import {authorization} from "../middlewares/JwtAuthorizationMiddleware";
 import {AuthentifiedRequest} from "../types/AuthentifiedRequest";
 import {AnswerMarkAsRead} from "../../core/usecases/answer/AnswerMarkAsRead";
 import {AnswerToQuestionCommands} from "../commands/answer/AnswerToQuestionCommands";
+import {SchoolDbRepository} from "../../adapters/repositories/school/SchoolDbRepository";
 
 const answerRouter = express.Router();
 const mongoDbQuestionRepository = new MongoDbQuestionRepository();
 const mongoDbUserRepository = new MongoDbUserRepository();
+const schoolDbRepository = new SchoolDbRepository();
 const v4IdGateway = new V4IdGateway();
 const mongoDbAnswerRepository = new MongoDbAnswerRepository();
 const answerToQuestion = new AnswerToQuestion(
     mongoDbAnswerRepository,
     mongoDbUserRepository,
     mongoDbQuestionRepository,
+    schoolDbRepository,
     v4IdGateway
 );
 const getAllAnswers = new GetAllAnswers(mongoDbAnswerRepository);
@@ -55,7 +58,7 @@ answerRouter.get("/all/:schoolId", async (req: AuthentifiedRequest, res) => {
 answerRouter.get("/mine", async (req: AuthentifiedRequest, res) => {
     const friendAnswers = await getMyAnswers.execute(req.user.id);
 
-    return res.status(200).send(friendAnswers);
+    return res.status(200).send(friendAnswers.map(item => item.props));
 });
 
 answerRouter.delete("/:answerId", async (req, res) => {
