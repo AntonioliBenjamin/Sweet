@@ -1,4 +1,5 @@
 import { V4IdGateway } from "../gateways/V4IdGateway";
+import './mocks/V4Id.mock';
 
 describe("Unit - V4IdGateway", () => {
   it("should create an unique id", () => {

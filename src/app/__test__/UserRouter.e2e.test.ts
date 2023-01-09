@@ -2,12 +2,13 @@ import supertest from "supertest";
 import "dotenv/config";
 import {sign} from "jsonwebtoken";
 import express from "express";
-import {userRouter} from "../routes/user";
 import {MongoDbUserRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
 import {Gender, User} from "../../core/Entities/User";
 import {UserRepository} from "../../core/repositories/UserRepository";
 import {BcryptGateway} from "../../adapters/gateways/BcryptGateway";
 import {connectDB, dropCollections, dropDB} from "../../adapters/__test__/setupTestDb";
+import {useExpressServer} from "routing-controllers";
+import {UserController} from "../controllers/UserController";
 
 const app = express();
 
@@ -18,7 +19,9 @@ describe("E2E - User Router", () => {
 
     beforeAll(async () => {
         app.use(express.json());
-        app.use("/user", userRouter);
+        useExpressServer(app, {
+            controllers: [UserController],
+        });
 
         await connectDB();
 

@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import {GetAllSchools} from "../../core/usecases/school/GetAllSchools";
 import express from "express";
 import {SchoolDbRepository} from "../../adapters/repositories/school/SchoolDbRepository";
