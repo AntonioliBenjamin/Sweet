@@ -31,11 +31,11 @@ export class AnswerToQuestion
         const user = await this.userRepository.getById(input.userId);
         if (input.friendId) {
             friend = await this.userRepository.getById(input.friendId);
-            await this.sendNotification({
+            await this.pushNotificationGateway.send({
                 identifier: friend.props.pushToken,
                 message: `Vas vite sur l'app pour découvrir ton admirateur secret`,
                 title: "Quelqu'un s'intéresse à toi"
-            })
+            });
         }
 
         const question = await this.questionRepository.getById(input.questionId);
@@ -74,15 +74,6 @@ export class AnswerToQuestion
                 userName: friend.props.userName,
             } : null,
         });
-    
         return await this.answerRepository.create(answer);
-    }
-
-    private async sendNotification(payload: MessagePayload) {
-        try {
-            return await this.pushNotificationGateway.send(payload)
-        } catch(err) {
-            return;
-        }
     }
 }

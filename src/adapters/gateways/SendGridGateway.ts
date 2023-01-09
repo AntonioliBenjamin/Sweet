@@ -5,8 +5,7 @@ export class SendGridGateway implements EmailGateway {
     constructor(
         private readonly mailService: MailService,
         private readonly emailSender: string
-    ) {
-    }
+    ) {}
 
     async sendRecoveryCode(payload: {
         email: string;
