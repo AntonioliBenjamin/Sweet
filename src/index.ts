@@ -25,6 +25,7 @@ mongoose.connect(MONGODB_URL, (err) => {
     console.info("Connected to mongodb");
 });
 
+
 const app = createExpressServer({
     defaults: {
         nullResultCode: 404,
@@ -45,10 +46,6 @@ app.get('/views/reset', (req, res) => {
 app.use(morgan('combined'));
 
 app.use(express.json());
-
-app.get('/status', (req, res) => {
-    throw new Error('Not implemented')
-})
 
 app.use("/follow", followRouter);
 

@@ -1,18 +1,16 @@
-import {IsString,validateOrReject} from "class-validator";
+import {IsString} from "class-validator";
+import {Expose, plainToClass} from "class-transformer";
 
 export class ResetPasswordCommands {
-
+    @Expose()
     @IsString()
     token: string;
 
+    @Expose()
     @IsString()
     password: string;
 
-    static async setProperties(body: ResetPasswordCommands) {
-        const resetPasswordCommands = new ResetPasswordCommands();
-        resetPasswordCommands.token = body.token;
-        resetPasswordCommands.password = body.password;
-        await validateOrReject(resetPasswordCommands);
-        return resetPasswordCommands;
+    static setProperties(cmd: ResetPasswordCommands): ResetPasswordCommands {
+        return plainToClass(ResetPasswordCommands, cmd, {excludeExtraneousValues: true});
     }
 }

@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {Delete, Get, JsonController, Param, Patch, Post, QueryParam, Req, Res, UseBefore} from "routing-controllers";
+import {Body, Delete, Get, JsonController, Param, Patch, Post, Req, Res, UseBefore} from "routing-controllers";
 import {UserApiResponse} from "../dtos/UserApiUserMapper";
 import {SchoolDbRepository} from "../../adapters/repositories/school/SchoolDbRepository";
 import {Request, Response} from "express";
@@ -31,6 +31,7 @@ import {GetUserById} from "../../core/usecases/user/GetUserById";
 import {DeleteUser} from "../../core/usecases/user/DeleteUser";
 import {GetAllMyPotentialFriends} from "../../core/usecases/user/GetAllMyPotentialFriends";
 import {SendFeedback} from "../../core/usecases/user/SendFeeback";
+import {PushTokenCommands} from "../commands/user/PushTokenCommands";
 
 const mailService = new MailService();
 const emailSender = process.env.RECOVERY_EMAIL_SENDER;
@@ -53,25 +54,15 @@ const deleteUser = new DeleteUser(mongoDbUserRepository, mongoDbFollowRepository
 const getUserById = new GetUserById(mongoDbUserRepository)
 const getAllMyPotentialFriends = new GetAllMyPotentialFriends(mongoDbUserRepository);
 const updatePushtoken = new UpdatePushToken(mongoDbUserRepository);
-const sendFeedback = new SendFeedback(sendGridGateway)
+const sendFeedback = new SendFeedback(sendGridGateway);
 
 mailService.setApiKey(process.env.SENDGRID_API_KEY);
 
 @JsonController('/user')
 export class UserController {
     @Post('/')
-    async signUp(@Req() req: Request, @Res() res: Response) {
-        const body = await SignUpCommands.setProperties({
-            userName: req.body.userName,
-            email: req.body.email,
-            password: req.body.password,
-            age: req.body.age,
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            schoolId: req.body.schoolId,
-            section: req.body.section,
-            gender: req.body.gender,
-        });
+    async signUp(@Req() req: Request, @Res() res: Response, @Body() cmd: SignUpCommands) {
+        const body =  SignUpCommands.setProperties(cmd);
 
         const user = await signUp.execute(body);
 
@@ -91,11 +82,8 @@ export class UserController {
     }
 
     @Post('/sign-in')
-    async signIn(@Req() req: Request, @Res() res: Response) {
-        const body = await SignInCommands.setProperties({
-            email: req.body.email.toLowerCase().trim(),
-            password: req.body.password,
-        });
+    async signIn(@Req() req: Request, @Res() res: Response, @Body() cmd: SignInCommands) {
+        const body = await SignInCommands.setProperties(cmd);
 
         const user = await signIn.execute(body);
 
@@ -115,10 +103,8 @@ export class UserController {
     }
 
     @Post('/password/recovery')
-    async passwordRecovery(@Req() req: Request, @Res() res: Response) {
-        const body = await RecoveryCommands.setProperties({
-            email: req.body.email.toLowerCase().trim(),
-        });
+    async passwordRecovery(@Req() req: Request, @Res() res: Response, @Body() cmd: RecoveryCommands) {
+        const body = await RecoveryCommands.setProperties(cmd);
 
         const user = await updateRecoveryCode.execute(body);
 
@@ -141,11 +127,8 @@ export class UserController {
     }
 
     @Post('/password/reset')
-    async passwordReset(@Req() req: Request, @Res() res: Response) {
-        const body = await ResetPasswordCommands.setProperties({
-            password: req.body.password,
-            token: req.body.token,
-        });
+    async passwordReset(@Req() req: Request, @Res() res: Response, @Body() cmd: ResetPasswordCommands) {
+        const body = await ResetPasswordCommands.setProperties(cmd);
 
         const decodedJwt = jwt.verify(body.token, secretKey) as any;
 
@@ -159,10 +142,8 @@ export class UserController {
     }
 
     @Post('/exist')
-    async exist(@Req() req: Request, @Res() res: Response) {
-        const body = await EmailExistCommands.setProperties({
-            email: req.body.email.toLowerCase().trim(),
-        });
+    async exist(@Req() req: Request, @Res() res: Response, @Body() cmd: EmailExistCommands) {
+        const body = await EmailExistCommands.setProperties(cmd);
 
         const exist = await emailExist.execute(body.email);
 
@@ -173,11 +154,8 @@ export class UserController {
 
     @Post('/send-feedback')
     @UseBefore(authorization)
-    async sendFeedback(@Req() req: AuthentifiedRequest, @Res() res: Response) {
-        const body = await SendFeedbackCommands.setProperties({
-            email: req.user.email,
-            message: req.body.message
-        })
+    async sendFeedback(@Req() req: AuthentifiedRequest, @Res() res: Response, @Body() cmd: SendFeedbackCommands) {
+        const body = await SendFeedbackCommands.setProperties(cmd)
         await sendFeedback.execute({
             email: body.email,
             message: body.message
@@ -187,15 +165,8 @@ export class UserController {
 
     @Patch('/')
     @UseBefore(authorization)
-    async update(@Req() req: AuthentifiedRequest, @Res() res: Response) {
-        const body = await UpdateUserCommands.setProperties({
-            userName: req.body.userName.trim(),
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            section: req.body.section,
-            gender: req.body.gender,
-            schoolId: req.body.schoolId
-        });
+    async update(@Req() req: AuthentifiedRequest, @Res() res: Response, @Body() cmd: UpdateUserCommands) {
+        const body = await UpdateUserCommands.setProperties(cmd);
 
         const updatedUser = await updateUser.execute({
             userName: body.userName,
@@ -212,12 +183,8 @@ export class UserController {
 
     @Patch('/push-token')
     @UseBefore(authorization)
-    async pushToken(@Req() req: AuthentifiedRequest, @Res() res: Response) {
-        const body = {
-            userId: req.user.id,
-            pushToken: req.body.pushToken
-        }
-
+    async pushToken(@Req() req: AuthentifiedRequest, @Res() res: Response, @Body() cmd: PushTokenCommands) {
+        const body = (cmd);
         const user = await updatePushtoken.execute(body)
 
         return res.send(userApiResponse.fromDomain(user))

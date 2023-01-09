@@ -1,14 +1,12 @@
-import {IsEmail, IsString, validateOrReject} from "class-validator";
+import {IsEmail} from "class-validator";
+import {Expose, plainToClass} from "class-transformer";
 
 export class EmailExistCommands {
-
+    @Expose()
     @IsEmail()
     email: string;
 
-    static async setProperties(body: EmailExistCommands) {
-        const emailExistCommands = new EmailExistCommands();
-        emailExistCommands.email = body.email;
-        await validateOrReject(emailExistCommands);
-        return emailExistCommands;
+    static setProperties(cmd: EmailExistCommands): EmailExistCommands {
+        return plainToClass(EmailExistCommands, cmd, {excludeExtraneousValues: true});
     }
 }

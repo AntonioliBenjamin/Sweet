@@ -1,7 +1,7 @@
-jest.mock('uuidv4',()=>{
+jest.mock('uuid',()=>{
 return {
-    generate : jest.fn().mockImplementation((value) =>{
-        return Buffer.from(value, 'base64').toString();
+    v4 : jest.fn().mockImplementation(() =>{
+        return "Hello World";
     })
 }
 })

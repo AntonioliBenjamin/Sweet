@@ -1,48 +1,48 @@
 import {Gender} from "../../../core/Entities/User";
-import {IsEmail, IsEnum, IsInt, IsOptional, IsString, Min, validateOrReject} from "class-validator";
+import {IsEmail, IsEnum, IsInt, IsOptional, IsString, Min} from "class-validator";
+import {Expose, plainToClass} from "class-transformer";
 
 export class SignUpCommands {
+    @Expose()
     @IsString()
     userName: string;
 
+    @Expose()
     @IsString()
     firstName: string;
 
+    @Expose()
     @IsString()
     lastName: string;
 
+    @Expose()
     @IsEmail()
     email: string;
 
+    @Expose()
     @IsString()
     password: string;
 
+    @Expose()
     @IsInt()
     @Min(13)
     age: number;
 
+    @Expose()
     @IsString()
     schoolId: string;
 
+    @Expose()
     @IsString()
     @IsOptional()
     section: string;
 
+    @Expose()
     @IsEnum(Gender)
     gender: Gender;
 
-    static async setProperties(body: SignUpCommands) {
-        const signUpCommands = new SignUpCommands();
-        signUpCommands.userName = body.userName;
-        signUpCommands.firstName = body.firstName;
-        signUpCommands.lastName = body.lastName;
-        signUpCommands.email = body.email;
-        signUpCommands.password = body.password;
-        signUpCommands.age = body.age;
-        signUpCommands.schoolId = body.schoolId;
-        signUpCommands.section = body.section;
-        signUpCommands.gender = body.gender;
-        await validateOrReject(signUpCommands);
-        return signUpCommands;
+    static setProperties(cmd: SignUpCommands): SignUpCommands {
+        return plainToClass(SignUpCommands, cmd, {excludeExtraneousValues: true});
     }
+
 }

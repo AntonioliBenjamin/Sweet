@@ -1,18 +1,16 @@
-import {IsEmail, IsString,validateOrReject} from "class-validator";
+import {IsEmail, IsString} from "class-validator";
+import {Expose, plainToClass} from "class-transformer";
 
 export class SendFeedbackCommands {
-
+    @Expose()
     @IsEmail()
     email: string;
 
+    @Expose()
     @IsString()
     message: string;
 
-    static async setProperties(body: SendFeedbackCommands) {
-        const sendFeedbackCommands = new SendFeedbackCommands();
-        sendFeedbackCommands.email = body.email;
-        sendFeedbackCommands.message = body.message;
-        await validateOrReject(sendFeedbackCommands);
-        return sendFeedbackCommands;
+    static setProperties(cmd: SendFeedbackCommands): SendFeedbackCommands {
+        return plainToClass(SendFeedbackCommands, cmd, {excludeExtraneousValues: true});
     }
 }
