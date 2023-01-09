@@ -19,17 +19,9 @@ const lastQuestionAnswered = new GetLastQuestionAnswered(mongoDbAnswerRepository
 pollRouter.use(authorization);
 
 pollRouter.get("/all", async (req: AuthentifiedRequest, res) => {
-    try {
         const polls = await getAllPolls.execute();
 
         return res.status(200).send(polls.map(elm => elm.props));
-
-    } catch (err) {
-        console.error(err)
-        return res.status(400).send({
-            message: "An error occurred"
-        })
-    }
 })
 
 pollRouter.get("/current", async (req: AuthentifiedRequest, res) => {

@@ -1,8 +1,8 @@
+import 'reflect-metadata';
 import "dotenv/config";
-import { followRouter } from "../routes/follow";
+import { createExpressServer, useExpressServer } from "routing-controllers";
 import supertest from "supertest";
 import { sign } from "jsonwebtoken";
-import express from "express";
 import { MongoDbUserRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
 import { Gender, User } from "../../core/Entities/User";
 import { UserRepository } from "../../core/repositories/UserRepository";
@@ -10,8 +10,17 @@ import { FollowedRepository } from "../../core/repositories/FollowedRepository";
 import { MongoDbFollowRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
 import { Followed } from "../../core/Entities/Followed";
 import {connectDB, dropCollections, dropDB} from "../../adapters/__test__/setupTestDb";
+import { FollowController } from "../controllers/FollowController";
 
-const app = express();
+const app = createExpressServer({
+  defaults: {
+    nullResultCode: 404,
+    undefinedResultCode: 204,
+    paramOptions: {
+      required: false,
+    },
+  },
+});
 
 describe("E2E - FollowRouter", () => {
   let accessKey;
@@ -28,8 +37,9 @@ describe("E2E - FollowRouter", () => {
     userRepository = new MongoDbUserRepository();
     followRepository = new MongoDbFollowRepository();
 
-    app.use(express.json());
-    app.use("/follow", followRouter);
+    useExpressServer(app, {
+      controllers: [FollowController]
+  })
 
     await connectDB();
 
@@ -45,8 +55,8 @@ describe("E2E - FollowRouter", () => {
       schoolId: "456",
       section: "cp",
       createdAt: new Date(),
-      updatedAt: null,
-      recoveryCode: null,
+      updatedAt: new Date()
+
     });
 
     user2 = new User({
@@ -61,8 +71,7 @@ describe("E2E - FollowRouter", () => {
       schoolId: "456",
       section: "cp",
       createdAt: new Date(),
-      updatedAt: null,
-      recoveryCode: null,
+      updatedAt: new Date()
     });
 
     user3 = new User({
@@ -77,8 +86,7 @@ describe("E2E - FollowRouter", () => {
       schoolId: "456",
       section: "cp",
       createdAt: new Date(),
-      updatedAt: null,
-      recoveryCode: null,
+      updatedAt: new Date()
     });
 
     follow = new Followed({
@@ -171,7 +179,7 @@ describe("E2E - FollowRouter", () => {
       },
       "maytheforcebewithyou"
     );
-
+    
     await supertest(app)
       .delete(`/follow/${follow2.props.userId}`)
       .set("access_key", accessKey)

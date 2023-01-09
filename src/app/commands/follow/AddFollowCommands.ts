@@ -1,20 +1,18 @@
-import {IsString, validateOrReject} from 'class-validator';
+import { Expose, plainToClass } from "class-transformer";
+import { IsString } from "class-validator";
 
 export class AddFollowCommands {
-    @IsString()
-    addedBy: string;
+  @Expose()
+  @IsString()
+  addedBy: string;
 
-    @IsString()
-    userId: string
+  @Expose()
+  @IsString()
+  userId: string;
 
-    static async setProperties(body: AddFollowCommands) {
-        const addFollowCommands = new AddFollowCommands();
-        addFollowCommands.addedBy = body.addedBy;
-        addFollowCommands.userId = body.userId;
-        await validateOrReject(addFollowCommands);
-        return addFollowCommands;
-    }
+  static async setProperties(cmd: AddFollowCommands) {
+    return plainToClass(AddFollowCommands, cmd, {
+      excludeExtraneousValues: true,
+    });
+  }
 }
-
-
-
