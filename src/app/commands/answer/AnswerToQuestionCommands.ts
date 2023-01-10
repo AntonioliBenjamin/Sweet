@@ -1,26 +1,26 @@
-import { IsOptional, IsString, validateOrReject } from 'class-validator';
+import { Expose, plainToClass } from 'class-transformer';
+import { IsOptional, IsString } from 'class-validator';
 
 export class AnswerToQuestionCommands {
+
+    @Expose()
     @IsString()
     questionId: string;
 
+    @Expose()
     @IsOptional()
     @IsString()
     friendId: string;
 
+    @Expose()
     @IsString()
     userId: string;
 
+    @Expose()
     @IsString()
     pollId: string;
 
-    static async setProperties(body: AnswerToQuestionCommands) {
-        const answerToQuestionCommands = new AnswerToQuestionCommands();
-        answerToQuestionCommands.friendId = body.friendId;
-        answerToQuestionCommands.pollId = body.pollId;
-        answerToQuestionCommands.questionId = body.questionId;
-        answerToQuestionCommands.userId = body.userId;
-        await validateOrReject(answerToQuestionCommands);
-        return answerToQuestionCommands;
+    static async setProperties(cmd: AnswerToQuestionCommands) {
+        return plainToClass(AnswerToQuestionCommands, cmd, { excludeExtraneousValues: true });
     }
 }

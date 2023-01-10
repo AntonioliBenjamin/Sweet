@@ -1,8 +1,11 @@
+import 'reflect-metadata';
 import express from "express";
 import {MongoDbUserRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
 import {SearchFriends} from "../../core/usecases/friends/SearchFriends";
 import {UserApiResponse} from "../dtos/UserApiUserMapper";
 import {authorization} from "../middlewares/JwtAuthorizationMiddleware";
+import { useExpressServer } from 'routing-controllers';
+import { FriendsController } from "../controllers/FriendsController";
 
 const friendsRouter = express.Router();
 const mongoDbUserRepository = new MongoDbUserRepository()
