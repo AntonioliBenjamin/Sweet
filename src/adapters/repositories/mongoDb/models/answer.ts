@@ -6,8 +6,9 @@ import { Gender } from "../../../../core/Entities/User";
 export type AnswerModel = {
   answerId: string;
   question: QuestionProperties;
-  response: ResponseProperties;
-  userId?: string;
+  response?: ResponseProperties;
+  from: ResponseProperties;
+  userId: string;
   createdAt: number;
   markAsRead: boolean;
   pollId: string;
@@ -22,7 +23,7 @@ const answerSchema = new Schema({
   },
   userId: {
     type: String,
-    required: false,
+    required: true,
     index: true
   },
   pollId: {
@@ -84,8 +85,48 @@ const answerSchema = new Schema({
         required: true,
       },
     },
-    required: true,
+    required: false,
   },
+  from: {
+  type: {
+    userId: {
+      type: String,
+          required: true,
+          index: true,
+    },
+    firstName: {
+      type: String,
+          required: true,
+    },
+    lastName: {
+      type: String,
+          required: true,
+    },
+    userName: {
+      type: String,
+          required: true,
+    },
+    schoolId: {
+      type: String,
+          required: true,
+          index: true
+    },
+    schoolName: {
+      type: String,
+          required: true,
+    },
+    section: {
+      type: String,
+          required: false,
+    },
+    gender: {
+      type: String,
+      enum: Object.values(Gender),
+          required: true,
+    },
+  },
+  required: true,
+},
   createdAt: {
     type: Number,
     required: true,

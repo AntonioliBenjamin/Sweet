@@ -1,14 +1,23 @@
+import 'reflect-metadata';
 import supertest from "supertest";
 import "dotenv/config";
 import {sign} from "jsonwebtoken";
-import express from "express";
-import {friendsRouter} from "../routes/friends";
 import {Gender, User} from "../../core/Entities/User";
 import {UserRepository} from "../../core/repositories/UserRepository";
 import {MongoDbUserRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
 import {connectDB, dropCollections, dropDB} from "../../adapters/__test__/setupTestDb";
+import { createExpressServer, useExpressServer } from "routing-controllers";
+import { FriendsController } from "../controllers/FriendsController";
 
-const app = express();
+const app = createExpressServer({
+    defaults: {
+      nullResultCode: 404,
+      undefinedResultCode: 204,
+      paramOptions: {
+        required: false,
+      },
+    },
+  });
 
 describe("E2E - Friends Router", () => {
     let accessKey;
@@ -18,8 +27,9 @@ describe("E2E - Friends Router", () => {
     let user3: User;
 
     beforeAll(async () => {
-        app.use(express.json());
-        app.use("/friends", friendsRouter);
+        useExpressServer(app, {
+            controllers: [FriendsController]
+        })
 
         await connectDB();
 
@@ -35,7 +45,7 @@ describe("E2E - Friends Router", () => {
             schoolId: "456",
             section: "cp",
             createdAt: new Date(),
-            updatedAt: null,
+            updatedAt: new Date()
         });
 
         user2 = User.create({
@@ -96,7 +106,7 @@ describe("E2E - Friends Router", () => {
             .set("access_key", accessKey)
             .expect((response) => {
                 const responseBody = response.body;
-                expect(responseBody).toHaveLength(2)
+                expect(responseBody).toHaveLength(3)
             })
     })
 })   

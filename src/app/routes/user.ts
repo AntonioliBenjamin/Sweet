@@ -13,8 +13,8 @@ import {authorization} from "../middlewares/JwtAuthorizationMiddleware";
 import {AuthentifiedRequest} from "../types/AuthentifiedRequest";
 import {SignUp} from "../../core/usecases/user/SignUp";
 import {SignIn} from "../../core/usecases/user/SignIn";
-import {UpdateUser} from "../../core/Usecases/user/UpdateUser";
-import {DeleteUser} from "../../core/Usecases/user/DeleteUser";
+import {UpdateUser} from "../../core/usecases/user/UpdateUser";
+import {DeleteUser} from "../../core/usecases/user/DeleteUser";
 import {MongoDbUserRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
 import {MongoDbFollowRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
 import {MongoDbAnswerRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbAnswerRepository";
@@ -29,7 +29,6 @@ import {EmailExistCommands} from "../commands/user/EmailExistCommands";
 import {GetUserById} from "../../core/usecases/user/GetUserById";
 import {SendFeedbackCommands} from "../commands/user/SendFeedbackCommands";
 import {SendFeedback} from "../../core/usecases/user/SendFeeback";
-import { User } from "../../core/Entities/User";
 
 const mailService = new MailService();
 const emailSender = process.env.RECOVERY_EMAIL_SENDER;

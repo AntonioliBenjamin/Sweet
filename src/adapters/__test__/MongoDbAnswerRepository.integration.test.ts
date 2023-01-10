@@ -19,7 +19,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
 
         answer = new Answer({
             answerId: "1234",
-            markAsRead : false,
+            markAsRead : true,
             pollId: "1234",
             question: {
                 questionId: "1111",
@@ -27,6 +27,16 @@ describe("Integration - MongoDbAnswerRepository", () => {
                 picture: "http://pic",
             },
             response: {
+                userId: "1111",
+                firstName: "name",
+                lastName: "lastname",
+                userName: "username",
+                schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
+                schoolName : "schoolName",
+                section: "1er L",
+                gender: Gender.GIRL,
+            },
+            from: {
                 userId: "9999",
                 firstName: "name",
                 lastName: "lastname",
@@ -36,7 +46,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
                 section: "1er L",
                 gender: Gender.GIRL,
             },
-            userId: "1111",
+            userId: "9999",
             createdAt: new Date(100),
         });
 
@@ -50,7 +60,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
                 picture: "http://pic",
             },
             response: {
-                userId: "9999",
+                userId: "3333",
                 firstName: "name",
                 lastName: "lastname",
                 userName: "username",
@@ -59,7 +69,17 @@ describe("Integration - MongoDbAnswerRepository", () => {
                 section: "1er L",
                 gender: Gender.GIRL,
             },
-            userId: "3333",
+            from: {
+                userId: "9999",
+                firstName: "name",
+                lastName: "lastname",
+                userName: "username",
+                schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
+                schoolName : "schoolName",
+                section: "1er L",
+                gender: Gender.GIRL,
+            },
+            userId: "9999",
             createdAt: new Date(150),
         });
 
@@ -73,7 +93,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
                 picture: "http://pic",
             },
             response: {
-                userId: "7777",
+                userId: "2222",
                 firstName: "name",
                 lastName: "lastname",
                 userName: "username",
@@ -82,7 +102,17 @@ describe("Integration - MongoDbAnswerRepository", () => {
                 section: "1er L",
                 gender: Gender.GIRL,
             },
-            userId: "2222",
+            from: {
+                userId: "7777",
+                firstName: "name",
+                lastName: "lastname",
+                userName: "username",
+                schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
+                schoolName : "schoolName",
+                section: "1er L",
+                gender: Gender.GIRL,
+            },
+            userId: "7777",
             createdAt: new Date(),
         });
 
@@ -96,7 +126,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
                 picture: "http://pic",
             },
             response: {
-                userId: "6666",
+                userId: "1111",
                 firstName: "name",
                 lastName: "lastname",
                 userName: "username",
@@ -105,7 +135,17 @@ describe("Integration - MongoDbAnswerRepository", () => {
                 section: "1er L",
                 gender: Gender.GIRL,
             },
-            userId: "1111",
+            from: {
+                userId: "6666",
+                firstName: "name",
+                lastName: "lastname",
+                userName: "username",
+                schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
+                schoolName : "schoolName",
+                section: "1er L",
+                gender: Gender.GIRL,
+            },
+            userId: "6666",
             createdAt: new Date(),
         });
     });
@@ -136,6 +176,16 @@ describe("Integration - MongoDbAnswerRepository", () => {
                 picture: "http://pic",
             },
             response: {
+                userId: "9999",
+                firstName: "name",
+                lastName: "lastname",
+                userName: "username",
+                schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
+                schoolName : "schoolName",
+                section: "1er L",
+                gender: Gender.GIRL,
+            },
+            from: {
                 userId: "8888",
                 firstName: "name",
                 lastName: "lastname",
@@ -145,7 +195,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
                 section: "1er L",
                 gender: Gender.GIRL,
             },
-            userId: "9999",
+            userId: "8888",
             createdAt: new Date(),
         }));
 
@@ -182,7 +232,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
     });
 
     it("should get the last question answered", async () => {
-        const result = await mongoDbAnswerRepository.getLastQuestionAnswered(answer.props.pollId, answer.props.response.userId)
+        const result = await mongoDbAnswerRepository.getLastQuestionAnswered(answer.props.pollId, answer.props.userId)
         expect(result.props.question.questionId).toEqual("2222")
     })
 });

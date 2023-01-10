@@ -1,17 +1,18 @@
-import {IsString, validateOrReject} from 'class-validator';
+import { Expose, plainToClass } from "class-transformer";
+import { IsString } from "class-validator";
 
 export class CreateQuestionCommands {
-    @IsString()
-    description: string;
+  @Expose()
+  @IsString()
+  description: string;
 
-    @IsString()
-    picture: string;
+  @Expose()
+  @IsString()
+  picture: string;
 
-    static async setProperties(body: CreateQuestionCommands) {
-        const createQuestionCommands = new CreateQuestionCommands();
-        createQuestionCommands.description = body.description;
-        createQuestionCommands.picture = body.picture;
-        await validateOrReject(createQuestionCommands);
-        return createQuestionCommands;
-    }
+  static async setProperties(cmd: CreateQuestionCommands) {
+    return plainToClass(CreateQuestionCommands, cmd, {
+      excludeExtraneousValues: true,
+    });
+  }
 }

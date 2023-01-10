@@ -1,4 +1,6 @@
 import { BcryptGateway } from "../gateways/BcryptGateway";
+import './mocks/bcrypt.mock';
+
 
 describe("Unit - BcryptGateway", () => {
     const bcryptGateway = new BcryptGateway()
@@ -10,6 +12,6 @@ describe("Unit - BcryptGateway", () => {
 
     it("should compare two passwords", () => {
         const result = bcryptGateway.encrypt("12345");
-        expect(bcryptGateway.decrypt("12345", result)).toBeTruthy;
+        expect(bcryptGateway.decrypt("12345", result)).toBeTruthy();
     })
 })

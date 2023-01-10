@@ -7,18 +7,19 @@ export class FirebaseGateway implements PushNotificationGateway {
   ) {}
 
   async send(message: MessagePayload) {
-    await this._admin
-      .messaging()
-      .send({
-        token: message.identifier,
-        notification: {
-            body: message.message,
-            title: message.title
-        }
-      })
-      .catch((error) => {
-        console.log("Error sending message:", error);
-      });
-      return
+      try {
+          await this._admin
+              .messaging()
+              .send({
+                  token: message.identifier,
+                  notification: {
+                      body: message.message,
+                      title: message.title
+                  }
+              })
+      } catch(e) {
+          console.error(e);
+          return;
+      }
   }
 }

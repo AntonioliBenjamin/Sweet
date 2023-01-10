@@ -17,6 +17,7 @@ export type AnswerProperties = {
     pollId: string;
     question: QuestionProperties;
     response: ResponseProperties;
+    from: ResponseProperties;
     userId: string;
     createdAt: Date;
     markAsRead: boolean;
@@ -33,6 +34,7 @@ export class Answer {
         answerId: string;
         question: QuestionProperties;
         response: ResponseProperties;
+        from: ResponseProperties;
         pollId: string;
         userId: string;
     }) {
@@ -41,6 +43,7 @@ export class Answer {
             pollId: props.pollId,
             question: props.question,
             response: props.response,
+            from: props.from,
             userId: props.userId,
             createdAt: new Date(),
             markAsRead : false

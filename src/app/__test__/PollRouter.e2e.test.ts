@@ -1,16 +1,25 @@
+import 'reflect-metadata';
 import "dotenv/config";
 import supertest from 'supertest';
-import express from "express";
 import {QuestionRepository} from "../../core/repositories/QuestionRepository";
 import {MongoDbQuestionRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbQuestionRepository";
 import {sign} from "jsonwebtoken";
 import {PollRepository} from "../../core/repositories/PollRepository";
 import {Poll} from "../../core/Entities/Poll";
-import {pollRouter} from "../routes/poll";
 import {MongoDbPollRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbPollRepository";
 import {connectDB, dropCollections, dropDB} from "../../adapters/__test__/setupTestDb";
+import { createExpressServer, useExpressServer } from "routing-controllers";
+import { PollController } from '../controllers/Pollcontroller'
 
-const app = express();
+const app = createExpressServer({
+    defaults: {
+      nullResultCode: 404,
+      undefinedResultCode: 204,
+      paramOptions: {
+        required: false,
+      },
+    },
+  });
 
 describe("E2E - Poll Router", () => {
     let accessKey;
@@ -22,8 +31,10 @@ describe("E2E - Poll Router", () => {
     beforeAll(async () => {
         questionRepository = new MongoDbQuestionRepository();
         pollRepository = new MongoDbPollRepository();
-        app.use(express.json());
-        app.use("/poll", pollRouter);
+        
+        useExpressServer(app, {
+            controllers: [PollController]
+        })
 
         await connectDB();
 

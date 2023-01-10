@@ -1,14 +1,23 @@
+import 'reflect-metadata';
 import "dotenv/config";
 import supertest from "supertest";
-import express from "express";
-import {questionRouter} from "../routes/question";
 import {QuestionRepository} from "../../core/repositories/QuestionRepository";
 import {MongoDbQuestionRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbQuestionRepository";
 import {Question} from "../../core/Entities/Question";
 import {sign} from "jsonwebtoken";
 import {connectDB, dropCollections, dropDB} from "../../adapters/__test__/setupTestDb";
+import { createExpressServer, useExpressServer } from "routing-controllers";
+import { QuestionController } from '../controllers/QuestionController';
 
-const app = express();
+const app = createExpressServer({
+    defaults: {
+      nullResultCode: 404,
+      undefinedResultCode: 204,
+      paramOptions: {
+        required: false,
+      },
+    },
+  });
 
 describe("E2E - Question Router", () => {
     let accessKey;
@@ -16,8 +25,9 @@ describe("E2E - Question Router", () => {
     let question: Question;
 
     beforeAll(async () => {
-        app.use(express.json());
-        app.use("/question", questionRouter);
+        useExpressServer(app, {
+            controllers: [QuestionController]
+        })
 
         await connectDB();
 

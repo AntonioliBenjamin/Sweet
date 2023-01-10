@@ -1,11 +1,10 @@
+import 'reflect-metadata';
 import "dotenv/config";
 import { sign } from "jsonwebtoken";
-import express from "express";
 import supertest from "supertest";
 import { MongoDbAnswerRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbAnswerRepository";
 import { Answer } from "../../core/Entities/Answer";
 import { AnswerRepository } from "../../core/repositories/AnswerRepository";
-import { answerRouter } from "../routes/answer";
 import { Gender, User } from "../../core/Entities/User";
 import { UserRepository } from "../../core/repositories/UserRepository";
 import { MongoDbUserRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
@@ -14,8 +13,18 @@ import { MongoDbQuestionRepository } from "../../adapters/repositories/mongoDb/r
 import { QuestionRepository } from "../../core/repositories/QuestionRepository";
 import { Question } from "../../core/Entities/Question";
 import {connectDB, dropCollections, dropDB} from "../../adapters/__test__/setupTestDb";
+import { createExpressServer, useExpressServer } from "routing-controllers";
+import { AnswerController } from '../controllers/AnswerController'
 
-const app = express();
+const app = createExpressServer({
+  defaults: {
+    nullResultCode: 404,
+    undefinedResultCode: 204,
+    paramOptions: {
+      required: false,
+    },
+  },
+});
 
 describe("E2E - AnswerRouter", () => {
   let accessKey;
@@ -27,15 +36,16 @@ describe("E2E - AnswerRouter", () => {
   let question: Question;
 
   beforeAll(async() => {
-    answerRepository = new MongoDbAnswerRepository();
-    userRepository = new MongoDbUserRepository();
+    useExpressServer(app, {
+      controllers: [AnswerController]
+  })
 
-    app.use(express.json());
-    app.use("/answer", answerRouter);
 
     await connectDB();
 
     questionRepository = new MongoDbQuestionRepository();
+    userRepository = new MongoDbUserRepository();
+    answerRepository = new MongoDbAnswerRepository()
     question = Question.create({
       questionId: "9999",
       description: "yes",
@@ -52,6 +62,16 @@ describe("E2E - AnswerRouter", () => {
         picture: "http://pic",
       },
       response: {
+        userId: "4321",
+        firstName: "name",
+        lastName: "lastname",
+        userName: "username",
+        schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
+        schoolName : "schoolName",
+        section: "1er L",
+        gender: Gender.GIRL,
+      },
+      from: {
         userId: "9999",
         firstName: "name",
         lastName: "lastname",
@@ -61,7 +81,7 @@ describe("E2E - AnswerRouter", () => {
         section: "1er L",
         gender: Gender.GIRL,
       },
-      userId: "4321",
+      userId: "9999",
       createdAt: new Date(),
     });
 
@@ -75,7 +95,7 @@ describe("E2E - AnswerRouter", () => {
         picture: "http://pic",
       },
       response: {
-        userId: "8888",
+        userId: "4321",
         firstName: "name",
         lastName: "lastname",
         userName: "username",
@@ -84,7 +104,17 @@ describe("E2E - AnswerRouter", () => {
         section: "1er L",
         gender: Gender.GIRL,
       },
-      userId: "4321",
+      from: {
+        userId: "8888",
+        firstName: "name",
+        lastName: "lastname",
+        userName: "username",
+        schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
+        schoolName : "schoolName",
+        section: "1er L",
+        gender: Gender.GIRL,
+      },
+      userId: "8888",
       createdAt: new Date(),
     });
 
@@ -100,8 +130,7 @@ describe("E2E - AnswerRouter", () => {
       schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
       section: "cp",
       createdAt: new Date(),
-      updatedAt: null,
-      recoveryCode: null,
+      updatedAt: new Date()
     });
     await userRepository.create(user2);
   });
@@ -134,9 +163,9 @@ describe("E2E - AnswerRouter", () => {
       schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
       section: "cp",
       createdAt: new Date(),
-      updatedAt: null,
-      recoveryCode: null,
+      updatedAt: null
     });
+
     await userRepository.create(user);
 
     accessKey = sign(
@@ -178,8 +207,9 @@ describe("E2E - AnswerRouter", () => {
       .get("/answer/all/0f87dd7e1c1d7fef5269f007c7b112a22f610cf7")
       .set("access_key", accessKey)
       .expect((response) => {
+       
         const responseBody = response.body;
-        expect(responseBody).toHaveLength(1);
+        expect(responseBody).toHaveLength(2);
       })
       .expect(200);
   });
