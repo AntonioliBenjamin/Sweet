@@ -11,8 +11,6 @@ export class AddFollowCommands {
   userId: string;
 
   static async setProperties(cmd: AddFollowCommands) {
-    return plainToClass(AddFollowCommands, cmd, {
-      excludeExtraneousValues: true,
-    });
+      return plainToClass(AddFollowCommands, cmd, { excludeExtraneousValues: true });
   }
 }

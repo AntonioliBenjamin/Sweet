@@ -7,11 +7,9 @@ import {
   JsonController,
   Param,
   Post,
-  Req,
   Res,
   UseBefore,
 } from "routing-controllers";
-import { AuthentifiedRequest } from "../types/AuthentifiedRequest";
 import { authorization } from "../middlewares/JwtAuthorizationMiddleware";
 import { MongoDbQuestionRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbQuestionRepository";
 import { CreateQuestion } from "../../core/usecases/question/CreateQuestion";
@@ -38,16 +36,10 @@ export class QuestionController {
   @Post()
   async createQuestion(
     @Res() res: Response,
-    @Req() req: AuthentifiedRequest,
-    @Body() body: any
+    @Body() cmd: CreateQuestionCommands
   ) {
-    const value = await CreateQuestionCommands.setProperties({
-      description: body.description,
-      picture: body.picture,
-    });
-
-    const question = await createQuestion.execute(value);
-
+    const body = await CreateQuestionCommands.setProperties(cmd);
+    const question = await createQuestion.execute(body);
     return res.status(201).send(apiQuestionMapper.fromDomain(question));
   }
 

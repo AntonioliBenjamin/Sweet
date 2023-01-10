@@ -55,7 +55,7 @@ describe("E2E - FollowRouter", () => {
       schoolId: "456",
       section: "cp",
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: null
 
     });
 
@@ -139,6 +139,7 @@ describe("E2E - FollowRouter", () => {
       })
 
       .expect((response) => {
+      
         const responseBody = response.body;
         expect(responseBody.addedBy).toEqual("chalom");
       })

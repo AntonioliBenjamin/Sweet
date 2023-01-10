@@ -33,6 +33,7 @@ const getMyFollows = new GetMyFollows(
   mongoDbUserRepository
 );
 
+
 @JsonController("/follow")
 @UseBefore(authorization)
 export class FollowController {
@@ -40,10 +41,14 @@ export class FollowController {
   @Post()
   async followUser(
     @Res() res: Response,
-    @Body() cmd: AddFollowCommands
+    @Req() req: AuthentifiedRequest,
+    @Body() cmd: any
   ) {
-    console.log(cmd)
-    const body = await AddFollowCommands.setProperties(cmd)
+    const body = await AddFollowCommands.setProperties({
+      addedBy: req.user.id,
+      userId: cmd.userId
+    })
+
     const follow = await followUser.execute(body);
     return res.status(201).send(follow.props);
   }

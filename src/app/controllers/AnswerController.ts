@@ -23,9 +23,7 @@ const schoolDbRepository = new SchoolDbRepository();
 const v4IdGateway = new V4IdGateway();
 const mongoDbAnswerRepository = new MongoDbAnswerRepository();
 const googleCreadentials = process.env.GOOGLE_APPLICATION_CREDENTIALS;
-const serviceAccount = JSON.parse(
-    Buffer.from(googleCreadentials, 'base64').toString('utf-8')
-    );
+const serviceAccount = JSON.parse(Buffer.from(googleCreadentials, 'base64').toString('utf-8'));
 const initialize = admin.initializeApp({credential: admin.credential.cert(serviceAccount)});
 const firebaseGateway = new FirebaseGateway(initialize)
 const answerToQuestion = new AnswerToQuestion(mongoDbAnswerRepository, mongoDbUserRepository, mongoDbQuestionRepository, schoolDbRepository, v4IdGateway, firebaseGateway);
