@@ -82,7 +82,7 @@ describe("E2E - AnswerRouter", () => {
         gender: Gender.GIRL,
       },
       userId: "9999",
-      createdAt: new Date(),
+      createdAt: null,
     });
 
     answer2 = new Answer({
