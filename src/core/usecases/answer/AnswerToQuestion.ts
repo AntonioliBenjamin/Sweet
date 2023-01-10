@@ -5,8 +5,8 @@ import {AnswerRepository} from "../../repositories/AnswerRepository";
 import {UserRepository} from "../../repositories/UserRepository";
 import {QuestionRepository} from "../../repositories/QuestionRepository";
 import {SchoolRepository} from "../../repositories/SchoolRepository";
-import { MessagePayload, PushNotificationGateway } from "../../gateways/PushNotificationGateway";
-import {User} from "../../Entities/User";
+import {PushNotificationGateway} from "../../gateways/PushNotificationGateway";
+import {Gender, User} from "../../Entities/User";
 
 export type AnswerToQuestionInput = {
     questionId: string;
@@ -33,8 +33,8 @@ export class AnswerToQuestion
             friend = await this.userRepository.getById(input.friendId);
             await this.pushNotificationGateway.send({
                 identifier: friend.props.pushToken,
-                message: `Vas vite sur l'app pour découvrir ton admirateur secret`,
-                title: "Quelqu'un s'intéresse à toi"
+                message: `${user.props.gender === Gender.BOY ? "Un garçon" : "Une fille"} t'as envoyé un POV`,
+                title: "Un nouveau POV"
             });
         }
 
