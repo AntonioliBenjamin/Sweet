@@ -1,10 +1,13 @@
+import "reflect-metadata";
 import {Poll} from "../../../../core/Entities/Poll";
 import {PollModel} from "../models/poll";
 import {MongoDbPollMapper} from "../mappers/MongoDbPollMapper";
 import {PollRepository} from "../../../../core/repositories/PollRepository";
+import {injectable} from "inversify";
 
 export const mongoDbPollMapper = new MongoDbPollMapper();
 
+@injectable()
 export class MongoDbPollRepository implements PollRepository {
     async create(poll: Poll): Promise<Poll> {
         const toPollModel = mongoDbPollMapper.fromDomain(poll);
