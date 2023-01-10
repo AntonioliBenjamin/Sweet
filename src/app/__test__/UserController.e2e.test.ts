@@ -20,7 +20,7 @@ const app = createExpressServer({
     },
 });
 
-describe("E2E - User Router", () => {
+describe("E2E - User Controller", () => {
     let accessKey;
     let userRepository: UserRepository;
     let user: User;

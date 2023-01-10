@@ -1,10 +1,10 @@
-import {InMemoryUserRepository} from "../adapters/repositories/InMemoryUserRepository";
 import {ResetPassword} from "../../usecases/user/ResetPassword";
 import {Gender, User} from "../../Entities/User";
 import { BcryptGateway } from "../adapters/gateways/BcryptGateway";
 import { UserErrors } from "../../errors/UserErrors";
+import { testContainer, userDb } from "../adapters/container/inversify.config";
+import { identifiers } from "../../identifiers/identifiers";
 
-const db = new Map();
 
 describe('Unit - ResetPassword', () => {
     let resetPassword : ResetPassword;
@@ -12,9 +12,8 @@ describe('Unit - ResetPassword', () => {
     let encryptionGateway: BcryptGateway
 
     beforeAll(() => {
-        const inMemoryUserRepository = new InMemoryUserRepository(db);
-        encryptionGateway = new BcryptGateway()
-        resetPassword = new ResetPassword(inMemoryUserRepository, encryptionGateway)
+    encryptionGateway = testContainer.get(identifiers.PasswordGateway)
+    resetPassword = testContainer.get(identifiers.ResetPassword)
 
         user = new User({
             userName: "JOJO",
@@ -31,7 +30,7 @@ describe('Unit - ResetPassword', () => {
             updatedAt: null,
             recoveryCode: "test123"
         })
-        db.set("0000",user)
+        userDb.set("0000",user)
     })
 
     it('Should reset password', async () => {

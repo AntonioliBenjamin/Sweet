@@ -1,9 +1,13 @@
+import "reflect-metadata";
+import { injectable } from "inversify";
 import { Answer } from "../../../Entities/Answer";
-import { Question } from "../../../Entities/Question";
 import { AnswerRepository } from "../../../repositories/AnswerRepository";
 
+
+@injectable()
 export class InMemoryAnswerRepository implements AnswerRepository {
   constructor(private readonly db: Map<string, Answer>) {}
+
 
   async create(answer: Answer): Promise<Answer> {
     this.db.set(answer.props.answerId, answer);

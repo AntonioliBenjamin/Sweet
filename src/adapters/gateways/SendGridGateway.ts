@@ -1,6 +1,9 @@
+import "reflect-metadata";
 import {EmailGateway} from "../../core/gateways/EmailGateway";
 import {MailService} from "@sendgrid/mail";
+import {injectable} from "inversify";
 
+@injectable()
 export class SendGridGateway implements EmailGateway {
     constructor(
         private readonly mailService: MailService,

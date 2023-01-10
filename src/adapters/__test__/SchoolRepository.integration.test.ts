@@ -1,10 +1,12 @@
 import { SchoolDbRepository } from "../repositories/school/SchoolDbRepository";
+import {myContainer} from "../container/inversify.config";
+import {identifiers} from "../../core/identifiers/identifiers";
 
 describe("Integration - SchoolRepository", () => {
   let schoolDbRepository: SchoolDbRepository;
   
   beforeAll(() => {
-    schoolDbRepository = new SchoolDbRepository();
+    schoolDbRepository = myContainer.get(identifiers.SchoolRepository);
   });
 
   it("should get school by Id ", async () => {

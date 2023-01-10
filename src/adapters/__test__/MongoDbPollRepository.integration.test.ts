@@ -2,6 +2,8 @@ import {Poll} from "../../core/Entities/Poll";
 import {MongoDbPollRepository} from "../repositories/mongoDb/repositories/MongoDbPollRepository";
 import {PollModel} from "../repositories/mongoDb/models/poll";
 import {connectDB, dropCollections, dropDB} from "./setupTestDb";
+import {myContainer} from "../container/inversify.config";
+import {identifiers} from "../../core/identifiers/identifiers";
 
 describe('Integration - MongoDbPollRepository', () => {
     let mongoDbPollRepository: MongoDbPollRepository;
@@ -12,7 +14,7 @@ describe('Integration - MongoDbPollRepository', () => {
     beforeAll(async () => {
         await connectDB();
 
-        mongoDbPollRepository = new MongoDbPollRepository();
+        mongoDbPollRepository = myContainer.get(identifiers.PollRepository);
 
         poll = new Poll({
             pollId: "1234",

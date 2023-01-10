@@ -1,3 +1,5 @@
+import "reflect-metadata";
+import { injectable } from "inversify";
 import { EmailGateway } from "../../gateways/EmailGateway";
 import { UseCase } from "../Usecase";
 
@@ -6,6 +8,7 @@ export type SendFeedbackInput = {
     email: string;
 }
 
+@injectable()
 export class SendFeedback implements UseCase<SendFeedbackInput, void> {
     constructor(
         private readonly emailGateway: EmailGateway,
