@@ -4,4 +4,6 @@ export interface SchoolRepository {
   getBySchoolId(schoolId: string): School;
 
   getAllSchools(): Promise<School[]>;
+
+  save?(school: School): Promise<School>
 }

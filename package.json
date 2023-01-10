@@ -27,6 +27,7 @@
     "express-joi-validate": "^3.0.1",
     "express-joi-validation": "^5.0.1",
     "firebase-admin": "^11.4.1",
+    "inversify": "^6.0.1",
     "joi": "^17.7.0",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.11.0",

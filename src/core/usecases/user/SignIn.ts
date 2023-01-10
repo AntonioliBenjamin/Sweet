@@ -1,21 +1,24 @@
+import "reflect-metadata";
+import { inject, injectable } from "inversify";
 import { UseCase } from "../Usecase";
 import { User } from "../../Entities/User";
 import { UserRepository } from "../../repositories/UserRepository";
 import { PasswordGateway } from "../../gateways/PasswordGateway";
 import { UserErrors } from "../../errors/UserErrors";
+import { identifiers } from "../../identifiers/identifiers";
 
-export type UserInput = {
+export type UserSignInInput = {
   email: string;
   password: string;
 };
 
-export class SignIn implements UseCase<UserInput, User> {
-  constructor(
-    private readonly userRepository: UserRepository,
-    private readonly passwordGateway: PasswordGateway
-  ) {}
 
-  async execute(input: UserInput): Promise<User> {
+@injectable()
+export class SignIn implements UseCase<UserSignInInput, User> {
+  @inject(identifiers.PasswordGateway) private readonly passwordGateway: PasswordGateway;
+  @inject(identifiers.UserRepository) private readonly userRepository: UserRepository;
+
+  async execute(input: UserSignInInput): Promise<User> {
     const user = await this.userRepository.getByEmail(
       input.email.toLowerCase().trim()
     );
