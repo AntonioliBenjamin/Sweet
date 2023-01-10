@@ -183,8 +183,15 @@ export class UserController {
 
     @Patch('/push-token')
     @UseBefore(authorization)
-    async pushToken(@Req() req: AuthentifiedRequest, @Res() res: Response, @Body() cmd: PushTokenCommands) {
-        const body = (cmd);
+    async pushToken(
+        @Req() req: AuthentifiedRequest,
+        @Res() res: Response,
+        @Body() cmd: any
+    ) {
+        const body = await PushTokenCommands.setProperties({
+            userId : req.user.id,
+            pushToken : cmd.pushToken
+        });
         const user = await updatePushtoken.execute(body)
 
         return res.send(userApiResponse.fromDomain(user))
@@ -225,7 +232,6 @@ export class UserController {
 
     @Get('/:userId')
     @UseBefore(authorization)
-
     async getById(
         @Req() req: AuthentifiedRequest,
         @Res() res: Response,
