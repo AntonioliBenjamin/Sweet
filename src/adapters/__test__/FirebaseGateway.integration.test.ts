@@ -1,28 +1,6 @@
 import {FirebaseGateway} from "../gateways/FirebaseGateway";
-import  * as admin from 'firebase-admin';
-
-
-const app = admin.initializeApp();
-
-jest.mock('firebase-admin', () => {
-    return {
-        initializeApp: jest.fn().mockImplementation(() => {
-            return {
-                messaging: jest.fn(() => {
-                    return {
-                        send: jest.fn().mockImplementation((...args) => {
-                            const token = args[0].token;
-                            if (!token) {
-                                throw new Error('TOKEN_INVALID');
-                            }
-                            return args;
-                        })
-                    }
-                })
-            }
-        })
-    }
-})
+import  './mocks/firebase.mock';
+import {app} from './mocks/firebase.mock'
 
 describe('Integration - FirebaseGateway', () => {
     let firebaseGateway: FirebaseGateway;

@@ -1,14 +1,12 @@
-import {IsEmail, validateOrReject} from "class-validator";
+import {IsEmail} from "class-validator";
+import {Expose, plainToClass} from "class-transformer";
 
 export class RecoveryCommands {
-
+    @Expose()
     @IsEmail()
     email: string;
 
-    static async setProperties(body: RecoveryCommands) {
-        const recoveryCommands = new RecoveryCommands();
-        recoveryCommands.email = body.email;
-        await validateOrReject(recoveryCommands);
-        return recoveryCommands;
+    static setProperties(cmd: RecoveryCommands): RecoveryCommands {
+        return plainToClass(RecoveryCommands, cmd, {excludeExtraneousValues: true});
     }
 }

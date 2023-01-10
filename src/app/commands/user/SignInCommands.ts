@@ -1,18 +1,16 @@
-import {IsEmail, IsString,validateOrReject} from "class-validator";
+import {IsEmail, IsString} from "class-validator";
+import {Expose, plainToClass} from "class-transformer";
 
 export class SignInCommands {
-
+    @Expose()
     @IsEmail()
     email: string;
 
+    @Expose()
     @IsString()
     password: string;
 
-    static async setProperties(body: SignInCommands) {
-        const signInCommands = new SignInCommands();
-        signInCommands.email = body.email;
-        signInCommands.password = body.password;
-        await validateOrReject(signInCommands);
-        return signInCommands;
+    static setProperties(cmd: SignInCommands): SignInCommands {
+        return plainToClass(SignInCommands, cmd, {excludeExtraneousValues: true});
     }
 }
