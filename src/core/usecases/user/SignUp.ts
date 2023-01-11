@@ -10,6 +10,7 @@ import { UserErrors } from "../../errors/UserErrors";
 import { SchoolRepository } from "../../repositories/SchoolRepository";
 import { SchoolErrors } from "../../errors/SchoolErrors";
 import { identifiers } from "../../identifiers/identifiers";
+import {JsonController} from "routing-controllers";
 
 
 export type UserInput = {
@@ -24,6 +25,7 @@ export type UserInput = {
   gender: Gender;
 };
 
+@JsonController()
 @injectable()
 export class SignUp implements UseCase<UserInput, User> {
   @inject(identifiers.UserRepository) private readonly userRepository: UserRepository;

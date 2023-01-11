@@ -1,5 +1,16 @@
 import 'reflect-metadata';
-import {Body, Delete, Get, JsonController, Param, Patch, Post, Req, Res, UseBefore} from "routing-controllers";
+import {
+    Body,
+    Delete,
+    Get,
+    JsonController,
+    Param,
+    Patch,
+    Post,
+    Req,
+    Res,
+    UseBefore,
+} from "routing-controllers";
 import {UserApiResponse} from "../dtos/UserApiUserMapper";
 import {Request, Response} from "express";
 import jwt from "jsonwebtoken";
@@ -16,7 +27,7 @@ import {UpdateUserCommands} from "../commands/user/UpdateUserCommands";
 import {AuthentifiedRequest} from "../types/AuthentifiedRequest";
 import {SendFeedback} from "../../core/usecases/user/SendFeeback";
 import {PushTokenCommands} from "../commands/user/PushTokenCommands";
-import {myContainer} from "../../adapters/container/inversify.config";
+import { myContainer} from "../../adapters/container/inversify.config";
 import {identifiers} from "../../core/identifiers/identifiers";
 import {SignUp} from "../../core/usecases/user/SignUp";
 import {SignIn} from "../../core/usecases/user/SignIn";

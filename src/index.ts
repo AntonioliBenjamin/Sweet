@@ -8,22 +8,21 @@ import {createPollTimer} from "./app/jobs";
 import {createExpressServer, useExpressServer} from "routing-controllers";
 import {SchoolController} from "./app/controllers/SchoolController";
 import {UserController} from "./app/controllers/UserController";
-import { FriendsController } from "./app/controllers/FriendsController";
-import { AnswerController } from './app/controllers/AnswerController';
-import { PollController } from './app/controllers/Pollcontroller';
+import {FriendsController} from "./app/controllers/FriendsController";
+import {AnswerController} from './app/controllers/AnswerController';
+import {PollController} from './app/controllers/Pollcontroller';
 
 const app = createExpressServer({
     defaults: {
-      nullResultCode: 404,
-      undefinedResultCode: 204,
-      paramOptions: {
-        required: false,
-      },
+        nullResultCode: 404,
+        undefinedResultCode: 204,
+        paramOptions: {
+            required: false,
+        },
     },
-  });
+});
 
 const MONGODB_URL = process.env.MONGODB_URL
-
 
 const port = +process.env.PORT;
 
@@ -48,8 +47,8 @@ app.use(morgan('combined'));
 app.use(express.json());
 
 
-useExpressServer( app, {
-    controllers: [FriendsController, AnswerController, PollController,SchoolController,UserController],
+useExpressServer(app, {
+    controllers: [FriendsController, AnswerController, PollController, SchoolController, UserController],
 })
 
 app.use((err, req, res, next) => {
