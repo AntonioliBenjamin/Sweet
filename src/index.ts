@@ -7,12 +7,12 @@ import * as path from "path";
 import {createPollTimer} from "./app/jobs";
 import {createExpressServer, useExpressServer} from "routing-controllers";
 import {SchoolController} from "./app/controllers/SchoolController";
-import {UserController} from "./app/controllers/UserController";
+//import {UserController} from "./app/controllers/UserController";
 import { FriendsController } from "./app/controllers/FriendsController";
 import { AnswerController } from './app/controllers/AnswerController';
 import { PollController } from './app/controllers/Pollcontroller';
 import { PovKernel } from './app/config/PovKernel';
-import { useContainer } from 'class-validator';
+import { useContainer } from 'routing-controllers';
 
 const app = createExpressServer({
     defaults: {
@@ -56,7 +56,7 @@ container.init()
 useContainer(container)
 
 useExpressServer( app, {
-    controllers: [FriendsController, AnswerController, PollController,SchoolController,UserController],
+    controllers: [FriendsController, AnswerController, PollController,SchoolController/*,UserController*/],
 })
 
 app.use((err, req, res, next) => {

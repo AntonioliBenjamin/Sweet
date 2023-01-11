@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import {Answer} from "../../../../core/Entities/Answer";
 import {AnswerRepository} from "../../../../core/repositories/AnswerRepository";
 import {MongoDbAnswerMapper} from "../mappers/MongoDbAnswerMapper";

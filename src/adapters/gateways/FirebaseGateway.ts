@@ -1,5 +1,4 @@
 import { MessagePayload, PushNotificationGateway } from "../../core/gateways/PushNotificationGateway";
-import "reflect-metadata";
 import admin from "firebase-admin"
 import {injectable} from "inversify";
 

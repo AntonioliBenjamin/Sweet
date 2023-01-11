@@ -1,8 +1,6 @@
 import {Followed} from "../../core/Entities/Followed";
 import {MongoDbFollowRepository} from "../repositories/mongoDb/repositories/MongoDbFollowRepository";
 import {connectDB, dropCollections, dropDB} from "./setupTestDb";
-import {myContainer} from "../container/inversify.config";
-import {identifiers} from "../../core/identifiers/identifiers";
 
 describe("Integration - MongoDbFriendShipRepository", () => {
     let mongoDbFollowRepository: MongoDbFollowRepository;
@@ -12,7 +10,7 @@ describe("Integration - MongoDbFriendShipRepository", () => {
     beforeAll(async () => {
         await connectDB();
 
-        mongoDbFollowRepository = myContainer.get(identifiers.FollowedRepository);
+        mongoDbFollowRepository = new MongoDbFollowRepository();
 
         follow = Followed.create({
             id: "12345",

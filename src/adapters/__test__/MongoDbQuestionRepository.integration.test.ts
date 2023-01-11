@@ -3,8 +3,6 @@ import { Question } from "../../core/Entities/Question";
 import { questionMongoFixtures } from "../../core/fixtures/questionMongoFixtures";
 import { QuestionErrors } from "../../core/errors/QuestionErrors";
 import {connectDB, dropCollections, dropDB} from "./setupTestDb";
-import {myContainer} from "../container/inversify.config";
-import {identifiers} from "../../core/identifiers/identifiers";
 
 describe("Integration - MongoDbQuestionRepository", () => {
   let mongoDbQuestionRepository: MongoDbQuestionRepository;
@@ -13,7 +11,7 @@ describe("Integration - MongoDbQuestionRepository", () => {
   let result: Question;
 
   beforeAll(async () => {
-    mongoDbQuestionRepository = myContainer.get(identifiers.QuestionRepository)
+    mongoDbQuestionRepository = new MongoDbQuestionRepository();
 
     await connectDB();
 

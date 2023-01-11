@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import {QuestionRepository} from "../../../../core/repositories/QuestionRepository";
 import {Question, QuestionProperties} from "../../../../core/Entities/Question";
 import {MongoDbQuestionMapper} from "../mappers/MongoDbQuestionMapper";

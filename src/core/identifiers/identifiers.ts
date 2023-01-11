@@ -1,17 +1,4 @@
 export const identifiers = {
-    //user usecases
-    SignUp : Symbol.for("SignUp"),
-    SignIn : Symbol.for("SignIn"),
-    UpdateUser : Symbol.for("UpdateUser"),
-    UpdatePushToken : Symbol.for("UpdatePushToken"),
-    SendFeedBack : Symbol.for("SendFeedBack"),
-    ResetPassword : Symbol.for("ResetPassword"),
-    GetUserById : Symbol.for("GetUserById"),
-    GetAllMyPotentialFriends : Symbol.for("GetAllMyPotentialFriends"),
-    GenrateRecoveryCode : Symbol.for("GenrateRecoveryCode"), 
-    EmailExist : Symbol.for("EmailExist"), 
-    DeleteUser : Symbol.for("DeleteUser"), 
-
     //repositories
     UserRepository : Symbol.for("UserRepository"), 
     AnswerRepository : Symbol.for("AnswerRepository"), 

@@ -4,8 +4,6 @@ import {AnswerModel} from "../repositories/mongoDb/models/answer";
 import {MongoDbAnswerRepository} from "../repositories/mongoDb/repositories/MongoDbAnswerRepository";
 import {AnswerErrors} from "../../core/errors/AnswerErrors";
 import {connectDB, dropCollections, dropDB} from "./setupTestDb";
-import {myContainer} from "../container/inversify.config";
-import {identifiers} from "../../core/identifiers/identifiers";
 
 describe("Integration - MongoDbAnswerRepository", () => {
     let mongoDbAnswerRepository: MongoDbAnswerRepository;
@@ -17,7 +15,7 @@ describe("Integration - MongoDbAnswerRepository", () => {
     beforeAll(async () => {
         await connectDB();
 
-        mongoDbAnswerRepository = myContainer.get(identifiers.AnswerRepository);
+        mongoDbAnswerRepository = new MongoDbAnswerRepository();
 
         answer = new Answer({
             answerId: "1234",

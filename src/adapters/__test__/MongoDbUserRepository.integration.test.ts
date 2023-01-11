@@ -7,8 +7,6 @@ import {FollowModel} from "../repositories/mongoDb/models/follow";
 import {MongoDbAnswerRepository} from "../repositories/mongoDb/repositories/MongoDbAnswerRepository";
 import {MongoDbFollowRepository} from "../repositories/mongoDb/repositories/MongoDbFollowRepository";
 import {connectDB, dropCollections, dropDB} from "./setupTestDb";
-import {myContainer} from "../container/inversify.config";
-import {identifiers} from "../../core/identifiers/identifiers";
 
 describe("Integration - MongoDbUserRepository", () => {
   let mongoDbUserRepository: MongoDbUserRepository;
@@ -24,9 +22,9 @@ describe("Integration - MongoDbUserRepository", () => {
   beforeAll(async () => {
     await connectDB();
 
-    mongoDbUserRepository = myContainer.get(identifiers.UserRepository);
-    mongoDbAnswerRepository = myContainer.get(identifiers.AnswerRepository);
-    mongoDbFollowRepository = myContainer.get(identifiers.FollowedRepository);
+    mongoDbUserRepository = new MongoDbUserRepository();
+    mongoDbAnswerRepository = new MongoDbAnswerRepository();
+    mongoDbFollowRepository = new MongoDbFollowRepository();
 
     user = new User({
       email: "user@example.com",

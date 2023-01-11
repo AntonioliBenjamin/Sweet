@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import {Followed} from "../../../../core/Entities/Followed";
 import {FollowedRepository} from "../../../../core/repositories/FollowedRepository";
 import {MongoDbFollowMapper} from "../mappers/MongoDbFollowMapper";

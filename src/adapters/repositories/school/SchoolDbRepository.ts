@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import { SchoolRepository } from "../../../core/repositories/SchoolRepository";
 import { School } from "../../../core/Entities/School";
 import { DbSchoolMapper } from "./mappers/DbSchoolMapper";

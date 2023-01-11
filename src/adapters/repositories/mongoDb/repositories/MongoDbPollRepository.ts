@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import {Poll} from "../../../../core/Entities/Poll";
 import {PollModel} from "../models/poll";
 import {MongoDbPollMapper} from "../mappers/MongoDbPollMapper";

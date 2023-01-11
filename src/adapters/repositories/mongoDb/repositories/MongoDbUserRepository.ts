@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import { MongoDbUserMapper } from "../mappers/MongoDbUserMapper";
 import { UserRepository } from "../../../../core/repositories/UserRepository";
 import { User } from "../../../../core/Entities/User";
