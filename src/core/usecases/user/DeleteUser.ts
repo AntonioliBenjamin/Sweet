@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import { inject, injectable } from "inversify";
 import { UseCase } from "../Usecase";
 import { UserRepository } from "../../repositories/UserRepository";
@@ -12,9 +11,11 @@ export type UserDeletedInput = {
 
 @injectable()
 export class DeleteUser implements UseCase<UserDeletedInput, void> {
-  @inject(identifiers.UserRepository) private readonly userRepository: UserRepository;
-  @inject(identifiers.FollowedRepository) private readonly followRepository: FollowedRepository;
-  @inject(identifiers.AnswerRepository) private readonly answerRepository: AnswerRepository
+  constructor(
+    @inject(identifiers.UserRepository) private readonly userRepository: UserRepository,
+    @inject(identifiers.FollowedRepository) private readonly followRepository: FollowedRepository,
+    @inject(identifiers.AnswerRepository) private readonly answerRepository: AnswerRepository
+  ) {}
 
   async execute(input: UserDeletedInput): Promise<void> {
     const userId = input.userId;

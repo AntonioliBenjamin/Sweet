@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import {InMemoryUserRepository} from "../adapters/repositories/InMemoryUserRepository";
 import {ResetPassword} from "../../usecases/user/ResetPassword";
 import {Gender, User} from "../../Entities/User";
@@ -14,7 +15,7 @@ describe('Unit - ResetPassword', () => {
     beforeAll(() => {
         const inMemoryUserRepository = new InMemoryUserRepository(db);
         encryptionGateway = new BcryptGateway()
-        resetPassword = new ResetPassword(inMemoryUserRepository, encryptionGateway)
+        resetPassword = new ResetPassword(encryptionGateway, inMemoryUserRepository )
 
         user = new User({
             userName: "JOJO",

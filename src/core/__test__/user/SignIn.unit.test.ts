@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { SignIn } from "../../usecases/user/SignIn";
 import { InMemoryUserRepository } from "../adapters/repositories/InMemoryUserRepository";
 import { Gender, User } from "../../Entities/User";
@@ -30,7 +31,7 @@ describe("Unit - SignUp", () => {
       bcryptGateway
     );
 
-    signIn = new SignIn(inMemoryUserRepository, bcryptGateway);
+    signIn = new SignIn(bcryptGateway, inMemoryUserRepository);
 
     school = new School({
       id: "6789",

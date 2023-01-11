@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import {Answer} from "../../core/Entities/Answer";
 import {Gender} from "../../core/Entities/User";
 import {AnswerModel} from "../repositories/mongoDb/models/answer";

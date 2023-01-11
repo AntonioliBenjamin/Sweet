@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import {SendGridGateway} from "../gateways/SendGridGateway";
 import {MailService} from "@sendgrid/mail";
 

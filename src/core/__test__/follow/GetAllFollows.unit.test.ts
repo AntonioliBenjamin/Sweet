@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { Followed } from "../../Entities/Followed";
 import { Gender, User } from "../../Entities/User";
 import { GetMyFollows } from "../../usecases/follow/GetMyFollows";

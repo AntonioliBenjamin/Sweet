@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import {Question} from "../../Entities/Question";
 import {InMemoryQuestionRepository} from "../adapters/repositories/InMemoryQuestionRepository";
 import {GetAllQuestions} from "../../usecases/question/GetAllQuestions";

@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import { inject, injectable } from "inversify";
 import { UserRepository } from "../../repositories/UserRepository";
 import { UseCase } from "../Usecase";
@@ -15,8 +14,10 @@ export type GenerateRecoveryCodeInput = {
 export class GenerateRecoveryCode
   implements UseCase<GenerateRecoveryCodeInput, User>
 {
-    @inject(identifiers.UserRepository) private readonly userRepository: UserRepository;
-    @inject(identifiers.IdGateway) private readonly idGateway: IdGateway;
+  constructor(
+    @inject(identifiers.UserRepository) private readonly userRepository: UserRepository,
+    @inject(identifiers.IdGateway) private readonly idGateway: IdGateway,
+  ) {}
 
   async execute(input: GenerateRecoveryCodeInput): Promise<User> {
     const user = await this.userRepository.getByEmail(input.email);

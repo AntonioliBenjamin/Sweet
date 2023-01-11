@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import {Answer} from "../../Entities/Answer";
 import {Gender} from "../../Entities/User";
 import {DeleteAnswer} from "../../usecases/answer/DeleteAnswer";

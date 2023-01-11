@@ -1,7 +1,6 @@
+import 'reflect-metadata';
 import {InMemoryUserRepository} from "../adapters/repositories/InMemoryUserRepository";
-import {UuidGateway} from "../adapters/gateways/UuidGateway";
 import {Gender, User} from "../../Entities/User";
-import {UserErrors} from "../../errors/UserErrors";
 import { EmailExist } from "../../usecases/user/EmailExist";
 
 const db = new Map<string, User>();

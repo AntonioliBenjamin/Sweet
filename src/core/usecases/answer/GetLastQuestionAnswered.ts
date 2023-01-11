@@ -1,4 +1,6 @@
+import { inject, injectable } from "inversify";
 import { Answer } from "../../Entities/Answer";
+import { identifiers } from "../../identifiers/identifiers";
 import { AnswerRepository } from "../../repositories/AnswerRepository";
 import { UseCase } from "../Usecase";
 
@@ -7,9 +9,10 @@ export type GetLastQuestionAnsweredInput = {
     pollId: string;
 }
 
+@injectable()
 export class GetLastQuestionAnswered implements UseCase<GetLastQuestionAnsweredInput, Answer> {
     constructor(
-        private readonly answerRepository: AnswerRepository
+        @inject(identifiers.AnswerRepository) private readonly answerRepository: AnswerRepository
     ) {}
 
     async execute(input: GetLastQuestionAnsweredInput): Promise<Answer> {

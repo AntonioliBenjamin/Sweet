@@ -2,14 +2,14 @@ import 'reflect-metadata';
 import "dotenv/config";
 import supertest from 'supertest';
 import {QuestionRepository} from "../../core/repositories/QuestionRepository";
-import {MongoDbQuestionRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbQuestionRepository";
 import {sign} from "jsonwebtoken";
 import {PollRepository} from "../../core/repositories/PollRepository";
 import {Poll} from "../../core/Entities/Poll";
-import {MongoDbPollRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbPollRepository";
 import {connectDB, dropCollections, dropDB} from "../../adapters/__test__/setupTestDb";
-import { createExpressServer, useExpressServer } from "routing-controllers";
+import { createExpressServer, useContainer, useExpressServer } from "routing-controllers";
 import { PollController } from '../controllers/Pollcontroller'
+import { PovKernel } from '../config/PovKernel';
+import { identifiers } from '../../core/identifiers/identifiers';
 
 const app = createExpressServer({
     defaults: {
@@ -29,14 +29,20 @@ describe("E2E - Poll Router", () => {
     let poll2: Poll
 
     beforeAll(async () => {
-        questionRepository = new MongoDbQuestionRepository();
-        pollRepository = new MongoDbPollRepository();
-        
+        await connectDB();
+
         useExpressServer(app, {
             controllers: [PollController]
         })
 
-        await connectDB();
+        const container = new PovKernel();
+        
+        container.init();
+        
+        useContainer(container);
+
+        questionRepository = container.get(identifiers.QuestionRepository)
+        pollRepository = container.get(identifiers.PollRepository)
 
         poll = Poll.create({
             pollId: "5678"

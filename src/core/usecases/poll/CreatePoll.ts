@@ -5,14 +5,18 @@ import {Poll} from "../../Entities/Poll";
 import {PollRepository} from "../../repositories/PollRepository";
 import {IdGateway} from "../../gateways/IdGateway";
 import {QuestionRepository} from "../../repositories/QuestionRepository";
+import { inject, injectable } from "inversify";
+import { identifiers } from "../../identifiers/identifiers";
 
 const numberOfQuestions = +process.env.NUMBER_OF_QUESTIONS
 
+
+@injectable()
 export class CreatePoll implements UseCase<void, void> {
     constructor(
-        private readonly pollRepository: PollRepository,
-        private readonly questionRepository: QuestionRepository,
-        private readonly idGateway: IdGateway
+        @inject(identifiers.PollRepository) private readonly pollRepository: PollRepository,
+        @inject(identifiers.QuestionRepository) private readonly questionRepository: QuestionRepository,
+        @inject(identifiers.IdGateway) private readonly idGateway: IdGateway
     ) {
     }
 

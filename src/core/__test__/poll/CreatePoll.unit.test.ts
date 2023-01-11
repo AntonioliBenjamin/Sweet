@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import {Poll} from "../../Entities/Poll";
 import {InMemoryPollRepository} from "../adapters/repositories/InMemoryPollRepository";
 import {UuidGateway} from "../adapters/gateways/UuidGateway";

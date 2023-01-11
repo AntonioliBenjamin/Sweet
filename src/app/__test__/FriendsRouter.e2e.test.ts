@@ -4,10 +4,11 @@ import "dotenv/config";
 import {sign} from "jsonwebtoken";
 import {Gender, User} from "../../core/Entities/User";
 import {UserRepository} from "../../core/repositories/UserRepository";
-import {MongoDbUserRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
 import {connectDB, dropCollections, dropDB} from "../../adapters/__test__/setupTestDb";
-import { createExpressServer, useExpressServer } from "routing-controllers";
+import { createExpressServer, useContainer, useExpressServer } from "routing-controllers";
 import { FriendsController } from "../controllers/FriendsController";
+import { PovKernel } from '../config/PovKernel';
+import { identifiers } from '../../core/identifiers/identifiers';
 
 const app = createExpressServer({
     defaults: {
@@ -27,11 +28,17 @@ describe("E2E - Friends Router", () => {
     let user3: User;
 
     beforeAll(async () => {
+        await connectDB();
+
         useExpressServer(app, {
             controllers: [FriendsController]
         })
 
-        await connectDB();
+        const container = new PovKernel();
+        
+        container.init();
+        
+        useContainer(container);
 
         user = new User({
             email: "user1@example.com",
@@ -74,7 +81,7 @@ describe("E2E - Friends Router", () => {
             section: "cp",
         });
 
-        mongoDbUserRepository = new MongoDbUserRepository();
+        mongoDbUserRepository = container.get(identifiers.UserRepository)
     });
 
     beforeEach(async () => {

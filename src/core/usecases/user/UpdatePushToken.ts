@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import { inject, injectable } from "inversify";
 import { User } from "../../Entities/User";
 import { UserRepository } from "../../repositories/UserRepository";
@@ -13,7 +12,9 @@ export type UpdatePushTokenInput = {
 
 @injectable()
 export class UpdatePushToken implements UseCase<UpdatePushTokenInput, User> {
-    @inject(identifiers.UserRepository) private readonly userRepository: UserRepository;
+    constructor(
+        @inject(identifiers.UserRepository) private readonly userRepository: UserRepository
+    ) {}
 
     async execute(input: UpdatePushTokenInput): Promise<User> {
         const user = await this.userRepository.getById(input.userId)

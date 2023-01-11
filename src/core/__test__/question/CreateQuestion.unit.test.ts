@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { UuidGateway } from "../adapters/gateways/UuidGateway";
 import { Question } from "../../Entities/Question";
 import { CreateQuestion } from "../../usecases/question/CreateQuestion";

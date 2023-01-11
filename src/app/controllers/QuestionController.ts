@@ -11,27 +11,23 @@ import {
   UseBefore,
 } from "routing-controllers";
 import { authorization } from "../middlewares/JwtAuthorizationMiddleware";
-import { MongoDbQuestionRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbQuestionRepository";
 import { CreateQuestion } from "../../core/usecases/question/CreateQuestion";
-import { V4IdGateway } from "../../adapters/gateways/V4IdGateway";
 import { GetAllQuestions } from "../../core/usecases/question/GetAllQuestions";
 import { QuestionApiResponse } from "../dtos/QuestionApiResponse";
 import { CreateQuestionCommands } from "../commands/question/CreateQuestionCommands";
 import { DeleteQuestion } from "../../core/usecases/question/DeleteQuestion";
+import { injectable } from 'inversify';
 
-const mongoDbQuestionRepository = new MongoDbQuestionRepository();
-const v4IdGateway = new V4IdGateway();
-const createQuestion = new CreateQuestion(
-  mongoDbQuestionRepository,
-  v4IdGateway
-);
-const getAllQuestions = new GetAllQuestions(mongoDbQuestionRepository);
-const apiQuestionMapper = new QuestionApiResponse();
-const deleteQuestion = new DeleteQuestion(mongoDbQuestionRepository);
-
+@injectable()
 @JsonController("/question")
 @UseBefore(authorization)
 export class QuestionController {
+  constructor(
+    private readonly _createQuestion : CreateQuestion,
+    private readonly _getAllQuestions : GetAllQuestions,
+    private readonly _deleteQuestion : DeleteQuestion,
+    private readonly _apiQuestionMapper : QuestionApiResponse
+  ) {}
 
   @Post()
   async createQuestion(
@@ -39,13 +35,13 @@ export class QuestionController {
     @Body() cmd: CreateQuestionCommands
   ) {
     const body = await CreateQuestionCommands.setProperties(cmd);
-    const question = await createQuestion.execute(body);
-    return res.status(201).send(apiQuestionMapper.fromDomain(question));
+    const question = await this._createQuestion.execute(body);
+    return res.status(201).send(this._apiQuestionMapper.fromDomain(question));
   }
 
   @Get('/all')
   async getAllQuestions(@Res() res: Response) {
-    const questions = await getAllQuestions.execute();
+    const questions = await this._getAllQuestions.execute();
 
     return res.status(200).send(questions.map((elm) => elm.props));
   }
@@ -56,7 +52,7 @@ export class QuestionController {
     @Param("questionId") questionId: string
   ) {
     console.log(questionId)
-    await deleteQuestion.execute(questionId);
+    await this._deleteQuestion.execute(questionId);
 
     return res.sendStatus(200);
   }

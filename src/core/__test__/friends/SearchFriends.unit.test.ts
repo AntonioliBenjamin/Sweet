@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { Gender, User } from "../../Entities/User";
 import { SearchFriends } from "../../usecases/friends/SearchFriends";
 import { InMemoryUserRepository } from "../adapters/repositories/InMemoryUserRepository";

@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import {FirebaseGateway} from "../gateways/FirebaseGateway";
 import  './mocks/firebase.mock';
 import {app} from './mocks/firebase.mock'

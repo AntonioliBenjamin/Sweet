@@ -1,6 +1,8 @@
 import { MessagePayload, PushNotificationGateway } from "../../core/gateways/PushNotificationGateway";
 import admin from "firebase-admin"
+import { injectable } from "inversify";
 
+@injectable()
 export class FirebaseGateway implements PushNotificationGateway {
   constructor(
     private readonly _admin: admin.app.App,

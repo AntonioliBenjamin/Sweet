@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { School } from "../../Entities/School";
 import { InMemorySchoolRepository } from "../adapters/repositories/InMemorySchoolRepository";
 import { GetAllSchools } from "../../usecases/school/GetAllSchools";

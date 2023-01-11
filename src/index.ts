@@ -5,14 +5,14 @@ import * as mongoose from "mongoose";
 import morgan from "morgan";
 import * as path from "path";
 import {createPollTimer} from "./app/jobs";
-import {createExpressServer, useExpressServer} from "routing-controllers";
+import {createExpressServer, useContainer, useExpressServer} from "routing-controllers";
 import {SchoolController} from "./app/controllers/SchoolController";
 import {UserController} from "./app/controllers/UserController";
 import { FriendsController } from "./app/controllers/FriendsController";
 import { AnswerController } from './app/controllers/AnswerController';
 import { PollController } from './app/controllers/Pollcontroller';
 import { PovKernel } from './app/config/PovKernel';
-import { useContainer } from 'class-validator';
+
 
 const app = createExpressServer({
     defaults: {
@@ -25,7 +25,6 @@ const app = createExpressServer({
   });
 
 const MONGODB_URL = process.env.MONGODB_URL
-
 
 const port = +process.env.PORT;
 

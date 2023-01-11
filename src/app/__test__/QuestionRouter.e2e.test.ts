@@ -2,12 +2,13 @@ import 'reflect-metadata';
 import "dotenv/config";
 import supertest from "supertest";
 import {QuestionRepository} from "../../core/repositories/QuestionRepository";
-import {MongoDbQuestionRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbQuestionRepository";
 import {Question} from "../../core/Entities/Question";
 import {sign} from "jsonwebtoken";
 import {connectDB, dropCollections, dropDB} from "../../adapters/__test__/setupTestDb";
-import { createExpressServer, useExpressServer } from "routing-controllers";
+import { createExpressServer, useContainer, useExpressServer } from "routing-controllers";
 import { QuestionController } from '../controllers/QuestionController';
+import { PovKernel } from "../config/PovKernel";
+import { identifiers } from "../../core/identifiers/identifiers";
 
 const app = createExpressServer({
     defaults: {
@@ -25,13 +26,21 @@ describe("E2E - Question Router", () => {
     let question: Question;
 
     beforeAll(async () => {
+        await connectDB();
+        
+        const container = new PovKernel();
+        
+        container.init();
+        
+        useContainer(container);
+        
+
         useExpressServer(app, {
             controllers: [QuestionController]
         })
 
-        await connectDB();
-
-        questionRepository = new MongoDbQuestionRepository();
+        
+        questionRepository = container.get(identifiers.QuestionRepository)
 
         question = Question.create({
             questionId: "1234",

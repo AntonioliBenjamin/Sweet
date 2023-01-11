@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import {Poll} from "../../Entities/Poll";
 import {Question} from "../../Entities/Question";
 import {InMemoryPollRepository} from "../adapters/repositories/InMemoryPollRepository";

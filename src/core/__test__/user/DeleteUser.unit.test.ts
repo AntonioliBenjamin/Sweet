@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { Gender } from "./../../Entities/User";
 import { DeleteUser } from "../../Usecases/user/DeleteUser";
 import { InMemoryUserRepository } from "../adapters/repositories/InMemoryUserRepository";

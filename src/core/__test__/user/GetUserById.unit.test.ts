@@ -1,13 +1,12 @@
+import 'reflect-metadata';
 import {Gender} from "./../../Entities/User";
 import {User} from "../../Entities/User";
 import {SignUp} from "../../usecases/user/SignUp";
 import {InMemoryUserRepository} from "../adapters/repositories/InMemoryUserRepository";
 import {UuidGateway} from "../adapters/gateways/UuidGateway";
 import {BcryptGateway} from "../adapters/gateways/BcryptGateway";
-import {UpdateUser} from "../../Usecases/user/UpdateUser";
 import {School} from "../../Entities/School";
 import {InMemorySchoolRepository} from "../adapters/repositories/InMemorySchoolRepository";
-import {SchoolErrors} from "../../errors/SchoolErrors";
 import {GetUserById} from "../../usecases/user/GetUserById";
 
 const db = new Map<string, User>();
