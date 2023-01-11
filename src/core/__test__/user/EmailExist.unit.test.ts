@@ -1,17 +1,20 @@
+import {InMemoryUserRepository} from "../adapters/repositories/InMemoryUserRepository";
+import {UuidGateway} from "../adapters/gateways/UuidGateway";
 import {Gender, User} from "../../Entities/User";
+import {UserErrors} from "../../errors/UserErrors";
 import { EmailExist } from "../../usecases/user/EmailExist";
-import { testContainer } from "../adapters/container/inversify.config";
-import { identifiers } from "../../identifiers/identifiers";
-import { userDb } from "../adapters/container/inversify.config";
 
+const db = new Map<string, User>();
 
 describe("unit - GenerateRecoveryCode", () => {
     let emailExist: EmailExist
     let user: User;
 
     beforeAll(() => {
-        
-        emailExist = testContainer.get(identifiers.EmailExist)
+        const inMemoryUserRepository = new InMemoryUserRepository(db);
+        emailExist = new EmailExist(
+            inMemoryUserRepository
+        );
 
         user = new User({
             userName: "JOJO",
@@ -27,7 +30,7 @@ describe("unit - GenerateRecoveryCode", () => {
             createdAt: new Date(),
             updatedAt: null,
         });
-        userDb.set("1234", user);
+        db.set("1234", user);
 
     })
     it("should return true if email exist", async () => {

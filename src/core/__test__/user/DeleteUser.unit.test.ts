@@ -1,16 +1,25 @@
 import { Gender } from "./../../Entities/User";
 import { DeleteUser } from "../../Usecases/user/DeleteUser";
+import { InMemoryUserRepository } from "../adapters/repositories/InMemoryUserRepository";
 import { User } from "../../Entities/User";
+import { InMemoryFollowRepository } from "../adapters/repositories/InMemoryFollowRepository";
+import { InMemoryAnswerRepository } from "../adapters/repositories/InMemoryAnswerRepository";
 import { Answer } from "../../Entities/Answer";
 import { Followed } from "../../Entities/Followed";
-import { testContainer } from "../adapters/container/inversify.config";
-import { identifiers } from "../../identifiers/identifiers";
-import { userDb, answerDb, followDb } from "../adapters/container/inversify.config";
 
+const db = new Map<string, User>();
+const dbAnswer = new Map<string, Answer>();
+const dbFollow = new Map<string, Followed>();
 
 describe("Unit - deleteUser", () => {
-
-  const deleteUser: DeleteUser =  testContainer.get(identifiers.DeleteUser)
+  const inMemoryUserRepository = new InMemoryUserRepository(db);
+  const inMemoryFollowRepository = new InMemoryFollowRepository(dbFollow);
+  const inMemoryAnswerRepository = new InMemoryAnswerRepository(dbAnswer);
+  const deleteUser = new DeleteUser(
+    inMemoryUserRepository,
+    inMemoryFollowRepository,
+    inMemoryAnswerRepository
+  );
 
   it("should delete user", async () => {
     const followed = new Followed({
@@ -65,16 +74,18 @@ describe("Unit - deleteUser", () => {
       section: "dfgdfg",
     });
 
-    userDb.set(user.props.id, user);
-    answerDb.set(answer.props.answerId, answer);
-    followDb.set(followed.props.id, followed);
+    db.set(user.props.id, user);
+
+    dbAnswer.set(answer.props.answerId, answer);
+
+    dbFollow.set(followed.props.id, followed);
 
     await deleteUser.execute({
       userId: "12345",
     });
     
-    expect(userDb.get("12345")).toBeFalsy();
-    expect(answerDb.get("12345")).toBeFalsy();
-    expect(followDb.get("12345")).toBeFalsy();
+    expect(db.get("12345")).toBeFalsy();
+    expect(dbAnswer.get("12345")).toBeFalsy();
+    expect(dbFollow.get("12345")).toBeFalsy();
   });
 });

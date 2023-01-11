@@ -1,67 +1,65 @@
 import 'reflect-metadata';
-import {
-    Body,
-    Delete,
-    Get,
-    JsonController,
-    Param,
-    Patch,
-    Post,
-    Req,
-    Res,
-    UseBefore,
-} from "routing-controllers";
+import {Body, Delete, Get, JsonController, Param, Patch, Post, Req, Res, UseBefore} from "routing-controllers";
 import {UserApiResponse} from "../dtos/UserApiUserMapper";
+import {SchoolDbRepository} from "../../adapters/repositories/school/SchoolDbRepository";
 import {Request, Response} from "express";
+import {V4IdGateway} from "../../adapters/gateways/V4IdGateway";
 import jwt from "jsonwebtoken";
+import {SignUp} from "../../core/usecases/user/SignUp";
+import {MongoDbUserRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
 import {SignUpCommands} from "../commands/user/SignUpCommands";
+import {BcryptGateway} from "../../adapters/gateways/BcryptGateway";
 import {SignInCommands} from "../commands/user/SignInCommands";
+import {SignIn} from "../../core/usecases/user/SignIn";
 import {RecoveryCommands} from "../commands/user/RecoveryCommands";
+import {GenerateRecoveryCode} from "../../core/usecases/user/GenerateRecoveryCode";
 import {SendGridGateway} from "../../adapters/gateways/SendGridGateway";
 import {MailService} from "@sendgrid/mail";
 import {ResetPasswordCommands} from "../commands/user/ResetPasswordCommands";
+import {ResetPassword} from "../../core/usecases/user/ResetPassword";
 import {EmailExistCommands} from "../commands/user/EmailExistCommands";
+import {EmailExist} from "../../core/usecases/user/EmailExist";
 import {SendFeedbackCommands} from "../commands/user/SendFeedbackCommands";
 import {authorization} from "../middlewares/JwtAuthorizationMiddleware";
 import {UpdateUserCommands} from "../commands/user/UpdateUserCommands";
+import {UpdateUser} from "../../core/usecases/user/UpdateUser";
 import {AuthentifiedRequest} from "../types/AuthentifiedRequest";
+import {MongoDbFollowRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
+import {MongoDbAnswerRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbAnswerRepository";
+import {UpdatePushToken} from "../../core/usecases/user/UpdatePushToken";
+import {GetUserById} from "../../core/usecases/user/GetUserById";
+import {DeleteUser} from "../../core/usecases/user/DeleteUser";
+import {GetAllMyPotentialFriends} from "../../core/usecases/user/GetAllMyPotentialFriends";
 import {SendFeedback} from "../../core/usecases/user/SendFeeback";
 import {PushTokenCommands} from "../commands/user/PushTokenCommands";
-import { myContainer} from "../../adapters/container/inversify.config";
-import {identifiers} from "../../core/identifiers/identifiers";
-import {SignUp} from "../../core/usecases/user/SignUp";
-import {SignIn} from "../../core/usecases/user/SignIn";
-import {GenerateRecoveryCode} from "../../core/usecases/user/GenerateRecoveryCode";
-import {ResetPassword} from "../../core/usecases/user/ResetPassword";
-import {EmailExist} from "../../core/usecases/user/EmailExist";
-import {UpdateUser} from "../../core/usecases/user/UpdateUser";
-import {DeleteUser} from "../../core/usecases/user/DeleteUser";
-import {GetUserById} from "../../core/usecases/user/GetUserById";
-import {GetAllMyPotentialFriends} from "../../core/usecases/user/GetAllMyPotentialFriends";
-import {UpdatePushToken} from "../../core/usecases/user/UpdatePushToken";
+import { injectable } from 'inversify';
 
 const mailService = new MailService();
 const emailSender = process.env.RECOVERY_EMAIL_SENDER;
 const secretKey = process.env.SECRET_KEY;
-
+const bcryptGateway = new BcryptGateway();
+const schoolDbRepository = new SchoolDbRepository();
+const mongoDbUserRepository = new MongoDbUserRepository();
+const v4IdGateway = new V4IdGateway();
+const signUp = new SignUp(mongoDbUserRepository, schoolDbRepository, v4IdGateway, bcryptGateway);
+const signIn = new SignIn(mongoDbUserRepository, bcryptGateway);
 const userApiResponse = new UserApiResponse();
-
-const signUp = myContainer.get<SignUp>(identifiers.SignUp);
-const signIn = myContainer.get<SignIn>(identifiers.SignIn);
-const updateRecoveryCode = myContainer.get<GenerateRecoveryCode>(identifiers.GenrateRecoveryCode);
-const resetPassword = myContainer.get<ResetPassword>(identifiers.ResetPassword);
-const emailExist = myContainer.get<EmailExist>(identifiers.EmailExist);
-const updateUser = myContainer.get<UpdateUser>(identifiers.UpdateUser);
-const deleteUser = myContainer.get<DeleteUser>(identifiers.DeleteUser);
-const getUserById = myContainer.get<GetUserById>(identifiers.GetUserById);
-const getAllMyPotentialFriends = myContainer.get<GetAllMyPotentialFriends>(identifiers.GetAllMyPotentialFriends);
-const updatePushtoken =myContainer.get<UpdatePushToken>(identifiers.UpdatePushToken);
-
+const updateRecoveryCode = new GenerateRecoveryCode(mongoDbUserRepository, v4IdGateway);
 const sendGridGateway = new SendGridGateway(mailService, emailSender);
+const resetPassword = new ResetPassword(mongoDbUserRepository, bcryptGateway);
+const emailExist = new EmailExist(mongoDbUserRepository);
+const updateUser = new UpdateUser(mongoDbUserRepository, schoolDbRepository)
+const mongoDbAnswerRepository = new MongoDbAnswerRepository();
+const mongoDbFollowRepository = new MongoDbFollowRepository();
+const deleteUser = new DeleteUser(mongoDbUserRepository, mongoDbFollowRepository, mongoDbAnswerRepository);
+const getUserById = new GetUserById(mongoDbUserRepository)
+const getAllMyPotentialFriends = new GetAllMyPotentialFriends(mongoDbUserRepository);
+const updatePushtoken = new UpdatePushToken(mongoDbUserRepository);
 const sendFeedback = new SendFeedback(sendGridGateway);
 
 mailService.setApiKey(process.env.SENDGRID_API_KEY);
 
+@injectable()
 @JsonController('/user')
 export class UserController {
     @Post('/')

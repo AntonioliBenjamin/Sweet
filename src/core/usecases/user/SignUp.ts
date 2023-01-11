@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import { inject, injectable } from "inversify";
 import { Gender } from "./../../Entities/User";
 import { UseCase } from "../Usecase";
@@ -28,11 +27,12 @@ export type UserInput = {
 @JsonController()
 @injectable()
 export class SignUp implements UseCase<UserInput, User> {
-  @inject(identifiers.UserRepository) private readonly userRepository: UserRepository;
-  @inject(identifiers.SchoolRepository) private readonly schoolRepository: SchoolRepository;
-  @inject(identifiers.IdGateway) private readonly idGateway: IdGateway;
-  @inject(identifiers.PasswordGateway) private readonly passwordGateway: PasswordGateway
-
+  constructor(
+    @inject(identifiers.UserRepository) private readonly userRepository: UserRepository,
+    @inject(identifiers.SchoolRepository) private readonly schoolRepository: SchoolRepository,
+    @inject(identifiers.IdGateway) private readonly idGateway: IdGateway,
+    @inject(identifiers.PasswordGateway) private readonly passwordGateway: PasswordGateway
+  ) {}
 
   async execute(input: UserInput): Promise<User> {
     const userExists = await this.userRepository.getByEmail(

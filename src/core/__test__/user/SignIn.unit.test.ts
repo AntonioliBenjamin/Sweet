@@ -1,13 +1,15 @@
 import { SignIn } from "../../usecases/user/SignIn";
+import { InMemoryUserRepository } from "../adapters/repositories/InMemoryUserRepository";
 import { Gender, User } from "../../Entities/User";
+import { BcryptGateway } from "../adapters/gateways/BcryptGateway";
 import { SignUp } from "../../usecases/user/SignUp";
+import { UuidGateway } from "../adapters/gateways/UuidGateway";
+import { InMemorySchoolRepository } from "../adapters/repositories/InMemorySchoolRepository";
 import { School } from "../../Entities/School";
 import {UserErrors} from "../../errors/UserErrors";
-import { testContainer } from "../adapters/container/inversify.config";
-import { identifiers } from "../../identifiers/identifiers";
-import { schoolDb } from "../adapters/container/inversify.config";
-import { userDb } from "../adapters/container/inversify.config";
 
+const db = new Map<string, User>();
+const dbSchool = new Map<string, School>();
 
 describe("Unit - SignUp", () => {
   let signUp: SignUp;
@@ -16,11 +18,19 @@ describe("Unit - SignUp", () => {
   let user: User;
 
   beforeEach(async () => {
+    const inMemoryUserRepository = new InMemoryUserRepository(db);
+    const inMemorySchoolRepository = new InMemorySchoolRepository(dbSchool);
+    const uuidGateway = new UuidGateway();
+    const bcryptGateway = new BcryptGateway();
 
-    signUp = testContainer.get(identifiers.SignUp)
-    signIn = testContainer.get(identifiers.SignIn)
+    signUp = new SignUp(
+      inMemoryUserRepository,
+      inMemorySchoolRepository,
+      uuidGateway,
+      bcryptGateway
+    );
 
-    
+    signIn = new SignIn(inMemoryUserRepository, bcryptGateway);
 
     school = new School({
       id: "6789",
@@ -29,7 +39,7 @@ describe("Unit - SignUp", () => {
       district: "idf",
     });
 
-    schoolDb.set("6789", school);
+    dbSchool.set("6789", school);
 
     user = await signUp.execute({
       userName: "JOJO",
@@ -45,8 +55,8 @@ describe("Unit - SignUp", () => {
   });
 
   afterEach(() => {
-    userDb.clear();
-    schoolDb.clear();
+    db.clear();
+    dbSchool.clear();
   });
 
   it("should connect user", async () => {

@@ -1,17 +1,18 @@
 import { Gender } from "./../../Entities/User";
 import { User } from "../../Entities/User";
-import { userDb } from "../adapters/container/inversify.config";
+import { InMemoryUserRepository } from "../adapters/repositories/InMemoryUserRepository";
 import { UpdatePushToken } from "../../usecases/user/UpdatePushToken";
-import { testContainer } from "../adapters/container/inversify.config";
-import { identifiers } from "../../identifiers/identifiers";
 
+const db = new Map<string, User>();
 
-describe("Unit - UpdatePushToken", () => {
-  let updatePushToken: UpdatePushToken;
+describe("Unit - UpdateUser", () => {
+  let inMemoryUserRepository: InMemoryUserRepository;
+  let updatPushToken: UpdatePushToken;
   let user: User;
 
   beforeAll(async () => {
-    updatePushToken = testContainer.get(identifiers.UpdatePushToken)
+    inMemoryUserRepository = new InMemoryUserRepository(db);
+    updatPushToken = new UpdatePushToken(inMemoryUserRepository);
 
     user = new User({
       userName: "JOJO",
@@ -30,11 +31,11 @@ describe("Unit - UpdatePushToken", () => {
       recoveryCode: null,
     });
 
-    userDb.set(user.props.id, user)
+    db.set(user.props.id, user)
   });
 
   it("should update user", async () => {
-    const result = await updatePushToken.execute({
+    const result = await updatPushToken.execute({
         userId: "4165465",
         pushToken: "new push token"
     });

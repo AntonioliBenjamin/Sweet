@@ -1,10 +1,6 @@
-import "reflect-metadata";
-import { inject, injectable } from "inversify";
 import { User } from "../../../Entities/User";
 import { UserRepository } from "../../../repositories/UserRepository";
 
-
-@injectable()
 export class InMemoryUserRepository implements UserRepository {
   constructor(private readonly db: Map<string, User>) {}
 

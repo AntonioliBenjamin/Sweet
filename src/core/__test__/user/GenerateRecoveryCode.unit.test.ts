@@ -1,17 +1,22 @@
+import {InMemoryUserRepository} from "../adapters/repositories/InMemoryUserRepository";
+import {UuidGateway} from "../adapters/gateways/UuidGateway";
 import {Gender, User} from "../../Entities/User";
 import {GenerateRecoveryCode} from "../../usecases/user/GenerateRecoveryCode";
 import {UserErrors} from "../../errors/UserErrors";
-import { testContainer, userDb } from "../adapters/container/inversify.config";
-import { identifiers } from "../../identifiers/identifiers";
 
+const db = new Map<string, User>();
 
 describe("unit - GenerateRecoveryCode", () => {
     let generateRecoveryCode: GenerateRecoveryCode;
     let user: User;
 
     beforeAll(() => {
-       
-        generateRecoveryCode = testContainer.get(identifiers.GenrateRecoveryCode)
+        const inMemoryUserRepository = new InMemoryUserRepository(db);
+        const uuidGateway = new UuidGateway();
+        generateRecoveryCode = new GenerateRecoveryCode(
+            inMemoryUserRepository,
+            uuidGateway
+        );
 
         user = new User({
             userName: "JOJO",
@@ -27,7 +32,7 @@ describe("unit - GenerateRecoveryCode", () => {
             createdAt: new Date(),
             updatedAt: null,
         });
-        userDb.set("1234", user);
+        db.set("1234", user);
 
     })
     it("should generate a recovery code", async () => {

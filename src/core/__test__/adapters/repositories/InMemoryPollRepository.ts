@@ -1,11 +1,8 @@
-import "reflect-metadata";
-import { inject, injectable } from "inversify";
 import {PollRepository} from "../../../repositories/PollRepository";
 import {Poll} from "../../../Entities/Poll";
+import {questionFixtures} from "../../../fixtures/questionFixtures";
 import {PollErrors} from "../../../errors/PollErrors";
 
-
-@injectable()
 export class InMemoryPollRepository implements PollRepository {
     constructor(
         private readonly db: Map<string, Poll>
