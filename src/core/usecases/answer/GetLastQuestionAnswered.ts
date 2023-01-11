@@ -3,6 +3,8 @@ import { Answer } from "../../Entities/Answer";
 import { identifiers } from "../../identifiers/identifiers";
 import { AnswerRepository } from "../../repositories/AnswerRepository";
 import { UseCase } from "../Usecase";
+import {inject, injectable} from "inversify";
+import {identifiers} from "../../identifiers/identifiers";
 
 export type GetLastQuestionAnsweredInput = {
     userId: string;

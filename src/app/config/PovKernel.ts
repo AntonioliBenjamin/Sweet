@@ -1,8 +1,6 @@
 import "dotenv/config";
 import { Container } from "inversify";
 import { BcryptGateway } from "../../adapters/gateways/BcryptGateway";
-import { FirebaseGateway } from "../../adapters/gateways/FirebaseGateway";
-import { SendGridGateway } from "../../adapters/gateways/SendGridGateway";
 import { V4IdGateway } from "../../adapters/gateways/V4IdGateway";
 import { MongoDbAnswerRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbAnswerRepository";
 import { MongoDbFollowRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbFollowRepository";
@@ -42,6 +40,19 @@ import { UserApiResponse } from "../dtos/UserApiUserMapper";
 import { SearchFriends } from "../../core/usecases/friends/SearchFriends";
 import { FriendsController } from "../controllers/FriendsController";
 import { QuestionApiResponse } from "../dtos/QuestionApiResponse";
+import { UserController } from "../controllers/UserController";
+import {MailService} from "@sendgrid/mail";
+import {AnswerMarkAsRead} from "../../core/usecases/answer/AnswerMarkAsRead";
+import {AnswerToQuestion} from "../../core/usecases/answer/AnswerToQuestion";
+import {DeleteAnswer} from "../../core/usecases/answer/DeleteAnswer";
+import {Delete} from "routing-controllers";
+import {GetAllAnswers} from "../../core/usecases/answer/GetAllAnswers";
+import {GetMyAnswers} from "../../core/usecases/answer/GetMyAnswers";
+import {AnswerController} from "../controllers/AnswerController";
+import {FollowUser} from "../../core/usecases/follow/FollowUser";
+import {GetMyFollows} from "../../core/usecases/follow/GetMyFollows";
+import {UnfollowUser} from "../../core/usecases/follow/UnfollowUser";
+import {FollowController} from "../controllers/FollowController";
 
 const googleCreadentials = process.env.GOOGLE_APPLICATION_CREDENTIALS;
 const serviceAccount = JSON.parse(
@@ -55,15 +66,11 @@ const emailSender = process.env.RECOVERY_EMAIL_SENDER;
 const mailService = new MailService();
 mailService.setApiKey(process.env.SENDGRID_API_KEY);
 
+
+
 export class PovKernel extends Container {
   init() {
     //repositories
-    this.bind(identifiers.UserRepository).toConstantValue(
-      new MongoDbUserRepository()
-    );
-    this.bind(identifiers.SchoolRepository).toConstantValue(
-      new SchoolDbRepository()
-    );
     this.bind(identifiers.QuestionRepository).toConstantValue(
       new MongoDbQuestionRepository()
     );
@@ -78,11 +85,6 @@ export class PovKernel extends Container {
     );
 
     //gateways
-    this.bind(identifiers.IdGateway).toConstantValue(new V4IdGateway());
-    this.bind(identifiers.PasswordGateway).toConstantValue(new BcryptGateway());
-    this.bind(identifiers.PushNotificationGateway).toConstantValue(
-      new FirebaseGateway(initialize)
-    );
     this.bind(identifiers.EmailSender).toConstantValue(emailSender);
     this.bind(identifiers.MailService).toConstantValue(mailService);
     this.bind(SendGridGateway).toSelf();
@@ -96,11 +98,28 @@ export class PovKernel extends Container {
     this.bind(SendFeedback).toSelf();
     this.bind(ResetPassword).toSelf();
     this.bind(GetUserById).toSelf();
-    this.bind(GetAllMyPotentialFriends).toSelf();
     this.bind(GenerateRecoveryCode).toSelf();
+ 
     this.bind(EmailExist).toSelf();
     this.bind(DeleteUser).toSelf();
     this.bind(UpdateUser).toSelf();
+        this.bind(GetAllMyPotentialFriends).toSelf();
+        //answer
+        this.bind(AnswerToQuestion).toSelf();
+        this.bind(AnswerMarkAsRead).toSelf();
+    
+        this.bind(DeleteAnswer).toSelf();
+        this.bind(GetAllAnswers).toSelf();
+        this.bind(GetLastQuestionAnswered).toSelf();
+        this.bind(GetMyAnswers).toSelf();
+      //follow
+      this.bind(FollowUser).toSelf();
+      this.bind(GetMyFollows).toSelf();
+      this.bind(UnfollowUser).toSelf();
+   
+
+    //friend
+    this.bind(SearchFriends).toSelf();
     //school
     this.bind(GetAllSchools).toSelf();
     //question
@@ -112,10 +131,8 @@ export class PovKernel extends Container {
     this.bind(DeletePoll).toSelf();
     this.bind(GetAllPolls).toSelf();
     this.bind(GetCurrentPoll).toSelf();
-    //answer
-    this.bind(GetLastQuestionAnswered).toSelf();
-    //friend
-    this.bind(SearchFriends).toSelf();
+
+    
 
     //controllers
     this.bind(UserController).toSelf();
@@ -123,6 +140,8 @@ export class PovKernel extends Container {
     this.bind(QuestionController).toSelf();
     this.bind(PollController).toSelf();
     this.bind(FriendsController).toSelf();
+    this.bind(AnswerController).toSelf();
+    this.bind(FollowController).toSelf();
 
     //API mappers
     this.bind(PollApiResponse).toConstantValue(new PollApiResponse());

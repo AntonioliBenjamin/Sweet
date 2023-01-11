@@ -55,7 +55,7 @@ container.init()
 useContainer(container)
 
 useExpressServer( app, {
-    controllers: [FriendsController, AnswerController, PollController,SchoolController,UserController],
+    controllers: [FriendsController, AnswerController, PollController,SchoolController, UserController]
 })
 
 app.use((err, req, res, next) => {

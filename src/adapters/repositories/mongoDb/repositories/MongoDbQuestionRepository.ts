@@ -3,9 +3,11 @@ import {Question, QuestionProperties} from "../../../../core/Entities/Question";
 import {MongoDbQuestionMapper} from "../mappers/MongoDbQuestionMapper";
 import {QuestionModel} from "../models/question";
 import { QuestionErrors } from "../../../../core/errors/QuestionErrors";
+import {injectable} from "inversify";
 
 const mongoDbQuestionMapper = new MongoDbQuestionMapper();
 
+@injectable()
 export class MongoDbQuestionRepository implements QuestionRepository {
 
     async create(question: Question): Promise<Question> {

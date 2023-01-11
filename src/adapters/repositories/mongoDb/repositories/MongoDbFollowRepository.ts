@@ -2,10 +2,11 @@ import {Followed} from "../../../../core/Entities/Followed";
 import {FollowedRepository} from "../../../../core/repositories/FollowedRepository";
 import {MongoDbFollowMapper} from "../mappers/MongoDbFollowMapper";
 import {FollowModel} from "../models/follow";
-import {DeleteFollowProperties} from "../../../../core/usecases/follow/UnfollowUser";
+import {injectable} from "inversify";
 
 const followMapper = new MongoDbFollowMapper();
 
+@injectable()
 export class MongoDbFollowRepository implements FollowedRepository {
     async create(input: Followed): Promise<Followed> {
         const follow = followMapper.fromDomain(input);

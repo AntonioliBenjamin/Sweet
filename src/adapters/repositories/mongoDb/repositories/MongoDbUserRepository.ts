@@ -3,9 +3,11 @@ import { UserRepository } from "../../../../core/repositories/UserRepository";
 import { User } from "../../../../core/Entities/User";
 import { UserModel } from "../models/user";
 import {UserErrors} from "../../../../core/errors/UserErrors";
+import {injectable} from "inversify";
 
 const mongoDbUserMapper = new MongoDbUserMapper();
 
+@injectable()
 export class MongoDbUserRepository implements UserRepository {
   async create(user: User): Promise<User> {
     const toUserModel = mongoDbUserMapper.fromDomain(user);

@@ -3,9 +3,11 @@ import {AnswerRepository} from "../../../../core/repositories/AnswerRepository";
 import {MongoDbAnswerMapper} from "../mappers/MongoDbAnswerMapper";
 import {AnswerModel} from "../models/answer";
 import {AnswerErrors} from "../../../../core/errors/AnswerErrors";
+import {injectable} from "inversify";
 
 const answerMapper = new MongoDbAnswerMapper();
 
+@injectable()
 export class MongoDbAnswerRepository implements AnswerRepository {
     async create(answer: Answer): Promise<Answer> {
         const toAnswerDomain = answerMapper.fromDomain(answer);
