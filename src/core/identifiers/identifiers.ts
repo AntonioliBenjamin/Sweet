@@ -25,6 +25,4 @@ export const identifiers = {
     IdGateway : Symbol.for("IdGateway"),
     PasswordGateway : Symbol.for("PasswordGateway"),
     PushNotificationGateway : Symbol.for("PushNotificationGateway"),
-
-  
 }

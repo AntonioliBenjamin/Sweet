@@ -32,6 +32,7 @@ import {DeleteUser} from "../../core/usecases/user/DeleteUser";
 import {GetAllMyPotentialFriends} from "../../core/usecases/user/GetAllMyPotentialFriends";
 import {SendFeedback} from "../../core/usecases/user/SendFeeback";
 import {PushTokenCommands} from "../commands/user/PushTokenCommands";
+import { injectable } from 'inversify';
 
 const mailService = new MailService();
 const emailSender = process.env.RECOVERY_EMAIL_SENDER;
@@ -58,6 +59,7 @@ const sendFeedback = new SendFeedback(sendGridGateway);
 
 mailService.setApiKey(process.env.SENDGRID_API_KEY);
 
+@injectable()
 @JsonController('/user')
 export class UserController {
     @Post('/')

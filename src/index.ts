@@ -11,6 +11,8 @@ import {UserController} from "./app/controllers/UserController";
 import { FriendsController } from "./app/controllers/FriendsController";
 import { AnswerController } from './app/controllers/AnswerController';
 import { PollController } from './app/controllers/Pollcontroller';
+import { PovKernel } from './app/config/PovKernel';
+import { useContainer } from 'class-validator';
 
 const app = createExpressServer({
     defaults: {
@@ -47,6 +49,11 @@ app.use(morgan('combined'));
 
 app.use(express.json());
 
+const container = new PovKernel()
+
+container.init()
+
+useContainer(container)
 
 useExpressServer( app, {
     controllers: [FriendsController, AnswerController, PollController,SchoolController,UserController],

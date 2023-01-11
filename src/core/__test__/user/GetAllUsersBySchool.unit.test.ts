@@ -1,13 +1,14 @@
-import { User, Gender } from "../../Entities/User";
-import { testContainer, userDb } from "../adapters/container/inversify.config";
-import { identifiers } from "../../identifiers/identifiers";
-import { GetAllMyPotentialFriends } from "../../usecases/user/GetAllMyPotentialFriends";
 
+import { GetAllMyPotentialFriends } from "../../usecases/user/GetAllMyPotentialFriends";
+import { InMemoryUserRepository } from "../adapters/repositories/InMemoryUserRepository";
+import { User, Gender } from "./../../Entities/User";
+
+const db = new Map<string, User>();
 
 describe("Unit - GetAllMyPotentialFriends", () => {
   it("should Get All Users By School", async () => {
-
-    const getAllMyPotentialFriends: GetAllMyPotentialFriends = testContainer.get(identifiers.GetAllMyPotentialFriends)
+    const inMemoryUserRepository = new InMemoryUserRepository(db);
+    const getAllMyPotentialFriends = new GetAllMyPotentialFriends(inMemoryUserRepository);
 
     const user1 = User.create({
       userName: "JOJO",
@@ -35,8 +36,8 @@ describe("Unit - GetAllMyPotentialFriends", () => {
       id: "8888",
     });
 
-    userDb.set(user1.props.id, user1);
-    userDb.set(user2.props.id, user2);
+    db.set(user1.props.id, user1);
+    db.set(user2.props.id, user2);
 
     const result = await getAllMyPotentialFriends.execute("012345");
     expect(result).toHaveLength(2);

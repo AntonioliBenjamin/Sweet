@@ -1,10 +1,7 @@
-import "reflect-metadata";
-import { inject, injectable } from "inversify";
 import { QuestionRepository } from "../../../repositories/QuestionRepository";
 import { Question, QuestionProperties } from "../../../Entities/Question";
 import { questionFixtures } from "../../../fixtures/questionFixtures";
 
-@injectable()
 export class InMemoryQuestionRepository implements QuestionRepository {
   constructor(private readonly db: Map<string, Question>) {}
 

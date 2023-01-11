@@ -1,21 +1,34 @@
+import 'reflect-metadata'
 import {Gender} from "./../../Entities/User";
 import {SignUp} from "../../usecases/user/SignUp";
 import {User} from "../../Entities/User";
+import {InMemoryUserRepository} from "../adapters/repositories/InMemoryUserRepository";
+import {UuidGateway} from "../adapters/gateways/UuidGateway";
+import {BcryptGateway} from "../adapters/gateways/BcryptGateway";
 import {UserErrors} from "../../errors/UserErrors";
+import {InMemorySchoolRepository} from "../adapters/repositories/InMemorySchoolRepository";
 import {School} from "../../Entities/School";
 import {SchoolErrors} from "../../errors/SchoolErrors";
-import { testContainer } from '../adapters/container/inversify.config'
-import { identifiers } from "../../identifiers/identifiers";
-import { schoolDb } from "../adapters/container/inversify.config";
 
 const db = new Map<string, User>();
+const dbSchool = new Map<string, School>();
 
 describe("Unit - SignUp", () => {
     let signUp: SignUp;
     let school: School;
 
     beforeAll(() => {
-        signUp = testContainer.get(identifiers.SignUp)
+        const inMemoryUserRepository = new InMemoryUserRepository(db);
+        const inMemorySchoolRepository = new InMemorySchoolRepository(dbSchool);
+        const uuidGateway = new UuidGateway();
+        const bcryptGateway = new BcryptGateway();
+
+        signUp = new SignUp(
+            inMemoryUserRepository,
+            inMemorySchoolRepository,
+            uuidGateway,
+            bcryptGateway
+        );
 
         school = new School({
             id: "6789",
@@ -24,8 +37,7 @@ describe("Unit - SignUp", () => {
             district: "idf",
         });
 
-        
-        schoolDb.set("6789", school);
+        dbSchool.set("6789", school);
     });
 
     afterEach(() => {
