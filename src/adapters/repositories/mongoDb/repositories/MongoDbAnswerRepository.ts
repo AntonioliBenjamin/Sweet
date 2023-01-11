@@ -23,7 +23,7 @@ export class MongoDbAnswerRepository implements AnswerRepository {
             response: {
                 $ne: null
             },
-        });
+        }).sort({_id: -1});
         return answers.map((elm) => answerMapper.toDomain(elm));
     }
 
@@ -71,7 +71,7 @@ export class MongoDbAnswerRepository implements AnswerRepository {
     async getAllByUserId(userId: string): Promise<Answer[]> {
         const results = await AnswerModel.find({
             "response.userId": userId,
-        })
+        }).sort({_id: -1})
         return results.map(elm => answerMapper.toDomain(elm))
     }
 }
