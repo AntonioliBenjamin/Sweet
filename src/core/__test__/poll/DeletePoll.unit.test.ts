@@ -6,7 +6,6 @@ import {InMemoryQuestionRepository} from "../adapters/repositories/InMemoryQuest
 import {UuidGateway} from "../adapters/gateways/UuidGateway";
 import {DeletePoll} from "../../usecases/poll/DeletePoll";
 
-
 const dbPoll = new Map<string, Poll>();
 const dbQuestion = new Map<string, Question>();
 

@@ -9,7 +9,6 @@ export type UpdatePushTokenInput = {
     pushToken: string
 }
 
-
 @injectable()
 export class UpdatePushToken implements UseCase<UpdatePushTokenInput, User> {
     constructor(

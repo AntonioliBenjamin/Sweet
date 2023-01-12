@@ -8,7 +8,7 @@ export type PollQuestionApiResponse = {
   index: number;
 };
 
-export type PollApiResponsePropeties = {
+export type PollApiResponseProperties = {
   id: string;
   questions?: Array<PollQuestionApiResponse>;
   createdAt: Date;
@@ -19,7 +19,7 @@ export type PollApiResponsePropeties = {
 };
 
 export class PollApiResponse {
-  fromDomain(data: Poll, lastQuestionAnswered: Answer): PollApiResponsePropeties {
+  fromDomain(data: Poll, lastQuestionAnswered: Answer): PollApiResponseProperties {
     let currentQuestion: PollQuestionApiResponse;
     let isFinished = false;
     const questions = data.props.questions.map((elm, index) => {

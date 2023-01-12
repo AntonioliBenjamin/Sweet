@@ -10,7 +10,6 @@ export type ResetPasswordInput = {
   recoveryCode: string;
 };
 
-
 @injectable()
 export class ResetPassword implements UseCase<ResetPasswordInput, void> {
   constructor(

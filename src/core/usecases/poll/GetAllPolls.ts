@@ -4,7 +4,6 @@ import { PollRepository } from "../../repositories/PollRepository";
 import { inject, injectable } from "inversify";
 import { identifiers } from "../../identifiers/identifiers";
 
-
 @injectable()
 export class GetAllPolls implements UseCase<void, Poll[]> {
   constructor(

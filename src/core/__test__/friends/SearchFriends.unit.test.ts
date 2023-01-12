@@ -1,10 +1,10 @@
 import 'reflect-metadata';
-import { Gender, User } from "../../Entities/User";
-import { SearchFriends } from "../../usecases/friends/SearchFriends";
-import { InMemoryUserRepository } from "../adapters/repositories/InMemoryUserRepository";
+import {Gender, User} from "../../Entities/User";
+import {SearchFriends} from "../../usecases/friends/SearchFriends";
+import {InMemoryUserRepository} from "../adapters/repositories/InMemoryUserRepository";
 
 const db = new Map<string, User>();
-    let searchFriends: SearchFriends
+let searchFriends: SearchFriends
 
 beforeAll(() => {
     const inMemoryUserRepository = new InMemoryUserRepository(db);
@@ -23,7 +23,7 @@ beforeAll(() => {
         section: "cp",
         createdAt: new Date(),
         updatedAt: null,
-      });
+    });
 
     const user1 = new User({
         email: "user@example.com",
@@ -38,7 +38,7 @@ beforeAll(() => {
         section: "cp",
         createdAt: new Date(),
         updatedAt: null,
-      });
+    });
 
     const user2 = new User({
         email: "user@example.com",
@@ -53,11 +53,11 @@ beforeAll(() => {
         section: "cp",
         createdAt: new Date(),
         updatedAt: null,
-      });
+    });
 
-      db.set(user.props.id, user)
-      db.set(user1.props.id, user1)
-      db.set(user2.props.id, user2)
+    db.set(user.props.id, user)
+    db.set(user1.props.id, user1)
+    db.set(user2.props.id, user2)
 })
 
 describe("Unit - searchFriends", () => {

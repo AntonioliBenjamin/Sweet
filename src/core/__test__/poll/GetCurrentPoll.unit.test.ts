@@ -35,8 +35,6 @@ describe("Unit - GetCurrentPoll", () => {
         db.clear();
     })
 
-
-
     it("should throw because date expired", async () => {
         db.set("1234", poll1);
         const result = ()=> getCurrentPoll.execute();

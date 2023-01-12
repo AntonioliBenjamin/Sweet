@@ -231,7 +231,7 @@ describe("E2E - AnswerController", () => {
         );
 
         await supertest(app)
-            .get("/answer/mine")
+            .get("/answer/")
             .set("access_key", accessKey)
             .expect((response) => {
                 const responseBody = response.body;

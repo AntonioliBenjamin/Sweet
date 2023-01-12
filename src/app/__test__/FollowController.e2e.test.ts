@@ -22,7 +22,7 @@ const app = createExpressServer({
     },
 });
 
-describe("E2E - FollowRouter", () => {
+describe("E2E - FollowController", () => {
     let accessKey;
     let userRepository: UserRepository;
     let followRepository: FollowedRepository;

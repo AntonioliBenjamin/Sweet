@@ -1,5 +1,4 @@
 import "dotenv/config";
-
 import {UseCase} from "../Usecase";
 import {Poll} from "../../Entities/Poll";
 import {PollRepository} from "../../repositories/PollRepository";
@@ -9,7 +8,6 @@ import { inject, injectable } from "inversify";
 import { identifiers } from "../../identifiers/identifiers";
 
 const numberOfQuestions = +process.env.NUMBER_OF_QUESTIONS
-
 
 @injectable()
 export class CreatePoll implements UseCase<void, void> {

@@ -3,7 +3,6 @@ import {Expose, plainToClass} from "class-transformer";
 
 export class PushTokenCommands {
     @Expose()
-    @IsString()
     userId: string;
 
     @Expose()

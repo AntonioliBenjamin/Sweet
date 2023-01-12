@@ -8,21 +8,22 @@ import {createPollTimer} from "./app/jobs";
 import {createExpressServer, useContainer, useExpressServer} from "routing-controllers";
 import {SchoolController} from "./app/controllers/SchoolController";
 import {UserController} from "./app/controllers/UserController";
-import { FriendsController } from "./app/controllers/FriendsController";
-import { AnswerController } from './app/controllers/AnswerController';
-import { PollController } from './app/controllers/Pollcontroller';
-import { PovKernel } from './app/config/PovKernel';
-
+import {FriendsController} from "./app/controllers/FriendsController";
+import {AnswerController} from './app/controllers/AnswerController';
+import {PollController} from './app/controllers/Pollcontroller';
+import {PovKernel} from './app/config/PovKernel';
+import {FollowController} from "./app/controllers/FollowController";
+import {QuestionController} from "./app/controllers/QuestionController";
 
 const app = createExpressServer({
     defaults: {
-      nullResultCode: 404,
-      undefinedResultCode: 204,
-      paramOptions: {
-        required: false,
-      },
+        nullResultCode: 404,
+        undefinedResultCode: 204,
+        paramOptions: {
+            required: false,
+        },
     },
-  });
+});
 
 const MONGODB_URL = process.env.MONGODB_URL
 
@@ -54,8 +55,15 @@ container.init()
 
 useContainer(container)
 
-useExpressServer( app, {
-    controllers: [FriendsController, AnswerController, PollController,SchoolController, UserController]
+useExpressServer(app, {
+    controllers: [FriendsController,
+        AnswerController,
+        PollController,
+        SchoolController,
+        UserController,
+        FollowController,
+        QuestionController
+    ]
 })
 
 app.use((err, req, res, next) => {

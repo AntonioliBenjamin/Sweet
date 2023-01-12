@@ -1,7 +1,5 @@
 import {Followed} from "../Entities/Followed";
 
-
-
 export interface FollowedRepository {
     create(followed: Followed): Promise<Followed>;
 

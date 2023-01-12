@@ -3,7 +3,6 @@ import { IsString } from "class-validator";
 
 export class AddFollowCommands {
   @Expose()
-  @IsString()
   addedBy: string;
 
   @Expose()

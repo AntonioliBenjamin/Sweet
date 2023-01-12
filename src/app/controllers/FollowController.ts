@@ -5,10 +5,12 @@ import { FollowUser } from "../../core/usecases/follow/FollowUser";
 import { GetMyFollows } from "../../core/usecases/follow/GetMyFollows";
 import { UnfollowUser } from "../../core/usecases/follow/UnfollowUser";
 import { AddFollowCommands } from "../commands/follow/AddFollowCommands";
-import { UserApiResponse } from "../dtos/UserApiUserMapper";
+import { UserApiResponse } from "../dtos/UserApiResponse";
 import { authorization } from "../middlewares/JwtAuthorizationMiddleware";
 import { AuthentifiedRequest } from "../types/AuthentifiedRequest";
 import {injectable} from "inversify";
+
+const userApiMapper = new UserApiResponse()
 
 @injectable()
 @JsonController("/follow")
@@ -18,14 +20,13 @@ export class FollowController {
       private readonly _followUser : FollowUser,
       private readonly _getMyFollows : GetMyFollows,
       private readonly _unFollowUser : UnfollowUser,
-private readonly _userApiUserMapper : UserApiResponse
   ){}
   
-  @Post()
+  @Post('/')
   async followUser(
     @Res() res: Response,
     @Req() req: AuthentifiedRequest,
-    @Body() cmd: any
+    @Body() cmd: AddFollowCommands
   ) {
     const body = await AddFollowCommands.setProperties({
       addedBy: req.user.id,
@@ -36,10 +37,10 @@ private readonly _userApiUserMapper : UserApiResponse
     return res.status(201).send(follow.props);
   }
 
-  @Get()
+  @Get('/')
   async getMyFollows(@Req() req: AuthentifiedRequest, @Res() res: Response) {
     const users = await this._getMyFollows.execute(req.user.id);
-    return res.send(users.map((elm) => this._userApiUserMapper.fromDomain(elm)));
+    return res.send(users.map((elm) => userApiMapper.fromDomain(elm)));
   }
 
   @Delete("/:friendId")

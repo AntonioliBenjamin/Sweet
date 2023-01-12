@@ -25,7 +25,7 @@ export class AnswerController {
       private readonly _getMyAnswers : GetMyAnswers
   ){}
 
-  @Post()
+  @Post('/')
   async answerToQuestion(
     @Res() res: Response,
     @Body() cmd: AnswerToQuestionCommands) {
@@ -50,7 +50,7 @@ export class AnswerController {
     return res.status(200).send(answers.map(item => item.props));
   }
 
-  @Get('/mine')
+  @Get('/')
   async getMyAnswers(
     @Req() req: AuthentifiedRequest,
     @Res() res: Response

@@ -1,27 +1,28 @@
-import { MessagePayload, PushNotificationGateway } from "../../core/gateways/PushNotificationGateway";
+import {MessagePayload, PushNotificationGateway} from "../../core/gateways/PushNotificationGateway";
 import admin from "firebase-admin"
-import { injectable } from "inversify";
+import {injectable} from "inversify";
 
 @injectable()
 export class FirebaseGateway implements PushNotificationGateway {
-  constructor(
-    private readonly _admin: admin.app.App,
-  ) {}
+    constructor(
+        private readonly _admin: admin.app.App,
+    ) {
+    }
 
-  async send(message: MessagePayload) {
-      try {
-          await this._admin
-              .messaging()
-              .send({
-                  token: message.identifier,
-                  notification: {
-                      body: message.message,
-                      title: message.title
-                  }
-              })
-      } catch(e) {
-          console.error(e);
-          return;
-      }
-  }
+    async send(message: MessagePayload) {
+        try {
+            await this._admin
+                .messaging()
+                .send({
+                    token: message.identifier,
+                    notification: {
+                        body: message.message,
+                        title: message.title
+                    }
+                })
+        } catch (e) {
+            console.error(e);
+            return;
+        }
+    }
 }

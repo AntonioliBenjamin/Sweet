@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import {Followed} from "../../core/Entities/Followed";
 import {MongoDbFollowRepository} from "../repositories/mongoDb/repositories/MongoDbFollowRepository";
 import {connectDB, dropCollections, dropDB} from "./setupTestDb";

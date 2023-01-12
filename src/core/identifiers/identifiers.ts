@@ -12,6 +12,4 @@ export const identifiers = {
     IdGateway : Symbol.for("IdGateway"),
     PasswordGateway : Symbol.for("PasswordGateway"),
     PushNotificationGateway : Symbol.for("PushNotificationGateway"),
-    MailService : Symbol.for('MailService'),
-    EmailSender : Symbol.for('EmailSender'),
 }

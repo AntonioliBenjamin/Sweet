@@ -11,7 +11,6 @@ import { SchoolErrors } from "../../errors/SchoolErrors";
 import { identifiers } from "../../identifiers/identifiers";
 import {JsonController} from "routing-controllers";
 
-
 export type UserInput = {
   userName: string;
   firstName: string;

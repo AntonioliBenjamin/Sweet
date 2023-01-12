@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import './mocks/V4Id.mock';
 import { V4IdGateway } from "../gateways/V4IdGateway";
 

@@ -23,9 +23,12 @@ import {DeleteUser} from "../../core/usecases/user/DeleteUser";
 import {GetAllMyPotentialFriends} from "../../core/usecases/user/GetAllMyPotentialFriends";
 import {SendFeedback} from "../../core/usecases/user/SendFeeback";
 import {PushTokenCommands} from "../commands/user/PushTokenCommands";
-import { injectable } from 'inversify';
-import { SendGridGateway } from '../../adapters/gateways/SendGridGateway';
-import { UserApiResponse } from '../dtos/UserApiUserMapper';
+import {inject, injectable} from 'inversify';
+import { UserApiResponse } from '../dtos/UserApiResponse';
+import {EmailGateway} from "../../core/gateways/EmailGateway";
+import {identifiers} from "../../core/identifiers/identifiers";
+
+const userApiMapper = new UserApiResponse();
 
 const secretKey = process.env.SECRET_KEY;
 
@@ -40,12 +43,12 @@ export class UserController {
         private readonly _sendFeedBack : SendFeedback,
         private readonly _resetPassword : ResetPassword,
         private readonly _getUserById : GetUserById,
-        private readonly _getAllMyPotentielFriends : GetAllMyPotentialFriends,
+        private readonly _getAllMyPotentialFriends : GetAllMyPotentialFriends,
         private readonly _generateRecoveryCode : GenerateRecoveryCode,
         private readonly _emailExist : EmailExist,
         private readonly _deleteUser : DeleteUser,
-        private readonly _sendGridGateway : SendGridGateway,
-        private readonly _userApiResponse : UserApiResponse
+        @inject(identifiers.EmailGateway)
+        private readonly _sendGridGateway : EmailGateway,
     ) {}
 
     @Post('/')
@@ -64,7 +67,7 @@ export class UserController {
         );
 
         return res.status(201).send({
-            ...this._userApiResponse.fromDomain(user),
+            ...userApiMapper.fromDomain(user),
             accessKey,
         });
     }
@@ -85,7 +88,7 @@ export class UserController {
         );
 
         return res.status(200).send({
-            ...this._userApiResponse.fromDomain(user),
+            ...userApiMapper.fromDomain(user),
             accessKey,
         });
     }
@@ -167,7 +170,7 @@ export class UserController {
             id: req.user.id,
         });
 
-        return res.status(200).send(this._userApiResponse.fromDomain(updatedUser));
+        return res.status(200).send(userApiMapper.fromDomain(updatedUser));
     }
 
     @Patch('/push-token')
@@ -175,7 +178,7 @@ export class UserController {
     async pushToken(
         @Req() req: AuthentifiedRequest,
         @Res() res: Response,
-        @Body() cmd: any
+        @Body() cmd: PushTokenCommands
     ) {
         const body = await PushTokenCommands.setProperties({
             userId : req.user.id,
@@ -183,7 +186,7 @@ export class UserController {
         });
         const user = await this._updatePushToken.execute(body)
 
-        return res.send(this._userApiResponse.fromDomain(user))
+        return res.send(userApiMapper.fromDomain(user))
     }
 
     @Get('/all/:schoolId')
@@ -193,10 +196,10 @@ export class UserController {
         @Res() res: Response,
         @Param("schoolId") schoolId: string
     ) {
-        const users = await this._getAllMyPotentielFriends.execute(schoolId);
+        const users = await this._getAllMyPotentialFriends.execute(schoolId);
 
         const userResponse = users.map((elm) =>
-            this._userApiResponse.fromDomain(elm)
+            userApiMapper.fromDomain(elm)
         );
 
         const ArrayWithoutCurrentUser = userResponse.filter(
@@ -228,6 +231,6 @@ export class UserController {
     ) {
         const user = await this._getUserById.execute({userId});
 
-        return res.status(200).send(this._userApiResponse.fromDomain(user));
+        return res.status(200).send(userApiMapper.fromDomain(user));
     }
 }

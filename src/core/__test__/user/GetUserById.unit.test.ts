@@ -21,7 +21,6 @@ describe("Unit - GetUserById", () => {
     let user: User;
     let result: User;
 
-
     beforeAll(async () => {
         inMemoryUserRepository = new InMemoryUserRepository(db);
         inMemorySchoolRepository = new InMemorySchoolRepository(dbSchool);

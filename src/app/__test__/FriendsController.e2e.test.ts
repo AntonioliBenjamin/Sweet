@@ -20,7 +20,7 @@ const app = createExpressServer({
     },
   });
 
-describe("E2E - Friends Router", () => {
+describe("E2E - FriendsController", () => {
     let accessKey;
     let mongoDbUserRepository: UserRepository;
     let user: User;

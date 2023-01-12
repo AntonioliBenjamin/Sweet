@@ -1,16 +1,17 @@
 import 'reflect-metadata';
 import { Controller, Get, Res, QueryParam } from "routing-controllers";
 import { SearchFriends } from "../../core/usecases/friends/SearchFriends";
-import { UserApiResponse } from "../dtos/UserApiUserMapper";
+import { UserApiResponse } from "../dtos/UserApiResponse";
 import { Response } from "express";
 import { injectable } from 'inversify';
+
+const userApiMapper = new UserApiResponse()
 
 @injectable()
 @Controller('/friends')
 export class FriendsController {
   constructor(
     private readonly _searchFriends : SearchFriends,
-    private readonly _userApiResponse : UserApiResponse
   ) {}
 
   @Get("/search/:keyword/:schoolId?")
@@ -26,6 +27,6 @@ export class FriendsController {
 
     return res
       .status(200)
-      .send(users.map((elm) => this._userApiResponse.fromDomain(elm)));
+      .send(users.map((elm) => userApiMapper.fromDomain(elm)));
   }
 }

@@ -4,7 +4,6 @@ import {SchoolRepository} from "../../repositories/SchoolRepository";
 import { inject, injectable } from "inversify";
 import { identifiers } from "../../identifiers/identifiers";
 
-
 @injectable()
 export class GetAllSchools implements UseCase<void, School[]> {
     constructor(

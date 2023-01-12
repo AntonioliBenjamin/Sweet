@@ -1,14 +1,15 @@
 import {EmailGateway} from "../../core/gateways/EmailGateway";
 import {MailService} from "@sendgrid/mail";
-import { inject, injectable } from "inversify";
-import { identifiers } from "../../core/identifiers/identifiers";
+import {inject, injectable} from "inversify";
+import {identifiers} from "../../core/identifiers/identifiers";
 
 @injectable()
 export class SendGridGateway implements EmailGateway {
     constructor(
-        @inject(identifiers.MailService) private readonly mailService: MailService,
-        @inject(identifiers.EmailSender) private readonly emailSender: string
-    ) {}
+        private readonly mailService: MailService,
+        private readonly emailSender: string
+    ) {
+    }
 
     async sendRecoveryCode(payload: {
         email: string;

@@ -9,6 +9,8 @@ import { GetLastQuestionAnswered } from "../../core/usecases/answer/GetLastQuest
 import { PollApiResponse } from "../dtos/PollApiResponse";
 import { injectable } from 'inversify';
 
+const pollApiMapper = new PollApiResponse();
+
 @injectable()
 @Controller('/poll')
 @UseBefore(authorization)
@@ -17,7 +19,6 @@ export class PollController {
     private readonly _getAllPolls : GetAllPolls,
     private readonly _getCurrentPoll : GetCurrentPoll,
     private readonly _getLastQuestionAnswered : GetLastQuestionAnswered,
-    private readonly _pollApiResponse : PollApiResponse
   ) {}
     
   @Get('/all')
@@ -26,8 +27,8 @@ export class PollController {
     return res.status(200).send(polls.map((elm) => elm.props));
   }
 
-  @Get("/current")
-  async getCurentPoll(@Res() res: Response, @Req() req: AuthentifiedRequest) {
+  @Get("/")
+  async getCurrentPoll(@Res() res: Response, @Req() req: AuthentifiedRequest) {
     const currentPoll = await this._getCurrentPoll.execute();
 
     const lastAnswer = await this._getLastQuestionAnswered.execute({
@@ -35,7 +36,7 @@ export class PollController {
       userId: req.user.id,
     });
 
-    const pollApiResponse = this._pollApiResponse.fromDomain(currentPoll, lastAnswer);
+    const pollApiResponse = pollApiMapper.fromDomain(currentPoll, lastAnswer);
 
     return res.status(200).send(pollApiResponse);
   }

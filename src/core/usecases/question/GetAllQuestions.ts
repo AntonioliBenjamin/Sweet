@@ -4,7 +4,6 @@ import { QuestionRepository } from "../../repositories/QuestionRepository";
 import { inject, injectable } from "inversify";
 import { identifiers } from "../../identifiers/identifiers";
 
-
 @injectable()
 export class GetAllQuestions implements UseCase<void, Question[]> {
     constructor(

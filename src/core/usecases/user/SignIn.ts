@@ -11,7 +11,6 @@ export type UserSignInInput = {
   password: string;
 };
 
-
 @injectable()
 export class SignIn implements UseCase<UserSignInInput, User> {
   constructor(

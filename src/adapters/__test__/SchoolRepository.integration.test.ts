@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { SchoolDbRepository } from "../repositories/school/SchoolDbRepository";
 
 describe("Integration - SchoolRepository", () => {

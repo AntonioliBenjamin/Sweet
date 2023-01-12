@@ -21,7 +21,7 @@ const app = createExpressServer({
     },
   });
 
-describe("E2E - Poll Router", () => {
+describe("E2E - Poll Controller", () => {
     let accessKey;
     let questionRepository: QuestionRepository;
     let pollRepository: PollRepository;
@@ -85,7 +85,7 @@ describe("E2E - Poll Router", () => {
             .expect(200);
     });
 
-    it("Should get/poll/current", async () => {
+    it("Should get/poll/", async () => {
         await pollRepository.create(poll);
         await pollRepository.create(poll2);
 
@@ -99,7 +99,7 @@ describe("E2E - Poll Router", () => {
         );
 
         await supertest(app)
-            .get("/poll/current")
+            .get("/poll")
             .set("access_key", accessKey)
             .expect((response) => {
                 const responseBody = response.body;

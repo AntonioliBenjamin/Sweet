@@ -20,7 +20,7 @@ const app = createExpressServer({
     },
   });
 
-describe("E2E - Question Router", () => {
+describe("E2E - Question Controller", () => {
     let accessKey;
     let questionRepository: QuestionRepository;
     let question: Question;
@@ -33,13 +33,11 @@ describe("E2E - Question Router", () => {
         container.init();
         
         useContainer(container);
-        
 
         useExpressServer(app, {
             controllers: [QuestionController]
         })
 
-        
         questionRepository = container.get(identifiers.QuestionRepository)
 
         question = Question.create({
