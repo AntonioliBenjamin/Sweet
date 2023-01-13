@@ -29,7 +29,6 @@ import {EmailExistCommands} from "../commands/user/EmailExistCommands";
 import {GetUserById} from "../../core/usecases/user/GetUserById";
 import {SendFeedbackCommands} from "../commands/user/SendFeedbackCommands";
 import {SendFeedback} from "../../core/usecases/user/SendFeeback";
-import { User } from "../../core/Entities/User";
 
 const mailService = new MailService();
 const emailSender = process.env.RECOVERY_EMAIL_SENDER;

@@ -22,4 +22,21 @@ export class FirebaseGateway implements PushNotificationGateway {
           return;
       }
   }
+
+  async sendToAllDevice(message: MessagePayload) {
+      try {
+          await this._admin
+              .messaging()
+              .send({
+                  topic: message.identifier,
+                  notification: {
+                      body: message.message,
+                      title: message.title
+                  }
+              })
+      } catch(e) {
+          console.error(e);
+          return;
+      }
+  }
 }
