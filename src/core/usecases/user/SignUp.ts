@@ -1,3 +1,4 @@
+import { inject, injectable } from "inversify";
 import { Gender } from "./../../Entities/User";
 import { UseCase } from "../Usecase";
 import { User } from "../../Entities/User";
@@ -7,6 +8,8 @@ import { PasswordGateway } from "../../gateways/PasswordGateway";
 import { UserErrors } from "../../errors/UserErrors";
 import { SchoolRepository } from "../../repositories/SchoolRepository";
 import { SchoolErrors } from "../../errors/SchoolErrors";
+import { identifiers } from "../../identifiers/identifiers";
+import {JsonController} from "routing-controllers";
 
 export type UserInput = {
   userName: string;
@@ -20,12 +23,14 @@ export type UserInput = {
   gender: Gender;
 };
 
+@JsonController()
+@injectable()
 export class SignUp implements UseCase<UserInput, User> {
   constructor(
-    private readonly userRepository: UserRepository,
-    private readonly schoolRepository: SchoolRepository,
-    private readonly idGateway: IdGateway,
-    private readonly passwordGateway: PasswordGateway
+    @inject(identifiers.UserRepository) private readonly userRepository: UserRepository,
+    @inject(identifiers.SchoolRepository) private readonly schoolRepository: SchoolRepository,
+    @inject(identifiers.IdGateway) private readonly idGateway: IdGateway,
+    @inject(identifiers.PasswordGateway) private readonly passwordGateway: PasswordGateway
   ) {}
 
   async execute(input: UserInput): Promise<User> {

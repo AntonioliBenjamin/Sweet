@@ -1,10 +1,10 @@
-import { BcryptGateway } from "../gateways/BcryptGateway";
+import 'reflect-metadata';
+import {BcryptGateway} from "../gateways/BcryptGateway";
 import './mocks/bcrypt.mock';
-
 
 describe("Unit - BcryptGateway", () => {
     const bcryptGateway = new BcryptGateway()
- 
+
     it("should encrypt a password", () => {
         const result = bcryptGateway.encrypt("12345");
         expect(result).not.toEqual("12345");

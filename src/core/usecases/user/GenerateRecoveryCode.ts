@@ -1,19 +1,22 @@
+import { inject, injectable } from "inversify";
 import { UserRepository } from "../../repositories/UserRepository";
 import { UseCase } from "../Usecase";
 import { UserErrors } from "../../errors/UserErrors";
 import { IdGateway } from "../../gateways/IdGateway";
 import { User } from "../../Entities/User";
+import { identifiers } from "../../identifiers/identifiers";
 
 export type GenerateRecoveryCodeInput = {
   email: string;
 };
 
+@injectable()
 export class GenerateRecoveryCode
   implements UseCase<GenerateRecoveryCodeInput, User>
 {
   constructor(
-    private readonly userRepository: UserRepository,
-    private readonly idGateway: IdGateway
+    @inject(identifiers.UserRepository) private readonly userRepository: UserRepository,
+    @inject(identifiers.IdGateway) private readonly idGateway: IdGateway,
   ) {}
 
   async execute(input: GenerateRecoveryCodeInput): Promise<User> {

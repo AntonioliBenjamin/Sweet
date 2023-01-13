@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { Poll } from "../../Entities/Poll";
 import { GetAllPolls } from "../../usecases/poll/GetAllPolls";
 import { InMemoryPollRepository } from "../adapters/repositories/InMemoryPollRepository";

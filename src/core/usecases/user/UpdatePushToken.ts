@@ -1,15 +1,18 @@
+import { inject, injectable } from "inversify";
 import { User } from "../../Entities/User";
 import { UserRepository } from "../../repositories/UserRepository";
 import { UseCase } from "../Usecase";
+import { identifiers } from "../../identifiers/identifiers";
 
 export type UpdatePushTokenInput = {
     userId: string,
     pushToken: string
 }
 
+@injectable()
 export class UpdatePushToken implements UseCase<UpdatePushTokenInput, User> {
     constructor(
-        private readonly userRepository : UserRepository
+        @inject(identifiers.UserRepository) private readonly userRepository: UserRepository
     ) {}
 
     async execute(input: UpdatePushTokenInput): Promise<User> {

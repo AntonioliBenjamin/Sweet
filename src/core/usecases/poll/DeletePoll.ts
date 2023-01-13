@@ -1,16 +1,17 @@
 import {UseCase} from "../Usecase";
 import {PollRepository} from "../../repositories/PollRepository";
+import {inject, injectable} from "inversify";
+import {identifiers} from "../../identifiers/identifiers";
 
 export type DeletePollInput = {
     pollId: string;
-
 };
 
+@injectable()
 export class DeletePoll implements UseCase<DeletePollInput, void> {
     constructor(
-        private readonly pollRepository: PollRepository
+        @inject(identifiers.PollRepository) private readonly pollRepository: PollRepository
     ) {
-
     }
 
     async execute(input: DeletePollInput): Promise<void> {

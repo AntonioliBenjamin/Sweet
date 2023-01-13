@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import {Answer} from "../../Entities/Answer";
 import {Poll} from "../../Entities/Poll";
 import {Question} from "../../Entities/Question";

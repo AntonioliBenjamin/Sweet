@@ -1,5 +1,4 @@
 import { Answer } from "../../../Entities/Answer";
-import { Question } from "../../../Entities/Question";
 import { AnswerRepository } from "../../../repositories/AnswerRepository";
 
 export class InMemoryAnswerRepository implements AnswerRepository {

@@ -1,8 +1,10 @@
+import { inject, injectable } from "inversify";
 import {UseCase} from "../Usecase";
 import {Gender, User} from "../../Entities/User";
 import {UserRepository} from "../../repositories/UserRepository";
 import {SchoolErrors} from "../../errors/SchoolErrors";
 import {SchoolRepository} from "../../repositories/SchoolRepository";
+import { identifiers } from "../../identifiers/identifiers";
 
 export type UserUpdatedInput = {
     userName: string;
@@ -14,10 +16,13 @@ export type UserUpdatedInput = {
     schoolId: string;
 };
 
+@injectable()
 export class UpdateUser implements UseCase<UserUpdatedInput, User> {
-    constructor(private readonly userRepository: UserRepository,
-                private readonly schoolRepository: SchoolRepository) {
-    }
+    constructor(
+        @inject(identifiers.UserRepository) private readonly userRepository: UserRepository,
+        @inject(identifiers.SchoolRepository) private readonly schoolRepository: SchoolRepository,
+    ) {}
+
 
     async execute(input: UserUpdatedInput): Promise<User> {
         const user = await this.userRepository.getById(input.id);

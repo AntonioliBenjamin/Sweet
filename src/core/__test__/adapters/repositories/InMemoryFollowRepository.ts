@@ -1,6 +1,5 @@
 import {Followed} from "../../../Entities/Followed";
 import {FollowedRepository} from "../../../repositories/FollowedRepository";
-import {DeleteFollowProperties} from "../../../usecases/follow/UnfollowUser";
 
 export class InMemoryFollowRepository implements FollowedRepository {
     constructor(

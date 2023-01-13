@@ -1,14 +1,17 @@
+import { inject, injectable } from "inversify";
 import { EmailGateway } from "../../gateways/EmailGateway";
 import { UseCase } from "../Usecase";
+import { identifiers } from "../../identifiers/identifiers";
 
 export type SendFeedbackInput = {
     message: string;
     email: string;
 }
 
+@injectable()
 export class SendFeedback implements UseCase<SendFeedbackInput, void> {
     constructor(
-        private readonly emailGateway: EmailGateway,
+        @inject(identifiers.EmailGateway) private readonly emailGateway: EmailGateway,
     ) {}
 
     async execute(input: SendFeedbackInput): Promise<void> {

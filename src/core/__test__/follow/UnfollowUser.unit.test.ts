@@ -1,5 +1,5 @@
+import 'reflect-metadata';
 import {Followed} from "../../Entities/Followed";
-import {FollowErrors} from "../../errors/FollowErrors";
 import {UnfollowUser} from "../../usecases/follow/UnfollowUser";
 import {InMemoryFollowRepository} from "../adapters/repositories/InMemoryFollowRepository";
 

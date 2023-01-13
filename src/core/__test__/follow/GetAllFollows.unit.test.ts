@@ -1,7 +1,7 @@
+import 'reflect-metadata';
 import { Followed } from "../../Entities/Followed";
 import { Gender, User } from "../../Entities/User";
 import { GetMyFollows } from "../../usecases/follow/GetMyFollows";
-
 import { InMemoryFollowRepository } from "../adapters/repositories/InMemoryFollowRepository";
 import { InMemoryUserRepository } from "../adapters/repositories/InMemoryUserRepository";
 const db = new Map<string, Followed>();

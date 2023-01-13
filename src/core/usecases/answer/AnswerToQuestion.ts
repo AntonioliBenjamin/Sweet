@@ -5,8 +5,10 @@ import {AnswerRepository} from "../../repositories/AnswerRepository";
 import {UserRepository} from "../../repositories/UserRepository";
 import {QuestionRepository} from "../../repositories/QuestionRepository";
 import {SchoolRepository} from "../../repositories/SchoolRepository";
-import { MessagePayload, PushNotificationGateway } from "../../gateways/PushNotificationGateway";
-import {User} from "../../Entities/User";
+import {inject, injectable} from "inversify";
+import {identifiers} from "../../identifiers/identifiers";
+import {PushNotificationGateway} from "../../gateways/PushNotificationGateway";
+import {Gender, User} from "../../Entities/User";
 
 export type AnswerToQuestionInput = {
     questionId: string;
@@ -15,15 +17,16 @@ export type AnswerToQuestionInput = {
     pollId: string;
 };
 
+@injectable()
 export class AnswerToQuestion
     implements UseCase<AnswerToQuestionInput, Answer> {
     constructor(
-        private readonly answerRepository: AnswerRepository,
-        private readonly userRepository: UserRepository,
-        private readonly questionRepository: QuestionRepository,
-        private readonly schoolRepository: SchoolRepository,
-        private readonly idGateway: IdGateway,
-        private readonly pushNotificationGateway: PushNotificationGateway
+        @inject(identifiers.AnswerRepository) private readonly answerRepository: AnswerRepository,
+        @inject(identifiers.UserRepository) private readonly userRepository: UserRepository,
+        @inject(identifiers.QuestionRepository) private readonly questionRepository: QuestionRepository,
+        @inject(identifiers.SchoolRepository) private readonly schoolRepository: SchoolRepository,
+        @inject(identifiers.IdGateway) private readonly idGateway: IdGateway,
+        @inject(identifiers.PushNotificationGateway) private readonly pushNotificationGateway: PushNotificationGateway
     ) {}
 
     async execute(input: AnswerToQuestionInput): Promise<Answer> {
@@ -33,8 +36,8 @@ export class AnswerToQuestion
             friend = await this.userRepository.getById(input.friendId);
             await this.pushNotificationGateway.send({
                 identifier: friend.props.pushToken,
-                message: `Vas vite sur l'app pour découvrir ton admirateur secret`,
-                title: "Quelqu'un s'intéresse à toi"
+                message: `${user.props.gender === Gender.BOY ? "Un garçon" : "Une fille"} t'as envoyé un POV`,
+                title: "Un nouveau POV"
             });
         }
 

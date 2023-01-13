@@ -1,6 +1,8 @@
+import { inject, injectable } from "inversify";
 import { UseCase } from "../Usecase";
 import { UserRepository } from "../../repositories/UserRepository";
 import { PasswordGateway } from "../../gateways/PasswordGateway";
+import { identifiers } from "../../identifiers/identifiers";
 
 export type ResetPasswordInput = {
   id: string;
@@ -8,16 +10,17 @@ export type ResetPasswordInput = {
   recoveryCode: string;
 };
 
+@injectable()
 export class ResetPassword implements UseCase<ResetPasswordInput, void> {
   constructor(
-    private readonly userRepository: UserRepository,
-    private readonly encryptionGateway: PasswordGateway
+    @inject(identifiers.PasswordGateway) private readonly passwordGateway: PasswordGateway,
+    @inject(identifiers.UserRepository) private readonly userRepository: UserRepository
   ) {}
 
   async execute(input: ResetPasswordInput): Promise<void> {
     const user = await this.userRepository.getById(input.id);
 
-    const encryptedPassword = this.encryptionGateway.encrypt(input.password);
+    const encryptedPassword = this.passwordGateway.encrypt(input.password);
 
     user.resetPassword({
       recoveryCode: input.recoveryCode,

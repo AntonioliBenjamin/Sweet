@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import {InMemoryUserRepository} from "../adapters/repositories/InMemoryUserRepository";
 import {UuidGateway} from "../adapters/gateways/UuidGateway";
 import {Gender, User} from "../../Entities/User";

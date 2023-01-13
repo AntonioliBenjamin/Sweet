@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import {Gender} from "./../../Entities/User";
 import {SignUp} from "../../usecases/user/SignUp";
 import {User} from "../../Entities/User";

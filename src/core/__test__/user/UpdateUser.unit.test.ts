@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import {Gender} from "./../../Entities/User";
 import {User} from "../../Entities/User";
 import {SignUp} from "../../usecases/user/SignUp";
@@ -20,7 +21,6 @@ describe("Unit - UpdateUser", () => {
     let updateUser: UpdateUser;
     let user: User;
     let result: User;
-
 
     beforeAll(async () => {
         inMemoryUserRepository = new InMemoryUserRepository(db);

@@ -1,6 +1,5 @@
 import {PollRepository} from "../../../repositories/PollRepository";
 import {Poll} from "../../../Entities/Poll";
-import {questionFixtures} from "../../../fixtures/questionFixtures";
 import {PollErrors} from "../../../errors/PollErrors";
 
 export class InMemoryPollRepository implements PollRepository {

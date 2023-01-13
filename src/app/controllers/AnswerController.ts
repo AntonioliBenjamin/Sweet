@@ -1,49 +1,37 @@
 import 'reflect-metadata';
 import { Param, Get, Post, Res, Body, UseBefore, Req, JsonController, Delete, Patch } from "routing-controllers";
-import admin from "firebase-admin";
 import { Response } from "express";
 import { AnswerMarkAsRead } from "../../core/usecases/answer/AnswerMarkAsRead";
 import { DeleteAnswer } from "../../core/usecases/answer/DeleteAnswer";
 import { GetMyAnswers } from "../../core/usecases/answer/GetMyAnswers";
 import { GetAllAnswers } from "../../core/usecases/answer/GetAllAnswers";
 import { AnswerToQuestion } from "../../core/usecases/answer/AnswerToQuestion";
-import { FirebaseGateway } from "../../adapters/gateways/FirebaseGateway";
-import { MongoDbAnswerRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbAnswerRepository";
-import { V4IdGateway } from "../../adapters/gateways/V4IdGateway";
-import { SchoolDbRepository } from "../../adapters/repositories/school/SchoolDbRepository";
-import { MongoDbUserRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
-import { MongoDbQuestionRepository } from "../../adapters/repositories/mongoDb/repositories/MongoDbQuestionRepository";
 import { AnswerToQuestionCommands } from "../commands/answer/AnswerToQuestionCommands";
 import { authorization } from "../middlewares/JwtAuthorizationMiddleware";
 import { AuthentifiedRequest } from "../types/AuthentifiedRequest";
+import {injectable} from "inversify";
+import { GetLastQuestionAnswered } from '../../core/usecases/answer/GetLastQuestionAnswered';
 
-const mongoDbQuestionRepository = new MongoDbQuestionRepository();
-const mongoDbUserRepository = new MongoDbUserRepository();
-const schoolDbRepository = new SchoolDbRepository();
-const v4IdGateway = new V4IdGateway();
-const mongoDbAnswerRepository = new MongoDbAnswerRepository();
-const googleCreadentials = process.env.GOOGLE_APPLICATION_CREDENTIALS;
-const serviceAccount = JSON.parse(Buffer.from(googleCreadentials, 'base64').toString('utf-8'));
-const initialize = admin.initializeApp({credential: admin.credential.cert(serviceAccount)});
-const firebaseGateway = new FirebaseGateway(initialize)
-const answerToQuestion = new AnswerToQuestion(mongoDbAnswerRepository, mongoDbUserRepository, mongoDbQuestionRepository, schoolDbRepository, v4IdGateway, firebaseGateway);
-const getAllAnswers = new GetAllAnswers(mongoDbAnswerRepository);
-const getMyAnswers = new GetMyAnswers(mongoDbAnswerRepository);
-const deleteAnswer = new DeleteAnswer(mongoDbAnswerRepository);
-const answerMarkAsRead = new AnswerMarkAsRead(mongoDbAnswerRepository);
-
-
+@injectable()
 @JsonController('/answer')
 @UseBefore(authorization)
 export class AnswerController {
+  constructor(
+      private readonly _answerMarkAsRead: AnswerMarkAsRead,
+      private readonly _answerToQuestion : AnswerToQuestion,
+      private readonly _deleteAnswer: DeleteAnswer,
+      private readonly _getAllAnswers: GetAllAnswers,
+      private readonly _getLastQuestionAnswered : GetLastQuestionAnswered,
+      private readonly _getMyAnswers : GetMyAnswers
+  ){}
 
-  @Post()
+  @Post('/')
   async answerToQuestion(
     @Res() res: Response,
     @Body() cmd: AnswerToQuestionCommands) {
 
     const body = await AnswerToQuestionCommands.setProperties(cmd)
-    const answer = await answerToQuestion.execute(body)
+    const answer = await this._answerToQuestion.execute(body)
     return res.status(201).send(answer.props);
   }
   
@@ -54,7 +42,7 @@ export class AnswerController {
     @Param("schoolId") schoolId: string
   ) {
 
-    const answers = await getAllAnswers.execute({
+    const answers = await this._getAllAnswers.execute({
         schoolId: schoolId,
         userId: req.user.id,
     });
@@ -62,12 +50,12 @@ export class AnswerController {
     return res.status(200).send(answers.map(item => item.props));
   }
 
-  @Get('/mine')
+  @Get('/')
   async getMyAnswers(
     @Req() req: AuthentifiedRequest,
     @Res() res: Response
   ) {
-    const answers = await getMyAnswers.execute(req.user.id)
+    const answers = await this._getMyAnswers.execute(req.user.id)
 
     return res.status(200).send(answers.map(item => item.props));
   }
@@ -79,7 +67,7 @@ export class AnswerController {
     @Param("answerId") answerId: string
   ) {
 
-    await deleteAnswer.execute(answerId);
+    await this._deleteAnswer.execute(answerId);
 
     return res.sendStatus(200);
   }
@@ -90,7 +78,7 @@ export class AnswerController {
     @Param("answerId") answerId: string
   ) {
 
-    await answerMarkAsRead.execute(answerId);
+    await this._answerMarkAsRead.execute(answerId);
 
     return res.sendStatus(200);
   }

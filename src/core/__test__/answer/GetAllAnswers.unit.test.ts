@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import {Answer} from "../../Entities/Answer";
 import {Gender} from "../../Entities/User";
 import {GetAllAnswers} from "../../usecases/answer/GetAllAnswers";
@@ -12,8 +13,8 @@ describe("Unit - GetAllAnswers", () => {
 
         const answer = new Answer({
             answerId: "1234",
-            markAsRead : true,
-            pollId:"123",
+            markAsRead: true,
+            pollId: "123",
             question: {
                 questionId: "9999",
                 description: "this is a desc",
@@ -25,7 +26,7 @@ describe("Unit - GetAllAnswers", () => {
                 lastName: "lastname",
                 userName: "username",
                 schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
-                schoolName : "schoolName",
+                schoolName: "schoolName",
                 section: "1er L",
                 gender: Gender.GIRL,
             },
@@ -35,7 +36,7 @@ describe("Unit - GetAllAnswers", () => {
                 lastName: "lastname",
                 userName: "username",
                 schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
-                schoolName : "schoolName2",
+                schoolName: "schoolName2",
                 section: "1er L",
                 gender: Gender.GIRL,
             },
@@ -46,8 +47,8 @@ describe("Unit - GetAllAnswers", () => {
 
         const answer2 = new Answer({
             answerId: "4321",
-            markAsRead : true,
-            pollId:"123",
+            markAsRead: true,
+            pollId: "123",
             question: {
                 questionId: "1111",
                 description: "this is a desc",
@@ -59,7 +60,7 @@ describe("Unit - GetAllAnswers", () => {
                 lastName: "lastname",
                 userName: "username",
                 schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
-                schoolName : "schoolName2",
+                schoolName: "schoolName2",
                 section: "1er L",
                 gender: Gender.GIRL,
             },
@@ -69,7 +70,7 @@ describe("Unit - GetAllAnswers", () => {
                 lastName: "lastname",
                 userName: "username",
                 schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
-                schoolName : "schoolName2",
+                schoolName: "schoolName2",
                 section: "1er L",
                 gender: Gender.GIRL,
             },

@@ -2,13 +2,14 @@ import "reflect-metadata";
 const supertest = require('supertest');
 import "dotenv/config";
 import {sign} from "jsonwebtoken";
-import {MongoDbUserRepository} from "../../adapters/repositories/mongoDb/repositories/MongoDbUserRepository";
 import {Gender, User} from "../../core/Entities/User";
 import {UserRepository} from "../../core/repositories/UserRepository";
-import {BcryptGateway} from "../../adapters/gateways/BcryptGateway";
 import {connectDB, dropCollections, dropDB} from "../../adapters/__test__/setupTestDb";
-import {createExpressServer, useExpressServer} from "routing-controllers";
+import {createExpressServer, useContainer, useExpressServer} from "routing-controllers";
 import {UserController} from "../controllers/UserController";
+import {PovKernel} from "../config/PovKernel";
+import {identifiers} from "../../core/identifiers/identifiers";
+import {BcryptGateway} from "../../adapters/gateways/BcryptGateway";
 
 const app = createExpressServer({
     defaults: {
@@ -20,20 +21,27 @@ const app = createExpressServer({
     },
 });
 
-describe("E2E - User Router", () => {
+describe("E2E - User Controller", () => {
     let accessKey;
     let userRepository: UserRepository;
     let user: User;
+    let bcryptGateway: BcryptGateway;
 
     beforeAll(async () => {
-        useExpressServer(app, {
-            controllers: [UserController],
-        });
-
         await connectDB();
 
-        const bcryptGateway = new BcryptGateway();
-        userRepository = new MongoDbUserRepository();
+        const container = new PovKernel();
+
+        container.init();
+
+        useContainer(container);
+
+        useExpressServer(app, {
+            controllers: [UserController]
+        })
+
+        bcryptGateway = container.get(identifiers.PasswordGateway);
+        userRepository = container.get(identifiers.UserRepository);
 
         user = new User({
             userName: "jojolapin",

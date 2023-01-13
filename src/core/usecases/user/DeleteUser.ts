@@ -1,17 +1,20 @@
+import { inject, injectable } from "inversify";
 import { UseCase } from "../Usecase";
 import { UserRepository } from "../../repositories/UserRepository";
 import { FollowedRepository } from "../../repositories/FollowedRepository";
 import { AnswerRepository } from "../../repositories/AnswerRepository";
+import { identifiers } from "../../identifiers/identifiers";
 
 export type UserDeletedInput = {
   userId: string;
 };
 
+@injectable()
 export class DeleteUser implements UseCase<UserDeletedInput, void> {
   constructor(
-    private readonly userRepository: UserRepository,
-    private readonly followRepository: FollowedRepository,
-    private readonly answerRepository: AnswerRepository
+    @inject(identifiers.UserRepository) private readonly userRepository: UserRepository,
+    @inject(identifiers.FollowedRepository) private readonly followRepository: FollowedRepository,
+    @inject(identifiers.AnswerRepository) private readonly answerRepository: AnswerRepository
   ) {}
 
   async execute(input: UserDeletedInput): Promise<void> {

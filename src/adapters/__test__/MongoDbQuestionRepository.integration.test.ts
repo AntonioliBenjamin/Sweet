@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { MongoDbQuestionRepository } from "../repositories/mongoDb/repositories/MongoDbQuestionRepository";
 import { Question } from "../../core/Entities/Question";
 import { questionMongoFixtures } from "../../core/fixtures/questionMongoFixtures";

@@ -1,4 +1,4 @@
-
+import 'reflect-metadata';
 import { GetAllMyPotentialFriends } from "../../usecases/user/GetAllMyPotentialFriends";
 import { InMemoryUserRepository } from "../adapters/repositories/InMemoryUserRepository";
 import { User, Gender } from "./../../Entities/User";

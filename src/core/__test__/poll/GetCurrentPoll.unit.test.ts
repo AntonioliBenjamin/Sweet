@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import {Poll} from "../../Entities/Poll";
 import {InMemoryPollRepository} from "../adapters/repositories/InMemoryPollRepository";
 import {GetCurrentPoll} from "../../usecases/poll/GetCurrentPoll";
@@ -33,8 +34,6 @@ describe("Unit - GetCurrentPoll", () => {
     afterEach(() => {
         db.clear();
     })
-
-
 
     it("should throw because date expired", async () => {
         db.set("1234", poll1);

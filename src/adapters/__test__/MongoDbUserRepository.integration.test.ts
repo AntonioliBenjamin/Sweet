@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import {Gender, User} from "./../../core/Entities/User";
 import {MongoDbUserRepository} from "../repositories/mongoDb/repositories/MongoDbUserRepository";
 import {Answer} from "../../core/Entities/Answer";
