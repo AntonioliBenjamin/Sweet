@@ -79,6 +79,10 @@ const answerSchema = new Schema({
         type: String,
         required: false,
       },
+      age: {
+        type: Number,
+        required: true,
+      },
       gender: {
         type: String,
         enum: Object.values(Gender),
@@ -110,6 +114,10 @@ const answerSchema = new Schema({
       type: String,
           required: true,
           index: true
+    },
+    age: {
+      type: Number,
+      required: true,
     },
     schoolName: {
       type: String,

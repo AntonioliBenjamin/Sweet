@@ -23,6 +23,7 @@ describe("Unit - AnswerToQuestion", () => {
                 userId: "0000",
                 firstName: "name",
                 lastName: "lastname",
+                age: 12,
                 userName: "username",
                 schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
                 schoolName : "schoolName",
@@ -32,6 +33,7 @@ describe("Unit - AnswerToQuestion", () => {
             from: {
                 userId: "8888",
                 firstName: "name",
+                age: 12,
                 lastName: "lastname",
                 userName: "username",
                 schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
@@ -56,6 +58,7 @@ describe("Unit - AnswerToQuestion", () => {
             response: {
                 userId: "0000",
                 firstName: "name",
+                age: 12,
                 lastName: "lastname",
                 userName: "username",
                 schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
@@ -67,6 +70,7 @@ describe("Unit - AnswerToQuestion", () => {
                 userId: "8888",
                 firstName: "name",
                 lastName: "lastname",
+                age: 12,
                 userName: "username",
                 schoolId: "0f87dd7e1c1d7fef5269f007c7b112a22f610cf7",
                 schoolName : "schoolName2",

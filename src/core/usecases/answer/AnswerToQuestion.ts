@@ -62,6 +62,7 @@ export class AnswerToQuestion
                 section: user.props.section,
                 userId: user.props.id,
                 userName: user.props.userName,
+                age: user.props.age,
             },
             response: friend != null ? {
                 firstName: friend.props.firstName,
@@ -72,6 +73,7 @@ export class AnswerToQuestion
                 section: friend.props.section,
                 userId: friend.props.id,
                 userName: friend.props.userName,
+                age: friend.props.age,
             } : null,
         });
         return await this.answerRepository.create(answer);
