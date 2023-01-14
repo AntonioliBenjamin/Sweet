@@ -12,12 +12,12 @@ const v4IdGateway = new V4IdGateway();
 const createPoll = new CreatePoll(mongoDbPollRepository, mongoDbQuestionRepository, v4IdGateway);
 const firebaseGateway = new FirebaseGateway(fbAdmin);
 
-export const createPollTimer = cron.schedule("*/50 7-22 * * *", async () => {
+export const createPollTimer = cron.schedule("0 7-22 * * *", async () => {
     await createPoll.execute();
     console.log("Poll created (running every hour)");
     await firebaseGateway.sendToAllDevice({
         identifier: "all",
-        title: "Nouveau sondate",
+        title: "Nouveau sondage",
         message: "Un nouveau sondage est disponible",
     })
 })
