@@ -76,10 +76,7 @@
                 token: token,
               },
             })
-
-            document.getElementById("false").style.display = "none";
-            document.getElementById("error").style.display = "none";
-            document.getElementById("ok").style.display = "block";
+            window.location.href = "/views/confirm"
             return;
 
           } catch(err) {
