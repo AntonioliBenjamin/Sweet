@@ -63,10 +63,10 @@ function sortAlphabetically(array: any[], key: string) {
         return [];
     }
     return array.sort(function (a, b) {
-        if (a[key] < b[key]) {
+        if (a[key].toLowerCase() < b[key].toLowerCase()) {
             return -1;
         }
-        if (a[key] > b[key]) {
+        if (a[key].toLowerCase() > b[key].toLowerCase()) {
             return 1;
         }
         return 0;
