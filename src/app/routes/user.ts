@@ -57,6 +57,22 @@ const sendFeedBack = new SendFeedback(sendGridGateway)
 
 mailService.setApiKey(process.env.SENDGRID_API_KEY);
 
+
+function sortAlphabetically(array: any[], key: string) {
+    if (array.length <= 0) {
+        return [];
+    }
+    return array.sort(function (a, b) {
+        if (a[key] < b[key]) {
+            return -1;
+        }
+        if (a[key] > b[key]) {
+            return 1;
+        }
+        return 0;
+    });
+}
+
 userRouter.post("/", async (req, res) => {
     const body = await SignUpCommands.setProperties({
         userName: req.body.userName,
@@ -228,7 +244,9 @@ userRouter.get("/all/:schoolId", async (req: AuthentifiedRequest, res) => {
         (elm) => elm.id !== req.user.id
     );
 
-    return res.status(200).send(ArrayWithoutCurrentUser);
+    return res.status(200).send(
+        sortAlphabetically(ArrayWithoutCurrentUser, "firstName")
+    );
 });
 
 userRouter.delete("/", async (req: AuthentifiedRequest, res) => {
