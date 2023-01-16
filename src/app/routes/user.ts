@@ -145,7 +145,7 @@ userRouter.post("/password/recovery", async (req, res) => {
 
     await sendGridGateway.sendRecoveryCode({
         email: user.props.email,
-        resetLink: `http://localhost:3005/views/reset?trustedKey=${token}`,
+        resetLink: `${process.env.BACKEND_URL}/views/reset?trustedKey=${token}`,
         userName: user.props.userName,
     });
 

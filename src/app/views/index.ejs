@@ -7,7 +7,7 @@
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Sweet Reset Password</title>
+    <title>POV</title>
     <link rel="shortcut icon" href="#" />
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"
@@ -16,38 +16,30 @@
       referrerpolicy="no-referrer"
     ></script>
   </head>
-  <body
-    style="
-      background-image: url('https://images.theconversation.com/files/270320/original/file-20190423-15218-9to8i9.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=900.0&fit=crop');
-      background-repeat: no-repeat;
-      background-size: cover;
-    "
-  >
-    <h1 style="text-align: center">MISE A JOUR DU MOT DE PASSE</h1>
-    <p style="text-align: center">
-      Minimum de huit caractères, au moins une lettre, un chiffre et un
-      caractère spécial
+  <body style="margin: 24px;">
+    <h1>Renouvellement de votre mot de passe POV :</h1>
+    <p>
+      Minimum de huit caractères
     </p>
 
-    <form id="form" style="text-align: center">
-      <label for="password">Password:</label><br />
-      <input type="password" id="password" name="password" /><br />
-      <label for="confirm">Confirm password:</label><br />
+    <form id="form" >
+      <label for="password">Mot de passe:</label><br />
+      <input type="password" id="password" name="password" style="margin-bottom: 16px;"/><br />
+      <label for="confirm">Confirmer votre mot de passe:</label><br />
       <input type="password" id="confirm" name="confirm" /><br /><br />
       <input type="submit" value="Submit" />
     </form>
 
-    <p id="error" style="display: none; color: red; text-align: center">
+    <p id="error" style="display: none; color: red;">
       LES MOTS DE PASSE NE SONT PAS IDENTIQUES
     </p>
-    <p id="ok" style="display: none; color: green; text-align: center">
+    <p id="ok" style="display: none; color: green;">
       MOT DE PASSE PRIS EN COMPTE
     </p>
-    <p id="false" style="display: none; color: red; text-align: center">
-      Minimum de huit caractères, au moins une lettre, un chiffre et un
-      caractère spécial
+    <p id="false" style="display: none; color: red;">
+      Minimum de huit caractères
     </p>
-    <p id="error_server" style="display: none; color: red; text-align: center">
+    <p id="error_server" style="display: none; color: red;">
       une erreur est survenue.
     </p>
 
@@ -57,10 +49,6 @@
         return Object.fromEntries(formData);
       }
 
-      const regex = new RegExp(
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/
-      );
-
       let password = document.getElementById("password").value;
       let params = new URLSearchParams(document.location.searchFriends);
       let token = params.get("trustedKey");
@@ -69,7 +57,7 @@
         e.preventDefault();
         const data = getData(e.target);
 
-        if (!regex.test(data.password)) {
+        if (!data.password.length < 8) {
           document.getElementById("false").style.display = "block";
           document.getElementById("error").style.display = "none";
           document.getElementById("ok").style.display = "none";
