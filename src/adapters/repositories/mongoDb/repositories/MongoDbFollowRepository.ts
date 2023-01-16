@@ -8,6 +8,7 @@ const followMapper = new MongoDbFollowMapper();
 
 export class MongoDbFollowRepository implements FollowedRepository {
     async create(input: Followed): Promise<Followed> {
+        console.log(input);
         const follow = followMapper.fromDomain(input);
         await FollowModel.findOneAndUpdate(
             {
