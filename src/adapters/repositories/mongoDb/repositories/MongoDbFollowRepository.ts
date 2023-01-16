@@ -9,8 +9,22 @@ const followMapper = new MongoDbFollowMapper();
 export class MongoDbFollowRepository implements FollowedRepository {
     async create(input: Followed): Promise<Followed> {
         const follow = followMapper.fromDomain(input);
-        const friendShipModel = new FollowModel(follow);
-        await friendShipModel.save();
+        await FollowModel.findOneAndUpdate(
+            {
+                addedBy: follow.addedBy,
+            },
+            {
+                $set: {
+                    addedBy: follow.addedBy,
+                    userId: follow.userId,
+                    id: follow.id,
+                }
+            },
+            {
+                new : true,
+                upsert: true,
+            }
+        )
         return input;
     }
 
