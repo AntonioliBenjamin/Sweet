@@ -13,6 +13,7 @@ export class MongoDbFollowRepository implements FollowedRepository {
         const result = await FollowModel.findOneAndUpdate(
             {
                 addedBy: follow.addedBy,
+                userId: follow.userId,
             },
             {
                 $set: {
