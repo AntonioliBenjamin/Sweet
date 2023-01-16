@@ -50,8 +50,10 @@
       }
 
       let password = document.getElementById("password").value;
-      let params = new URLSearchParams(document.location.searchFriends);
-      let token = params.get("trustedKey");
+      const params = new Proxy(new URLSearchParams(window.location.search), {
+        get: (searchParams, prop) => searchParams.get(prop),
+      })
+      let token = params.trustedKey;
 
       document.getElementById("form").addEventListener("submit", async function (e) {
         e.preventDefault();
@@ -70,7 +72,7 @@
               method: "POST",
               url: "/user/password/reset",
               data: {
-                password: password,
+                password: data.password,
                 token: token,
               },
             })
