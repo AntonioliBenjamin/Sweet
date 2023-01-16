@@ -7,7 +7,7 @@
     "start": "npx ts-node src/index",
     "test": "jest",
     "build": "npx tsc",
-    "postbuild": "cp ./src/adapters/repositories/school/schoolsDb.json ./dist/adapters/repositories/school/",
+    "postbuild": "cp ./src/adapters/repositories/school/schoolsDb.json ./dist/adapters/repositories/school/ && cp -R ./src/app/views ./dist/app",
     "start:prod": "pm2 start ./dist/index.js --name pov"
   },
   "author": "CH",
