@@ -67,8 +67,8 @@
         if (data.password === data.confirm) {
           try{
             await axios({
-              method: "post",
-              url: "http://localhost:3005/user/password/reset",
+              method: "POST",
+              url: "/user/password/reset",
               data: {
                 password: password,
                 token: token,
