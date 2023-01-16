@@ -57,7 +57,7 @@
         e.preventDefault();
         const data = getData(e.target);
 
-        if (!data.password.length < 8) {
+        if (data.password.length < 8) {
           document.getElementById("false").style.display = "block";
           document.getElementById("error").style.display = "none";
           document.getElementById("ok").style.display = "none";
