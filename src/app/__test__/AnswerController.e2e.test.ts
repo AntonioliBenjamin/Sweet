@@ -77,6 +77,7 @@ describe("E2E - AnswerController", () => {
                 schoolName: "schoolName",
                 section: "1er L",
                 gender: Gender.GIRL,
+                age :14
             },
             from: {
                 userId: "9999",
@@ -87,6 +88,7 @@ describe("E2E - AnswerController", () => {
                 schoolName: "schoolName",
                 section: "1er L",
                 gender: Gender.GIRL,
+                age: 14
             },
             userId: "9999",
             createdAt: new Date(),
@@ -110,6 +112,7 @@ describe("E2E - AnswerController", () => {
                 schoolName: "schoolName2",
                 section: "1er L",
                 gender: Gender.GIRL,
+                age : 14
             },
             from: {
                 userId: "8888",
@@ -120,6 +123,7 @@ describe("E2E - AnswerController", () => {
                 schoolName: "schoolName",
                 section: "1er L",
                 gender: Gender.GIRL,
+                age : 14
             },
             userId: "8888",
             createdAt: new Date(),
