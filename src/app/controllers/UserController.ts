@@ -25,8 +25,11 @@ import {SendFeedback} from "../../core/usecases/user/SendFeeback";
 import {PushTokenCommands} from "../commands/user/PushTokenCommands";
 import {inject, injectable} from 'inversify';
 import { UserApiResponse } from '../dtos/UserApiResponse';
-import {EmailGateway} from "../../core/gateways/EmailGateway";
+import {RecoveryCodeGenerated} from "../../messages/user/RecoveryCodeGenerated";
+import {EventHandlerRegistry} from "ddd-messaging-bus/src"
 import {identifiers} from "../../core/identifiers/identifiers";
+import {EmailGateway} from "../../core/gateways/EmailGateway";
+import {RecoveryCodeGeneratedHandler} from "../handlers/RecoveryCodeGeneratedHandler";
 
 const userApiMapper = new UserApiResponse();
 
@@ -49,7 +52,7 @@ export class UserController {
         private readonly _deleteUser : DeleteUser,
         @inject(identifiers.EmailGateway)
         private readonly _sendGridGateway : EmailGateway,
-    ) {}
+    ){}
 
     @Post('/')
     async signUp(@Res() res: Response, @Body() cmd: SignUpCommands) {
@@ -97,22 +100,9 @@ export class UserController {
     async passwordRecovery(@Req() req: Request, @Res() res: Response, @Body() cmd: RecoveryCommands) {
         const body = await RecoveryCommands.setProperties(cmd);
 
-        const user = await this._generateRecoveryCode.execute(body);
 
-        const token = jwt.sign(
-            {
-                id: user.props.id,
-                recoveryCode: user.props.recoveryCode,
-            },
-            secretKey,
-            {expiresIn: "1h"}
-        );
 
-        await this._sendGridGateway.sendRecoveryCode({
-            email: user.props.email,
-            resetLink: `http://localhost:3005/views/reset?trustedKey=${token}`,
-            userName: user.props.userName,
-        });
+        await this._generateRecoveryCode.execute(body);
 
         return res.sendStatus(200);
     }

@@ -52,12 +52,14 @@ import {SchoolDbRepository} from "../../adapters/repositories/school/SchoolDbRep
 import {V4IdGateway} from "../../adapters/gateways/V4IdGateway";
 import {BcryptGateway} from "../../adapters/gateways/BcryptGateway";
 import {FirebaseGateway} from "../../adapters/gateways/FirebaseGateway";
-
-
+import {fbAdmin} from "./fbAdmin";
+import {EventHandlerRegistry, EventReceiver, inMemoryBuild, MessageIdentifiers} from "ddd-messaging-bus/src";
+import {RecoveryCodeGenerated} from "../../messages/user/RecoveryCodeGenerated";
+import {RecoveryCodeGeneratedHandler} from "../handlers/RecoveryCodeGeneratedHandler";
 
 
 export class PovKernel extends Container {
-    init() {
+    async init() {
         const emailSender = process.env.RECOVERY_EMAIL_SENDER;
         const mailService = new MailService();
         mailService.setApiKey(process.env.SENDGRID_API_KEY);
@@ -66,9 +68,9 @@ export class PovKernel extends Container {
         const serviceAccount = JSON.parse(
             Buffer.from(googleCredentials, "base64").toString("utf-8")
         );
-        const firebaseAdmin = admin.initializeApp({
-            credential: admin.credential.cert(serviceAccount),
-        });
+
+        inMemoryBuild(this);
+
 
         //repositories
         this.bind(identifiers.QuestionRepository).toConstantValue(
@@ -91,10 +93,10 @@ export class PovKernel extends Container {
         );
 
         //gateways
-        this.bind(identifiers.EmailGateway).toConstantValue(new SendGridGateway(mailService,emailSender));
+        this.bind(identifiers.EmailGateway).toConstantValue(new SendGridGateway(mailService, emailSender));
         this.bind(identifiers.IdGateway).toConstantValue(new V4IdGateway());
         this.bind(identifiers.PasswordGateway).to(BcryptGateway);
-        this.bind(identifiers.PushNotificationGateway).toConstantValue(new FirebaseGateway(firebaseAdmin))
+        this.bind(identifiers.PushNotificationGateway).toConstantValue(new FirebaseGateway(fbAdmin))
 
         //usecases
         //user
@@ -142,5 +144,10 @@ export class PovKernel extends Container {
         this.bind(FriendsController).toSelf();
         this.bind(AnswerController).toSelf();
         this.bind(FollowController).toSelf();
+
+        EventHandlerRegistry.register(RecoveryCodeGenerated, new RecoveryCodeGeneratedHandler(this.get(identifiers.EmailGateway)));
+
+        const eventReceiver: EventReceiver = this.get(MessageIdentifiers.EventReceiver);
+        await eventReceiver.init();
     }
 }

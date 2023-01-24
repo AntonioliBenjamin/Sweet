@@ -14,6 +14,8 @@ import {PollController} from './app/controllers/Pollcontroller';
 import {PovKernel} from './app/config/PovKernel';
 import {FollowController} from "./app/controllers/FollowController";
 import {QuestionController} from "./app/controllers/QuestionController";
+import {Container} from "inversify";
+import {inMemoryBuild, EventReceiver,MessageIdentifiers} from "ddd-messaging-bus/src"
 
 const app = createExpressServer({
     defaults: {
@@ -69,6 +71,9 @@ useExpressServer(app, {
         QuestionController
     ]
 })
+
+
+
 
 app.use((err, req, res, next) => {
     if (res.headersSent) {

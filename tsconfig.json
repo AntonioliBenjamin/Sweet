@@ -12,7 +12,8 @@
     "module": "commonjs" /* Specify what module code is generated. */,
     "rootDir": "./src",
     "outDir": "dist",
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "moduleResolution": "node"
   },
     "exclude": ["node_modules", "src/**/*.test.ts", "jest.config.ts"]
 }
