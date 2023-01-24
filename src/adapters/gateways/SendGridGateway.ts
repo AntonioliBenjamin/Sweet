@@ -37,6 +37,7 @@ export class SendGridGateway implements EmailGateway {
             to: this.emailSender,
             dynamicTemplateData: {
                 message: payload.message,
+                from: payload.email,
             },
         });
     }

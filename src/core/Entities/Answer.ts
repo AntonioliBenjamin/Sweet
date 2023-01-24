@@ -9,6 +9,7 @@ export type ResponseProperties = {
     schoolId: string;
     schoolName: string;
     section?: string;
+    age: number;
     gender: Gender;
 };
 

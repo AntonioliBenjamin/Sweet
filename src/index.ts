@@ -45,6 +45,10 @@ app.get('/views/reset', (req, res) => {
     return res.render('index')
 })
 
+app.get('/views/confirm', (req, res) => {
+    return res.render('confirmPassword')
+})
+
 app.use(morgan('combined'));
 
 app.use(express.json());

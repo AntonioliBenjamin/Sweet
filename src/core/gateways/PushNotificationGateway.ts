@@ -5,5 +5,6 @@ export type MessagePayload = {
 }
 
 export interface PushNotificationGateway {
-    send(message: MessagePayload): Promise<void>
+    send(message: MessagePayload): Promise<void>;
+    sendToAllDevice(message: MessagePayload);
 }

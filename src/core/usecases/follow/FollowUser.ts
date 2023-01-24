@@ -19,21 +19,13 @@ export class FollowUser implements UseCase<CreateFollowProperties, Followed> {
     }
 
     async execute(input: CreateFollowProperties): Promise<Followed> {
-        const followAlreadyExists = await this.followedRepository.exists(input.addedBy, input.userId);
-        if (followAlreadyExists) {
-            return followAlreadyExists
-        }
-
         const followId = this.idGateway.generate();
-
         const followed = Followed.create({
             id: followId,
             userId: input.userId,
             addedBy: input.addedBy
         });
-
         await this.followedRepository.create(followed);
-
-        return followed
+        return followed;
     }
 }

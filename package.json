@@ -7,7 +7,7 @@
     "start": "npx ts-node src/index",
     "test": "jest",
     "build": "npx tsc",
-    "postbuild": "cp ./src/adapters/repositories/school/schoolsDb.json ./dist/adapters/repositories/school/",
+    "postbuild": "cp ./src/adapters/repositories/school/schoolsDb.json ./dist/adapters/repositories/school/ && cp -R ./src/app/views ./dist/app",
     "start:prod": "pm2 start ./dist/index.js --name pov"
   },
   "author": "CH",
@@ -30,6 +30,7 @@
     "inversify": "^6.0.1",
     "joi": "^17.7.0",
     "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.4",
     "mongodb": "^4.11.0",
     "mongodb-memory-server": "^8.10.2",
     "mongodb-memory-server-global": "^8.10.2",

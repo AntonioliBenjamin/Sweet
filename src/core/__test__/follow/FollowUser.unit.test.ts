@@ -76,6 +76,6 @@ describe("Unit - CreatFriendShip", () => {
       userId: recipient.props.id,
     });
 
-    expect(result.props.id).toEqual("already exist");
+    expect(result.props.addedBy).toEqual(followed.props.addedBy);
   });
 });

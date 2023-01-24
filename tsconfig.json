@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     /* Language and Environment */

@@ -1,5 +1,6 @@
 import { Answer } from "../../core/Entities/Answer";
 import { Poll } from "../../core/Entities/Poll";
+import moment from "moment";
 
 export type PollQuestionApiResponse = {
   id: string;
@@ -45,7 +46,7 @@ export class PollApiResponse {
       id: data.props.pollId,
       questions: questions,
       createdAt: data.props.createdAt,
-      expirationDate: data.props.expirationDate,
+      expirationDate: moment(data.props.expirationDate).add(1, 'minutes').toDate(),
       currentQuestion: currentQuestion,
       isFinished: isFinished
     };
